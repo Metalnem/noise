@@ -9,9 +9,20 @@ namespace Noise
 	/// </summary>
 	internal class ChaCha20Poly1305
 	{
-		private const int KeySize = Libsodium.crypto_aead_chacha20poly1305_ietf_KEYBYTES;
-		private const int NonceSize = Libsodium.crypto_aead_chacha20poly1305_ietf_NPUBBYTES;
-		private const int TagSize = Libsodium.crypto_aead_chacha20poly1305_ietf_ABYTES;
+		/// <summary>
+		/// Secret key size in bytes.
+		/// </summary>
+		public const int KeySize = Libsodium.crypto_aead_chacha20poly1305_ietf_KEYBYTES;
+
+		/// <summary>
+		/// Nonce size in bytes.
+		/// </summary>
+		public const int NonceSize = Libsodium.crypto_aead_chacha20poly1305_ietf_NPUBBYTES;
+
+		/// <summary>
+		/// Authentication tag size in bytes.
+		/// </summary>
+		public const int TagSize = Libsodium.crypto_aead_chacha20poly1305_ietf_ABYTES;
 
 		/// <summary>
 		/// Encrypts and authenticates the plaintext, and authenticates the associated data.
