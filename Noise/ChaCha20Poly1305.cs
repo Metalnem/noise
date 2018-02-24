@@ -7,7 +7,7 @@ namespace Noise
 	/// ChaCha20-Poly1305 authenticated encryption with associated data (AEAD), defined in
 	/// <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 	/// </summary>
-	internal class ChaCha20Poly1305
+	internal static class ChaCha20Poly1305
 	{
 		/// <summary>
 		/// Secret key size in bytes.
