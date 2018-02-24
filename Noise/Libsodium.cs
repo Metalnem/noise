@@ -13,6 +13,9 @@ namespace Noise
 		public const int crypto_aead_chacha20poly1305_ietf_NPUBBYTES = 12;
 		public const int crypto_aead_chacha20poly1305_ietf_ABYTES = 16;
 
+		public const int crypto_scalarmult_curve25519_BYTES = 32;
+		public const int crypto_scalarmult_curve25519_SCALARBYTES = 32;
+
 		static Libsodium()
 		{
 			if (sodium_init() == -1)
@@ -48,6 +51,19 @@ namespace Noise
 			long adlen,
 			byte[] npub,
 			byte[] k
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_scalarmult_curve25519_base(
+			byte[] q,
+			byte[] n
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_scalarmult_curve25519(
+			byte[] q,
+			byte[] n,
+			byte[] p
 		);
 	}
 }
