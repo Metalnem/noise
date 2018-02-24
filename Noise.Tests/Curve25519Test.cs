@@ -12,8 +12,8 @@ namespace Noise.Tests
 		[Fact]
 		public void TestDiffieHellman()
 		{
-			var privateKeyA = GetRandomBytes(Curve25519.KeySize);
-			var privateKeyB = GetRandomBytes(Curve25519.KeySize);
+			var privateKeyA = Random.GetBytes(Curve25519.KeySize);
+			var privateKeyB = Random.GetBytes(Curve25519.KeySize);
 
 			var publicKeyA = Curve25519.ScalarBaseMult(privateKeyA);
 			var publicKeyB = Curve25519.ScalarBaseMult(privateKeyB);
@@ -22,14 +22,6 @@ namespace Noise.Tests
 			var sharedKeyB = Curve25519.ScalarMult(privateKeyB, publicKeyA);
 
 			Assert.Equal(sharedKeyA, sharedKeyB);
-		}
-
-		public static byte[] GetRandomBytes(int size)
-		{
-			var bytes = new byte[size];
-			random.GetBytes(bytes);
-
-			return bytes;
 		}
 	}
 }
