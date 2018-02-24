@@ -33,7 +33,7 @@ namespace Noise
 		{
 			get
 			{
-				ThrowIfDisposed();
+				Exceptions.ThrowIfDisposed(disposed, nameof(KeyPair));
 				return privateKey;
 			}
 		}
@@ -45,21 +45,13 @@ namespace Noise
 		{
 			get
 			{
-				ThrowIfDisposed();
+				Exceptions.ThrowIfDisposed(disposed, nameof(KeyPair));
 				return publicKey;
 			}
 		}
 
-		private void ThrowIfDisposed()
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(nameof(KeyPair));
-			}
-		}
-
 		/// <summary>
-		/// Removes the keys from memory.
+		/// Disposes the object and clears the keys.
 		/// </summary>
 		public void Dispose()
 		{
