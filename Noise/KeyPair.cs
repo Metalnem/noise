@@ -3,7 +3,7 @@ using System;
 namespace Noise
 {
 	/// <summary>
-	/// A Diffie-Hellman private/public key pair.
+	/// A Curve25519 private/public key pair.
 	/// </summary>
 	internal sealed class KeyPair : IDisposable
 	{
@@ -59,7 +59,7 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Remove the keys from memory.
+		/// Removes the keys from memory.
 		/// </summary>
 		public void Dispose()
 		{

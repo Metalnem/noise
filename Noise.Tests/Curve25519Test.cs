@@ -1,14 +1,9 @@
-using System;
-using System.Security.Cryptography;
-using System.Text;
 using Xunit;
 
 namespace Noise.Tests
 {
 	public class Curve25519Test
 	{
-		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
-
 		[Fact]
 		public void TestDiffieHellman()
 		{
