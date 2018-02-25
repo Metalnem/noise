@@ -22,7 +22,10 @@ namespace Noise
 		/// </summary>
 		public void InitializeKey(byte[] key)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
+			if (k != null)
+			{
+				Array.Clear(k, 0, k.Length);
+			}
 
 			k = key;
 			n = 0;
@@ -33,8 +36,6 @@ namespace Noise
 		/// </summary>
 		public bool HasKey()
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
-
 			return k != null;
 		}
 
@@ -43,8 +44,6 @@ namespace Noise
 		/// </summary>
 		public void SetNonce(ulong nonce)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
-
 			n = nonce;
 		}
 
@@ -54,8 +53,6 @@ namespace Noise
 		/// </summary>
 		public byte[] EncryptWithAd(byte[] ad, byte[] plaintext)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
-
 			if (k == null)
 			{
 				return plaintext;
@@ -75,8 +72,6 @@ namespace Noise
 		/// </summary>
 		public byte[] DecryptWithAd(byte[] ad, byte[] ciphertext)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
-
 			if (k == null)
 			{
 				return ciphertext;
@@ -93,9 +88,7 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(CipherState));
-
-			k = ChaCha20Poly1305.Encrypt(k, MaxNonce, ZeroLen, Zeros);
+			InitializeKey(ChaCha20Poly1305.Encrypt(k, MaxNonce, ZeroLen, Zeros));
 		}
 
 		/// <summary>
@@ -105,11 +98,7 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				if (k != null)
-				{
-					Array.Clear(k, 0, k.Length);
-				}
-
+				InitializeKey(null);
 				disposed = true;
 			}
 		}
