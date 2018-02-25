@@ -10,8 +10,8 @@ namespace Noise
 	{
 		private const ulong MaxNonce = UInt64.MaxValue;
 
-		private static readonly byte[] ZeroLen = new byte[0];
-		private static readonly byte[] Zeros = new byte[32];
+		private static readonly byte[] zeroLen = new byte[0];
+		private static readonly byte[] zeros = new byte[32];
 
 		private byte[] k;
 		private ulong n;
@@ -98,7 +98,7 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
-			InitializeKey(ChaCha20Poly1305.Encrypt(k, MaxNonce, ZeroLen, Zeros));
+			InitializeKey(ChaCha20Poly1305.Encrypt(k, MaxNonce, zeroLen, zeros));
 		}
 
 		/// <summary>

@@ -1,33 +1,31 @@
 namespace Noise
 {
 	/// <summary>
-	/// The 25519 DH functions.
+	/// Diffie-Hellman functions.
 	/// </summary>
 	internal static class DiffieHellman
 	{
 		/// <summary>
-		/// Shared secret key size in bytes.
+		/// A constant specifying the size in bytes of public keys and DH outputs.
 		/// </summary>
 		public const int DhLen = 32;
 
 		/// <summary>
-		/// Generates a new Curve25519 key pair.
+		/// Generates a new Diffie-Hellman key pair.
 		/// </summary>
-		/// <returns>The generated key pair.</returns>
 		public static KeyPair GenerateKeyPair()
 		{
 			return KeyPair.Generate();
 		}
 
 		/// <summary>
-		/// Executes the Curve25519 DH function.
+		/// Performs a Diffie-Hellman calculation between the private
+		/// key in keyPair and the publicKey and returns an output
+		/// sequence of bytes of length DhLen.
 		/// </summary>
-		/// <param name="key">The private/public key pair.</param>
-		/// <param name="publicKey">The public key.</param>
-		/// <returns>The computed shared secret key.</returns>
-		public static byte[] Dh(KeyPair key, byte[] publicKey)
+		public static byte[] Dh(KeyPair keyPair, byte[] publicKey)
 		{
-			return Curve25519.ScalarMult(key.PrivateKey, publicKey);
+			return Curve25519.ScalarMult(keyPair.PrivateKey, publicKey);
 		}
 	}
 }
