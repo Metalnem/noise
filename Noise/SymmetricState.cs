@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 
 namespace Noise
 {
@@ -8,8 +9,6 @@ namespace Noise
 	/// </summary>
 	internal sealed class SymmetricState : IDisposable
 	{
-		private static readonly byte[] zeroLen = new byte[0];
-
 		private readonly CipherState cipher;
 		private readonly byte[] ck;
 		private byte[] h;
@@ -48,14 +47,17 @@ namespace Noise
 		/// </summary>
 		public void MixKey(byte[] inputKeyMaterial)
 		{
-			var bytes = Hash.Hkdf(ck, inputKeyMaterial, 2);
-			var tempK = new byte[32];
+			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			Array.Copy(bytes, ck, ck.Length);
-			Array.Copy(bytes, Hash.HashLen, tempK, 0, tempK.Length);
-			Array.Clear(bytes, 0, bytes.Length);
+			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
+			{
+				var tempK = new byte[32];
 
-			cipher.InitializeKey(tempK);
+				hkdf.GetBytes(ck);
+				hkdf.GetBytes(tempK);
+
+				cipher.InitializeKey(tempK);
+			}
 		}
 
 		/// <summary>
@@ -74,17 +76,20 @@ namespace Noise
 		/// </summary>
 		public void MixKeyAndHash(byte[] inputKeyMaterial)
 		{
-			var bytes = Hash.Hkdf(ck, inputKeyMaterial, 3);
-			var tempH = new byte[Hash.HashLen];
-			var tempK = new byte[32];
+			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			Array.Copy(bytes, ck, ck.Length);
-			Array.Copy(bytes, Hash.HashLen, tempH, 0, tempH.Length);
-			Array.Copy(bytes, 2 * Hash.HashLen, tempK, 0, tempK.Length);
-			Array.Clear(bytes, 0, bytes.Length);
+			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
+			{
+				var tempH = new byte[Hash.HashLen];
+				var tempK = new byte[32];
 
-			MixHash(tempH);
-			cipher.InitializeKey(tempK);
+				hkdf.GetBytes(ck);
+				hkdf.GetBytes(tempH);
+				hkdf.GetBytes(tempK);
+
+				MixHash(tempH);
+				cipher.InitializeKey(tempK);
+			}
 		}
 
 		/// <summary>
@@ -125,21 +130,35 @@ namespace Noise
 		/// </summary>
 		public (CipherState c1, CipherState c2) Split()
 		{
-			var bytes = Hash.Hkdf(ck, zeroLen, 2);
-			var tempK1 = new byte[32];
-			var tempK2 = new byte[32];
+			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(null, ck, null))
+			{
+				var tempK1 = new byte[32];
+				var tempK2 = new byte[32];
 
-			Array.Copy(bytes, tempK1, tempK1.Length);
-			Array.Copy(bytes, Hash.HashLen, tempK2, 0, tempK2.Length);
-			Array.Clear(bytes, 0, bytes.Length);
+				hkdf.GetBytes(tempK1);
+				hkdf.GetBytes(tempK2);
 
-			var c1 = new CipherState();
-			var c2 = new CipherState();
+				var c1 = new CipherState();
+				var c2 = new CipherState();
 
-			c1.InitializeKey(tempK1);
-			c2.InitializeKey(tempK2);
+				c1.InitializeKey(tempK1);
+				c2.InitializeKey(tempK2);
 
-			return (c1, c2);
+				return (c1, c2);
+			}
+		}
+
+		private static void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
+		{
+			if (inputKeyMaterial != null)
+			{
+				int length = inputKeyMaterial.Length;
+
+				if (length != 0 && length != 32 && length != DiffieHellman.DhLen)
+				{
+					throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
+				}
+			}
 		}
 
 		/// <summary>
