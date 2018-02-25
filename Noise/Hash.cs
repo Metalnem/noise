@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 namespace Noise
 {
 	/// <summary>
-	/// Hash functions.
+	/// Hash function and associated constants.
 	/// </summary>
 	internal static class Hash
 	{
@@ -19,20 +19,21 @@ namespace Noise
 		/// </summary>
 		public const int BlockLen = 64;
 
-		private static readonly IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-
 		/// <summary>
 		/// Hashes some arbitrary-length data with a collision-resistant
 		/// cryptographic hash function and returns an output of HashLen bytes.
 		/// </summary>
 		public static byte[] Sum(params byte[][] data)
 		{
-			foreach (var item in data)
+			using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
 			{
-				hash.AppendData(item);
-			}
+				foreach (var item in data)
+				{
+					hash.AppendData(item);
+				}
 
-			return hash.GetHashAndReset();
+				return hash.GetHashAndReset();
+			}
 		}
 	}
 }

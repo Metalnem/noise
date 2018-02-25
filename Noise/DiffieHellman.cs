@@ -1,7 +1,7 @@
 namespace Noise
 {
 	/// <summary>
-	/// Diffie-Hellman functions.
+	/// Diffie-Hellman functions and an associated constant.
 	/// </summary>
 	internal static class DiffieHellman
 	{
