@@ -53,6 +53,11 @@ namespace Noise
 		/// </summary>
 		public byte[] EncryptWithAd(byte[] ad, byte[] plaintext)
 		{
+			if (n == MaxNonce)
+			{
+				throw new OverflowException("Nonce has reached its maximum value.");
+			}
+
 			if (k == null)
 			{
 				return plaintext;
@@ -72,6 +77,11 @@ namespace Noise
 		/// </summary>
 		public byte[] DecryptWithAd(byte[] ad, byte[] ciphertext)
 		{
+			if (n == MaxNonce)
+			{
+				throw new OverflowException("Nonce has reached its maximum value.");
+			}
+
 			if (k == null)
 			{
 				return ciphertext;
