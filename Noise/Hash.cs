@@ -19,15 +19,20 @@ namespace Noise
 		/// </summary>
 		public const int BlockLen = 64;
 
-		private static readonly SHA256 hash = SHA256.Create();
+		private static readonly IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
 		/// <summary>
 		/// Hashes some arbitrary-length data with a collision-resistant
 		/// cryptographic hash function and returns an output of HashLen bytes.
 		/// </summary>
-		public static byte[] Sum(byte[] data)
+		public static byte[] Sum(params byte[][] data)
 		{
-			return hash.ComputeHash(data);
+			foreach (var item in data)
+			{
+				hash.AppendData(item);
+			}
+
+			return hash.GetHashAndReset();
 		}
 
 		/// <summary>

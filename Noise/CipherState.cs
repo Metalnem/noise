@@ -102,7 +102,7 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Disposes the object and clears the cipher key.
+		/// Disposes the object.
 		/// </summary>
 		public void Dispose()
 		{

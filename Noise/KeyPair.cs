@@ -32,7 +32,7 @@ namespace Noise
 		public byte[] PublicKey { get; }
 
 		/// <summary>
-		/// Disposes the object and clears the keys.
+		/// Disposes the object.
 		/// </summary>
 		public void Dispose()
 		{
