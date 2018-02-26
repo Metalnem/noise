@@ -9,10 +9,6 @@ namespace Noise
 	{
 		private const string Name = "libsodium";
 
-		public const int crypto_aead_chacha20poly1305_ietf_KEYBYTES = 32;
-		public const int crypto_aead_chacha20poly1305_ietf_NPUBBYTES = 12;
-		public const int crypto_aead_chacha20poly1305_ietf_ABYTES = 16;
-
 		public const int crypto_scalarmult_curve25519_BYTES = 32;
 		public const int crypto_scalarmult_curve25519_SCALARBYTES = 32;
 

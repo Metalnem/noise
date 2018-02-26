@@ -56,7 +56,7 @@ namespace Noise
 
 			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
 			{
-				var tempK = new byte[32];
+				var tempK = new byte[Constants.KeySize];
 
 				hkdf.GetBytes(ck);
 				hkdf.GetBytes(tempK);
@@ -86,7 +86,7 @@ namespace Noise
 			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
 			{
 				var tempH = new byte[Hash.HashLen];
-				var tempK = new byte[32];
+				var tempK = new byte[Constants.KeySize];
 
 				hkdf.GetBytes(ck);
 				hkdf.GetBytes(tempH);
@@ -137,8 +137,8 @@ namespace Noise
 		{
 			using (var hkdf = Hkdf.CreateSha256Hkdf(null, ck, null))
 			{
-				var tempK1 = new byte[32];
-				var tempK2 = new byte[32];
+				var tempK1 = new byte[Constants.KeySize];
+				var tempK2 = new byte[Constants.KeySize];
 
 				hkdf.GetBytes(tempK1);
 				hkdf.GetBytes(tempK2);
@@ -159,7 +159,7 @@ namespace Noise
 			{
 				int length = inputKeyMaterial.Length;
 
-				if (length != 0 && length != 32 && length != dh.DhLen)
+				if (length != 0 && length != Constants.KeySize && length != dh.DhLen)
 				{
 					throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
 				}
