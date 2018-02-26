@@ -1,31 +1,25 @@
 namespace Noise
 {
 	/// <summary>
-	/// Diffie-Hellman functions and an associated constant.
+	/// DH functions and an associated constant.
 	/// </summary>
-	internal static class DiffieHellman
+	internal interface Dh
 	{
 		/// <summary>
 		/// A constant specifying the size in bytes of public keys and DH outputs.
 		/// </summary>
-		public const int DhLen = 32;
+		int DhLen { get; }
 
 		/// <summary>
 		/// Generates a new Diffie-Hellman key pair.
 		/// </summary>
-		public static KeyPair GenerateKeyPair()
-		{
-			return KeyPair.Generate();
-		}
+		KeyPair GenerateKeyPair();
 
 		/// <summary>
 		/// Performs a Diffie-Hellman calculation between the private
 		/// key in keyPair and the publicKey and returns an output
 		/// sequence of bytes of length DhLen.
 		/// </summary>
-		public static byte[] Dh(KeyPair keyPair, byte[] publicKey)
-		{
-			return Curve25519.ScalarMult(keyPair.PrivateKey, publicKey);
-		}
+		byte[] Dh(KeyPair keyPair, byte[] publicKey);
 	}
 }

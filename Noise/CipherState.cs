@@ -13,9 +13,18 @@ namespace Noise
 		private static readonly byte[] zeroLen = new byte[0];
 		private static readonly byte[] zeros = new byte[32];
 
+		private readonly Cipher cipher;
 		private byte[] k;
 		private ulong n;
 		private bool disposed;
+
+		/// <summary>
+		/// Initializes a new CipherState.
+		/// </summary>
+		public CipherState(Cipher cipher)
+		{
+			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+		}
 
 		/// <summary>
 		/// Sets k = key. Sets n = 0.
@@ -63,7 +72,7 @@ namespace Noise
 				return plaintext;
 			}
 
-			var ciphertext = ChaCha20Poly1305.Encrypt(k, n, ad, plaintext);
+			var ciphertext = cipher.Encrypt(k, n, ad, plaintext);
 			++n;
 
 			return ciphertext;
@@ -87,7 +96,7 @@ namespace Noise
 				return ciphertext;
 			}
 
-			var plaintext = ChaCha20Poly1305.Decrypt(k, n, ad, ciphertext);
+			var plaintext = cipher.Decrypt(k, n, ad, ciphertext);
 			++n;
 
 			return plaintext;
@@ -98,7 +107,7 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
-			InitializeKey(ChaCha20Poly1305.Encrypt(k, MaxNonce, zeroLen, zeros));
+			InitializeKey(cipher.Encrypt(k, MaxNonce, zeroLen, zeros));
 		}
 
 		/// <summary>

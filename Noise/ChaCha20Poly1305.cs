@@ -4,35 +4,18 @@ using System.Security.Cryptography;
 namespace Noise
 {
 	/// <summary>
-	/// ChaCha20-Poly1305 authenticated encryption with associated data (AEAD), defined in
-	/// <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
+	/// The ChaChaPoly cipher functions.
 	/// </summary>
-	internal static class ChaCha20Poly1305
+	internal class ChaCha20Poly1305 : Cipher
 	{
-		/// <summary>
-		/// Secret key size in bytes.
-		/// </summary>
-		public const int KeySize = Libsodium.crypto_aead_chacha20poly1305_ietf_KEYBYTES;
+		private const int KeySize = Libsodium.crypto_aead_chacha20poly1305_ietf_KEYBYTES;
+		private const int NonceSize = Libsodium.crypto_aead_chacha20poly1305_ietf_NPUBBYTES;
+		private const int TagSize = Libsodium.crypto_aead_chacha20poly1305_ietf_ABYTES;
 
 		/// <summary>
-		/// Nonce size in bytes.
+		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public const int NonceSize = Libsodium.crypto_aead_chacha20poly1305_ietf_NPUBBYTES;
-
-		/// <summary>
-		/// Authentication tag size in bytes.
-		/// </summary>
-		public const int TagSize = Libsodium.crypto_aead_chacha20poly1305_ietf_ABYTES;
-
-		/// <summary>
-		/// Encrypts and authenticates the plaintext, and authenticates the associated data.
-		/// </summary>
-		/// <param name="k">The 32-byte secret key.</param>
-		/// <param name="n">The 8-byte nonce.</param>
-		/// <param name="ad">The additional data to authenticate (can be null).</param>
-		/// <param name="plaintext">The plaintext to encrypt.</param>
-		/// <returns>The encrypted ciphertext.</returns>
-		public static byte[] Encrypt(byte[] k, ulong n, byte[] ad, byte[] plaintext)
+		public byte[] Encrypt(byte[] k, ulong n, byte[] ad, byte[] plaintext)
 		{
 			ValidateKey(k);
 			ValidatePlaintext(plaintext);
@@ -52,14 +35,9 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Decrypts the ciphertext, and authenticates the decrypted plaintext and the associated data.
+		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		/// <param name="k">The 32-byte secret key.</param>
-		/// <param name="n">The 8-byte nonce.</param>
-		/// <param name="ad">The additional data to authenticate (can be null).</param>
-		/// <param name="ciphertext">The ciphertext to decrypt.</param>
-		/// <returns>The decrypted plaintext.</returns>
-		public static byte[] Decrypt(byte[] k, ulong n, byte[] ad, byte[] ciphertext)
+		public byte[] Decrypt(byte[] k, ulong n, byte[] ad, byte[] ciphertext)
 		{
 			ValidateKey(k);
 			ValidateCiphertext(ciphertext);

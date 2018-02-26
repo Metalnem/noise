@@ -10,7 +10,9 @@ namespace Noise
 	/// </summary>
 	internal sealed class SymmetricState : IDisposable
 	{
-		private readonly CipherState cipher;
+		private readonly Cipher cipher;
+		private readonly Dh dh;
+		private readonly CipherState state;
 		private readonly byte[] ck;
 		private byte[] h;
 		private bool disposed;
@@ -19,14 +21,15 @@ namespace Noise
 		/// Initializes a new SymmetricState with an
 		/// arbitrary-length protocolName byte sequence.
 		/// </summary>
-		public SymmetricState(byte[] protocolName)
+		public SymmetricState(byte[] protocolName, Cipher cipher, Dh dh)
 		{
 			if (protocolName == null)
 			{
 				throw new ArgumentNullException(nameof(protocolName));
 			}
 
-			cipher = new CipherState();
+			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+			this.dh = dh ?? throw new ArgumentNullException(nameof(dh));
 
 			if (protocolName.Length <= Hash.HashLen)
 			{
@@ -38,6 +41,7 @@ namespace Noise
 				h = Hash.Sum(protocolName);
 			}
 
+			state = new CipherState(cipher);
 			ck = h;
 		}
 
@@ -57,7 +61,7 @@ namespace Noise
 				hkdf.GetBytes(ck);
 				hkdf.GetBytes(tempK);
 
-				cipher.InitializeKey(tempK);
+				state.InitializeKey(tempK);
 			}
 		}
 
@@ -89,7 +93,7 @@ namespace Noise
 				hkdf.GetBytes(tempK);
 
 				MixHash(tempH);
-				cipher.InitializeKey(tempK);
+				state.InitializeKey(tempK);
 			}
 		}
 
@@ -108,7 +112,7 @@ namespace Noise
 		/// </summary>
 		public byte[] EncryptAndHash(byte[] plaintext)
 		{
-			var ciphertext = cipher.EncryptWithAd(h, plaintext);
+			var ciphertext = state.EncryptWithAd(h, plaintext);
 			MixHash(ciphertext);
 
 			return ciphertext;
@@ -120,7 +124,7 @@ namespace Noise
 		/// </summary>
 		public byte[] DecryptAndHash(byte[] ciphertext)
 		{
-			var plaintext = cipher.DecryptWithAd(h, ciphertext);
+			var plaintext = state.DecryptWithAd(h, ciphertext);
 			MixHash(ciphertext);
 
 			return plaintext;
@@ -139,8 +143,8 @@ namespace Noise
 				hkdf.GetBytes(tempK1);
 				hkdf.GetBytes(tempK2);
 
-				var c1 = new CipherState();
-				var c2 = new CipherState();
+				var c1 = new CipherState(cipher);
+				var c2 = new CipherState(cipher);
 
 				c1.InitializeKey(tempK1);
 				c2.InitializeKey(tempK2);
@@ -149,13 +153,13 @@ namespace Noise
 			}
 		}
 
-		private static void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
+		private void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
 		{
 			if (inputKeyMaterial != null)
 			{
 				int length = inputKeyMaterial.Length;
 
-				if (length != 0 && length != 32 && length != DiffieHellman.DhLen)
+				if (length != 0 && length != 32 && length != dh.DhLen)
 				{
 					throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
 				}
@@ -169,7 +173,7 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				cipher.Dispose();
+				state.Dispose();
 				Array.Clear(ck, 0, ck.Length);
 				Array.Clear(h, 0, h.Length);
 				disposed = true;
