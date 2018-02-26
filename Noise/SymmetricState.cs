@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using Cryptography;
 
 namespace Noise
 {
@@ -49,7 +50,7 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
+			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
 			{
 				var tempK = new byte[32];
 
@@ -78,7 +79,7 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
+			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
 			{
 				var tempH = new byte[Hash.HashLen];
 				var tempK = new byte[32];
@@ -130,7 +131,7 @@ namespace Noise
 		/// </summary>
 		public (CipherState c1, CipherState c2) Split()
 		{
-			using (var hkdf = Cryptography.Hkdf.CreateSha256Hkdf(null, ck, null))
+			using (var hkdf = Hkdf.CreateSha256Hkdf(null, ck, null))
 			{
 				var tempK1 = new byte[32];
 				var tempK2 = new byte[32];
