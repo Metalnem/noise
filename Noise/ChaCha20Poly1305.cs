@@ -6,7 +6,7 @@ namespace Noise
 	/// <summary>
 	/// The ChaChaPoly cipher functions.
 	/// </summary>
-	internal class ChaCha20Poly1305 : Cipher
+	internal sealed class ChaCha20Poly1305 : Cipher
 	{
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.

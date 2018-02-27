@@ -6,7 +6,7 @@ namespace Noise
 	/// <summary>
 	/// The AESGCM cipher functions.
 	/// </summary>
-	internal class Aes256Gcm : Cipher
+	internal sealed class Aes256Gcm : Cipher
 	{
 		/// <summary>
 		/// AES256 with GCM from NIST Special Publication
