@@ -24,6 +24,32 @@ namespace Noise
 		private static extern int sodium_init();
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_aead_aes256gcm_encrypt(
+			byte[] c,
+			out long clen_p,
+			byte[] m,
+			long mlen,
+			byte[] ad,
+			long adlen,
+			IntPtr nsec,
+			byte[] npub,
+			byte[] k
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_aead_aes256gcm_decrypt(
+			byte[] m,
+			out long mlen_p,
+			IntPtr nsec,
+			byte[] c,
+			long clen,
+			byte[] ad,
+			long adlen,
+			byte[] npub,
+			byte[] k
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_chacha20poly1305_ietf_encrypt(
 			byte[] c,
 			out long clen_p,
