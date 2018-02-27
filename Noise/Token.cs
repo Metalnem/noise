@@ -30,6 +30,12 @@ namespace Noise
 		EE,
 		SE,
 		ES,
-		SS
+		SS,
+
+		/// <summary>
+		/// Noise provides a pre-shared symmetric key or PSK mode to support
+		///  protocols where both parties have a 32-byte shared secret key.
+		/// </summary>
+		PSK
 	}
 }
