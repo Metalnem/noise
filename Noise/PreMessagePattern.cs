@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Noise
@@ -7,7 +6,7 @@ namespace Noise
 	/// A pre-message pattern is one of the following
 	/// sequences of tokens: "e", "s", "e, s", or empty.
 	/// </summary>
-	internal sealed class PreMessagePattern : IEnumerable<Token>
+	internal sealed class PreMessagePattern
 	{
 		/// <summary>
 		/// The "e" pre-message pattern.
@@ -29,24 +28,17 @@ namespace Noise
 		/// </summary>
 		public static readonly PreMessagePattern Empty = new PreMessagePattern();
 
-		private readonly Token[] tokens;
-
 		/// <summary>
 		/// Initializes a new PreMessagePattern.
 		/// </summary>
 		private PreMessagePattern(params Token[] tokens)
 		{
-			this.tokens = tokens;
+			Tokens = tokens;
 		}
 
 		/// <summary>
-		/// Returns an enumerator that iterates through the tokens of the pre-message pattern.
+		/// Gets the tokens of the pre-message pattern.
 		/// </summary>
-		public IEnumerator<Token> GetEnumerator() => ((IEnumerable<Token>)tokens).GetEnumerator();
-
-		/// <summary>
-		/// Returns an enumerator that iterates through the tokens of the pre-message pattern.
-		/// </summary>
-		IEnumerator IEnumerable.GetEnumerator() => tokens.GetEnumerator();
+		public IEnumerable<Token> Tokens { get; }
 	}
 }

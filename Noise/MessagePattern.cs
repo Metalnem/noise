@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Noise
@@ -8,26 +7,29 @@ namespace Noise
 	/// A message pattern is some sequence of tokens from
 	/// the set ("e", "s", "ee", "es", "se", "ss", "psk").
 	/// </summary>
-	internal sealed class MessagePattern : IEnumerable<Token>
+	internal sealed class MessagePattern
 	{
-		private readonly Token[] tokens;
-
 		/// <summary>
 		/// Initializes a new MessagePattern.
 		/// </summary>
 		public MessagePattern(params Token[] tokens)
 		{
-			this.tokens = tokens ?? throw new ArgumentNullException(nameof(tokens));
+			if (tokens == null)
+			{
+				throw new ArgumentNullException(nameof(tokens));
+			}
+
+			if (tokens.Length == 0)
+			{
+				throw new ArgumentException("Message pattern must have at least one token.", nameof(tokens));
+			}
+
+			Tokens = tokens;
 		}
 
 		/// <summary>
-		/// Returns an enumerator that iterates through the tokens of the message pattern.
+		/// Gets the tokens of the message pattern.
 		/// </summary>
-		public IEnumerator<Token> GetEnumerator() => ((IEnumerable<Token>)tokens).GetEnumerator();
-
-		/// <summary>
-		/// Returns an enumerator that iterates through the tokens of the message pattern.
-		/// </summary>
-		IEnumerator IEnumerable.GetEnumerator() => tokens.GetEnumerator();
+		public IEnumerable<Token> Tokens { get; }
 	}
 }
