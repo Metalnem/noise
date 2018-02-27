@@ -8,6 +8,9 @@ namespace Noise
 	/// </summary>
 	internal sealed class Curve25519 : Dh
 	{
+		/// <summary>
+		/// Size in bytes of the Curve25519 public keys and DH outputs.
+		/// </summary>
 		public int DhLen => Libsodium.crypto_scalarmult_curve25519_SCALARBYTES;
 
 		/// <summary>
