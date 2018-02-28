@@ -9,6 +9,23 @@ namespace Noise
 	internal static class Utilities
 	{
 		/// <summary>
+		/// Creates a new instance of Hash for the specified algorithm.
+		/// </summary>
+		public static Hash Create(this HashAlgorithmName hashName)
+		{
+			if (hashName == HashAlgorithmName.SHA256)
+			{
+				return new Sha256();
+			}
+			else if (hashName == HashAlgorithmName.SHA512)
+			{
+				return new Sha512();
+			}
+
+			throw new ArgumentException($"Unknown hash algorithm name: {hashName.Name}.", nameof(hashName));
+		}
+
+		/// <summary>
 		/// Verify that the secret key is 32 bytes long.
 		/// </summary>
 		public static void ValidateKey(byte[] k)

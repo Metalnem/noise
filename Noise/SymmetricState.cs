@@ -1,6 +1,5 @@
 using System;
 using System.Security.Cryptography;
-using Cryptography;
 
 namespace Noise
 {
@@ -12,8 +11,10 @@ namespace Noise
 	{
 		private readonly Cipher cipher;
 		private readonly Dh dh;
+		private readonly Hash hash;
+		private readonly HashAlgorithmName hashName;
 		private readonly CipherState state;
-		private readonly byte[] ck;
+		private byte[] ck;
 		private byte[] h;
 		private bool disposed;
 
@@ -21,7 +22,7 @@ namespace Noise
 		/// Initializes a new SymmetricState with an
 		/// arbitrary-length protocolName byte sequence.
 		/// </summary>
-		public SymmetricState(byte[] protocolName, Cipher cipher, Dh dh)
+		public SymmetricState(byte[] protocolName, Cipher cipher, Dh dh, HashAlgorithmName hashName)
 		{
 			if (protocolName == null)
 			{
@@ -30,15 +31,18 @@ namespace Noise
 
 			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 			this.dh = dh ?? throw new ArgumentNullException(nameof(dh));
+			this.hash = hashName.Create();
+			this.hashName = hashName;
 
-			if (protocolName.Length <= Hash.HashLen)
+			if (protocolName.Length <= this.hash.HashLen)
 			{
-				h = new byte[Hash.HashLen];
+				h = new byte[this.hash.HashLen];
 				Array.Copy(protocolName, h, protocolName.Length);
 			}
 			else
 			{
-				h = Hash.Sum(protocolName);
+				this.hash.AppendData(protocolName);
+				h = this.hash.GetHashAndReset();
 			}
 
 			state = new CipherState(cipher);
@@ -54,15 +58,12 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
-			{
-				var tempK = new byte[Constants.KeySize];
+			var (ck, tempK) = Hkdf.ExtractAndExpand2(hashName, this.ck, inputKeyMaterial);
 
-				hkdf.GetBytes(ck);
-				hkdf.GetBytes(tempK);
+			Array.Clear(this.ck, 0, this.ck.Length);
+			this.ck = ck;
 
-				state.InitializeKey(tempK);
-			}
+			state.InitializeKey(Truncate(tempK));
 		}
 
 		/// <summary>
@@ -70,7 +71,10 @@ namespace Noise
 		/// </summary>
 		public void MixHash(byte[] data)
 		{
-			h = Hash.Sum(h, data);
+			hash.AppendData(h);
+			hash.AppendData(data);
+
+			h = hash.GetHashAndReset();
 		}
 
 		/// <summary>
@@ -83,18 +87,13 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			using (var hkdf = Hkdf.CreateSha256Hkdf(inputKeyMaterial, ck, null))
-			{
-				var tempH = new byte[Hash.HashLen];
-				var tempK = new byte[Constants.KeySize];
+			var (ck, tempH, tempK) = Hkdf.ExtractAndExpand3(hashName, this.ck, inputKeyMaterial);
 
-				hkdf.GetBytes(ck);
-				hkdf.GetBytes(tempH);
-				hkdf.GetBytes(tempK);
+			Array.Clear(this.ck, 0, this.ck.Length);
+			this.ck = ck;
 
-				MixHash(tempH);
-				state.InitializeKey(tempK);
-			}
+			MixHash(tempH);
+			state.InitializeKey(Truncate(tempK));
 		}
 
 		/// <summary>
@@ -135,35 +134,45 @@ namespace Noise
 		/// </summary>
 		public (CipherState c1, CipherState c2) Split()
 		{
-			using (var hkdf = Hkdf.CreateSha256Hkdf(null, ck, null))
-			{
-				var tempK1 = new byte[Constants.KeySize];
-				var tempK2 = new byte[Constants.KeySize];
+			var (tempK1, tempK2) = Hkdf.ExtractAndExpand2(hashName, ck, null);
 
-				hkdf.GetBytes(tempK1);
-				hkdf.GetBytes(tempK2);
+			var c1 = new CipherState(cipher);
+			var c2 = new CipherState(cipher);
 
-				var c1 = new CipherState(cipher);
-				var c2 = new CipherState(cipher);
+			c1.InitializeKey(Truncate(tempK1));
+			c2.InitializeKey(Truncate(tempK2));
 
-				c1.InitializeKey(tempK1);
-				c2.InitializeKey(tempK2);
-
-				return (c1, c2);
-			}
+			return (c1, c2);
 		}
 
 		private void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
 		{
-			if (inputKeyMaterial != null)
+			if (inputKeyMaterial == null)
 			{
-				int length = inputKeyMaterial.Length;
-
-				if (length != 0 && length != Constants.KeySize && length != dh.DhLen)
-				{
-					throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
-				}
+				throw new ArgumentNullException(nameof(inputKeyMaterial));
 			}
+
+			int length = inputKeyMaterial.Length;
+
+			if (length != 0 && length != Constants.KeySize && length != dh.DhLen)
+			{
+				throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
+			}
+		}
+
+		private static byte[] Truncate(byte[] key)
+		{
+			if (key.Length == Constants.KeySize)
+			{
+				return key;
+			}
+
+			var temp = new byte[Constants.KeySize];
+
+			Array.Copy(key, temp, temp.Length);
+			Array.Clear(key, 0, key.Length);
+
+			return temp;
 		}
 
 		/// <summary>
@@ -173,6 +182,7 @@ namespace Noise
 		{
 			if (!disposed)
 			{
+				hash.Dispose();
 				state.Dispose();
 				Array.Clear(ck, 0, ck.Length);
 				Array.Clear(h, 0, h.Length);

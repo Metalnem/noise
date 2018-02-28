@@ -4,36 +4,30 @@ using System.Security.Cryptography;
 namespace Noise
 {
 	/// <summary>
-	/// Hash function and associated constants.
+	/// Hash functions and associated constants.
 	/// </summary>
-	internal static class Hash
+	internal interface Hash : IDisposable
 	{
 		/// <summary>
 		/// A constant specifying the size in bytes of the hash output.
 		/// </summary>
-		public const int HashLen = 32;
+		int HashLen { get; }
 
 		/// <summary>
 		/// A constant specifying the size in bytes that the hash function
 		/// uses internally to divide its input for iterative processing.
 		/// </summary>
-		public const int BlockLen = 64;
+		int BlockLen { get; }
 
 		/// <summary>
-		/// Hashes some arbitrary-length data with a collision-resistant
-		/// cryptographic hash function and returns an output of HashLen bytes.
+		/// Appends the specified data to the data already processed in the hash.
 		/// </summary>
-		public static byte[] Sum(params byte[][] data)
-		{
-			using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
-			{
-				foreach (var item in data)
-				{
-					hash.AppendData(item);
-				}
+		void AppendData(byte[] data);
 
-				return hash.GetHashAndReset();
-			}
-		}
+		/// <summary>
+		/// Retrieves the hash for the accumulated data,
+		/// and resets the object to its initial state.
+		/// </summary>
+		byte[] GetHashAndReset();
 	}
 }
