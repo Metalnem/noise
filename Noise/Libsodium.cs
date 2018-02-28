@@ -86,5 +86,27 @@ namespace Noise
 			byte[] n,
 			byte[] p
 		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_generichash_blake2b_init(
+			IntPtr state,
+			byte[] key,
+			UIntPtr keylen,
+			UIntPtr outlen
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_generichash_blake2b_update(
+			IntPtr state,
+			byte[] @in,
+			ulong inlen
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_generichash_blake2b_final(
+			IntPtr state,
+			byte[] @out,
+			UIntPtr outlen
+		);
 	}
 }

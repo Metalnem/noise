@@ -21,6 +21,10 @@ namespace Noise
 			{
 				return new Sha512();
 			}
+			else if (hashName == Blake2b.Name)
+			{
+				return new Blake2b();
+			}
 
 			throw new ArgumentException($"Unknown hash algorithm name: {hashName.Name}.", nameof(hashName));
 		}
