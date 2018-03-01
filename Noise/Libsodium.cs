@@ -11,16 +11,23 @@ namespace Noise
 		public const int crypto_scalarmult_curve25519_BYTES = 32;
 		public const int crypto_scalarmult_curve25519_SCALARBYTES = 32;
 
+		public static readonly bool IsAes256GcmAvailable;
+
 		static Libsodium()
 		{
 			if (sodium_init() == -1)
 			{
 				throw new CryptographicException("Failed to initialize libsodium.");
 			}
+
+			IsAes256GcmAvailable = crypto_aead_aes256gcm_is_available() == 1;
 		}
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		private static extern int sodium_init();
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		private static extern int crypto_aead_aes256gcm_is_available();
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_aes256gcm_encrypt(

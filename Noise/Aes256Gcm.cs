@@ -9,6 +9,17 @@ namespace Noise
 	internal sealed class Aes256Gcm : Cipher
 	{
 		/// <summary>
+		/// Initializes a new Aes256Gcm.
+		/// </summary>
+		public Aes256Gcm()
+		{
+			if (!Libsodium.IsAes256GcmAvailable)
+			{
+				throw new NotSupportedException("AES-GCM is not available on this CPU.");
+			}
+		}
+
+		/// <summary>
 		/// AES256 with GCM from NIST Special Publication
 		/// <see href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf">800-38D</see>.
 		/// </summary>
