@@ -79,5 +79,14 @@ namespace Noise
 
 			return temp;
 		}
+
+		/// <summary>
+		/// Alignes the pointer to the nearest alignment boundary.
+		/// </summary>
+		public static IntPtr Align(IntPtr ptr, int alignment)
+		{
+			ulong mask = (ulong)alignment - 1;
+			return (IntPtr)(((ulong)ptr + mask) & ~mask);
+		}
 	}
 }

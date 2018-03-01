@@ -27,8 +27,8 @@ namespace Noise
 			int size = 361;
 			int alignment = 64;
 
-			raw = Marshal.AllocHGlobal(size + alignment);
-			aligned = (IntPtr)((ulong)raw & ~(63UL));
+			raw = Marshal.AllocHGlobal(size + alignment - 1);
+			aligned = Utilities.Align(raw, alignment);
 
 			Reset();
 		}
