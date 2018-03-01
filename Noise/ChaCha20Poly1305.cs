@@ -9,6 +9,11 @@ namespace Noise
 	internal sealed class ChaCha20Poly1305 : Cipher
 	{
 		/// <summary>
+		/// Name of the ChaCha20Poly1305 cipher function.
+		/// </summary>
+		public string Name => "ChaChaPoly";
+
+		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
 		public byte[] Encrypt(byte[] k, ulong n, byte[] ad, byte[] plaintext)

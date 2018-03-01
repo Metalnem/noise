@@ -21,7 +21,7 @@ namespace Noise
 			{
 				return new Sha512();
 			}
-			else if (hashName == Blake2b.Name)
+			else if (hashName == Blake2b.HashName)
 			{
 				return new Blake2b();
 			}

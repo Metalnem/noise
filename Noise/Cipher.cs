@@ -6,6 +6,11 @@ namespace Noise
 	internal interface Cipher
 	{
 		/// <summary>
+		/// Name of the cipher function. Used to produce a Noise protocol name.
+		/// </summary>
+		string Name { get; }
+
+		/// <summary>
 		/// Encrypts plaintext using the cipher key k of 32 bytes
 		/// and an 8-byte unsigned integer nonce n which must be
 		/// unique for the key k. Returns the ciphertext. Encryption

@@ -15,6 +15,7 @@ namespace Noise
 			hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
 		}
 
+		public string Name => "SHA512";
 		public int HashLen => 64;
 		public int BlockLen => 128;
 

@@ -6,6 +6,11 @@ namespace Noise
 	internal interface Dh
 	{
 		/// <summary>
+		/// Name of the DH function. Used to produce a Noise protocol name.
+		/// </summary>
+		string Name { get; }
+
+		/// <summary>
 		/// A constant specifying the size in bytes of public keys and DH outputs.
 		/// </summary>
 		int DhLen { get; }

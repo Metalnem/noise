@@ -12,7 +12,7 @@ namespace Noise
 		/// <summary>
 		/// Gets the name of the algorithm being performed.
 		/// </summary>
-		public static readonly HashAlgorithmName Name = new HashAlgorithmName("BLAKE2b");
+		public static readonly HashAlgorithmName HashName = new HashAlgorithmName("BLAKE2b");
 
 		private readonly IntPtr raw;
 		private readonly IntPtr aligned;
@@ -33,6 +33,7 @@ namespace Noise
 			Reset();
 		}
 
+		public string Name => "BLAKE2b";
 		public int HashLen => 64;
 		public int BlockLen => 128;
 
