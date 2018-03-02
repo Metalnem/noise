@@ -8,3 +8,6 @@ before_build:
 build:
   project: Noise.sln
   verbosity: minimal
+test_script:
+  - xunit.console.exe Noise.Tests\bin\Debug\Noise.Tests.dll /appveyor
+  - xunit.console.x86.exe Noise.Tests\bin\Debug\Noise.Tests.dll /appveyor
