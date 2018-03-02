@@ -18,7 +18,7 @@ namespace Noise.Tests
 
 					if (size > 0)
 					{
-						Test(hash, Random.GetBytes(size));
+						Test(hash, Utilities.GetRandomBytes(size));
 					}
 				}
 			}

@@ -8,6 +8,8 @@ namespace Noise
 	/// </summary>
 	internal static class Utilities
 	{
+		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
+
 		/// <summary>
 		/// Creates a new instance of Hash for the specified algorithm.
 		/// </summary>
@@ -87,6 +89,22 @@ namespace Noise
 		{
 			ulong mask = (ulong)alignment - 1;
 			return (IntPtr)(((ulong)ptr + mask) & ~mask);
+		}
+
+		/// <summary>
+		/// Generates a cryptographically strong random sequence of n bytes.
+		/// </summary>
+		public static byte[] GetRandomBytes(int n)
+		{
+			if (n <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(n));
+			}
+
+			var bytes = new byte[n];
+			random.GetBytes(bytes);
+
+			return bytes;
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace Noise
 		/// </summary>
 		public KeyPair GenerateKeyPair()
 		{
-			var privateKey = Random.GetBytes(DhLen);
+			var privateKey = Utilities.GetRandomBytes(DhLen);
 			var publicKey = new byte[DhLen];
 
 			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKey);
