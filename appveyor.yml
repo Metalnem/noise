@@ -1,13 +1,7 @@
 version: 1.0.{build}
 image: Visual Studio 2017
-platform:
-- x86
-- x64
 before_build:
 - cmd: nuget restore
 build:
   project: Noise.sln
   verbosity: minimal
-test_script:
-  - xunit.console.exe Noise.Tests\bin\x64\Debug\netcoreapp2.0\Noise.Tests.dll /appveyor
-  - xunit.console.x86.exe Noise.Tests\bin\x86\Debug\netcoreapp2.0\Noise.Tests.dll /appveyor
