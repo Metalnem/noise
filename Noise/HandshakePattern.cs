@@ -11,6 +11,19 @@ namespace Noise
 	internal sealed class HandshakePattern
 	{
 		/// <summary>
+		/// NN():
+		///   → e
+		///   ← e, ee
+		/// </summary>
+		public static readonly HandshakePattern NN = new HandshakePattern(
+			"NN",
+			PreMessagePattern.Empty,
+			PreMessagePattern.Empty,
+			new MessagePattern(Token.E),
+			new MessagePattern(Token.E, Token.EE)
+		);
+
+		/// <summary>
 		/// Initializes a new HandshakePattern.
 		/// </summary>
 		public HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
