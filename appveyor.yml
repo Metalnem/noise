@@ -9,5 +9,5 @@ build:
   project: Noise.sln
   verbosity: minimal
 test_script:
-  - xunit.console.exe Noise.Tests\bin\Debug\Noise.Tests.dll /appveyor
-  - xunit.console.x86.exe Noise.Tests\bin\Debug\Noise.Tests.dll /appveyor
+  - xunit.console.exe Noise.Tests\bin\x64\Debug\netcoreapp2.0\Noise.Tests.dll /appveyor
+  - xunit.console.x86.exe Noise.Tests\bin\x86\Debug\netcoreapp2.0\Noise.Tests.dll /appveyor
