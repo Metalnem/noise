@@ -20,11 +20,6 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Name of the Aes256Gcm cipher function.
-		/// </summary>
-		public string Name => "AESGCM";
-
-		/// <summary>
 		/// AES256 with GCM from NIST Special Publication
 		/// <see href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf">800-38D</see>.
 		/// </summary>

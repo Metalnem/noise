@@ -8,12 +8,13 @@ namespace Noise.Tests
 	{
 		private const int Alignment = 64;
 
-		private static readonly Dictionary<IntPtr, IntPtr> tests = new Dictionary<IntPtr, IntPtr>{
-			{ IntPtr.Zero, IntPtr.Zero },
-			{ (IntPtr)1, (IntPtr)64 },
-			{ (IntPtr)1023, (IntPtr)1024 },
-			{ (IntPtr)18446744073709551551, (IntPtr)18446744073709551552 },
-			{ (IntPtr)18446744073709551552, (IntPtr)18446744073709551552 }
+		private static readonly Dictionary<IntPtr, IntPtr> tests = new Dictionary<IntPtr, IntPtr>
+		{
+			{IntPtr.Zero, IntPtr.Zero},
+			{(IntPtr)1, (IntPtr)64},
+			{(IntPtr)1023, (IntPtr)1024},
+			{(IntPtr)18446744073709551551, (IntPtr)18446744073709551552},
+			{(IntPtr)18446744073709551552, (IntPtr)18446744073709551552}
 		};
 
 		[Fact]

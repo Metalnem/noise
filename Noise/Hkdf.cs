@@ -7,7 +7,7 @@ namespace Noise
 	/// HMAC-based Extract-and-Expand Key Derivation Function, defined in
 	/// <see href="https://tools.ietf.org/html/rfc5869">RFC 5869</see>.
 	/// </summary>
-	internal static class Hkdf
+	internal static class Hkdf<HashType> where HashType : Hash, new()
 	{
 		private static readonly byte[] one = new byte[] { 1 };
 		private static readonly byte[] two = new byte[] { 2 };
@@ -19,11 +19,11 @@ namespace Noise
 		/// either zero bytes, 32 bytes, or DhLen bytes. Returns
 		/// a pair of byte sequences each of length HashLen.
 		/// </summary>
-		public static (byte[], byte[]) ExtractAndExpand2(HashAlgorithmName hashName, byte[] chainingKey, byte[] inputKeyMaterial)
+		public static (byte[], byte[]) ExtractAndExpand2(byte[] chainingKey, byte[] inputKeyMaterial)
 		{
-			var tempKey = HmacHash(hashName, chainingKey, inputKeyMaterial);
-			var output1 = HmacHash(hashName, tempKey, one);
-			var output2 = HmacHash(hashName, tempKey, output1, two);
+			var tempKey = HmacHash(chainingKey, inputKeyMaterial);
+			var output1 = HmacHash(tempKey, one);
+			var output2 = HmacHash(tempKey, output1, two);
 
 			return (output1, output2);
 		}
@@ -34,20 +34,20 @@ namespace Noise
 		/// either zero bytes, 32 bytes, or DhLen bytes. Returns
 		/// a triple of byte sequences each of length HashLen.
 		/// </summary>
-		public static (byte[], byte[], byte[]) ExtractAndExpand3(HashAlgorithmName hashName, byte[] chainingKey, byte[] inputKeyMaterial)
+		public static (byte[], byte[], byte[]) ExtractAndExpand3(byte[] chainingKey, byte[] inputKeyMaterial)
 		{
-			var tempKey = HmacHash(hashName, chainingKey, inputKeyMaterial);
-			var output1 = HmacHash(hashName, tempKey, one);
-			var output2 = HmacHash(hashName, tempKey, output1, two);
-			var output3 = HmacHash(hashName, tempKey, output2, three);
+			var tempKey = HmacHash(chainingKey, inputKeyMaterial);
+			var output1 = HmacHash(tempKey, one);
+			var output2 = HmacHash(tempKey, output1, two);
+			var output3 = HmacHash(tempKey, output2, three);
 
 			return (output1, output2, output3);
 		}
 
-		private static byte[] HmacHash(HashAlgorithmName hashName, byte[] key, params byte[][] data)
+		private static byte[] HmacHash(byte[] key, params byte[][] data)
 		{
-			using (var inner = hashName.Create())
-			using (var outer = hashName.Create())
+			using (var inner = new HashType())
+			using (var outer = new HashType())
 			{
 				int blockLen = inner.BlockLen;
 

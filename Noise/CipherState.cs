@@ -6,25 +6,17 @@ namespace Noise
 	/// A CipherState can encrypt and decrypt data based on its variables k
 	/// (a cipher key of 32 bytes) and n (an 8-byte unsigned integer nonce).
 	/// </summary>
-	internal sealed class CipherState : IDisposable
+	internal sealed class CipherState<CipherType> : IDisposable where CipherType : Cipher, new()
 	{
 		private const ulong MaxNonce = UInt64.MaxValue;
 
 		private static readonly byte[] zeroLen = new byte[0];
 		private static readonly byte[] zeros = new byte[32];
 
-		private readonly Cipher cipher;
+		private readonly CipherType cipher = new CipherType();
 		private byte[] k;
 		private ulong n;
 		private bool disposed;
-
-		/// <summary>
-		/// Initializes a new CipherState.
-		/// </summary>
-		public CipherState(Cipher cipher)
-		{
-			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-		}
 
 		/// <summary>
 		/// Sets k = key. Sets n = 0.

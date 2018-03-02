@@ -9,11 +9,6 @@ namespace Noise
 	internal interface Hash : IDisposable
 	{
 		/// <summary>
-		/// Name of the hash function. Used to produce a Noise protocol name.
-		/// </summary>
-		string Name { get; }
-
-		/// <summary>
 		/// A constant specifying the size in bytes of the hash output.
 		/// </summary>
 		int HashLen { get; }

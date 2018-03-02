@@ -33,7 +33,6 @@ namespace Noise
 			Reset();
 		}
 
-		public string Name => "BLAKE2b";
 		public int HashLen => 64;
 		public int BlockLen => 128;
 

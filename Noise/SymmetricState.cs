@@ -7,13 +7,15 @@ namespace Noise
 	/// A SymmetricState object contains a CipherState plus ck (a chaining
 	/// key of HashLen bytes) and h (a hash output of HashLen bytes).
 	/// </summary>
-	internal sealed class SymmetricState : IDisposable
+	internal sealed class SymmetricState<CipherType, DhType, HashType> : IDisposable
+		where CipherType : Cipher, new()
+		where DhType : Dh, new()
+		where HashType : Hash, new()
 	{
-		private readonly Cipher cipher;
-		private readonly Dh dh;
-		private readonly Hash hash;
-		private readonly HashAlgorithmName hashName;
-		private readonly CipherState state;
+		private readonly Cipher cipher = new CipherType();
+		private readonly DhType dh = new DhType();
+		private readonly Hash hash = new HashType();
+		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
 		private byte[] ck;
 		private byte[] h;
 		private bool disposed;
@@ -22,17 +24,12 @@ namespace Noise
 		/// Initializes a new SymmetricState with an
 		/// arbitrary-length protocolName byte sequence.
 		/// </summary>
-		public SymmetricState(byte[] protocolName, Cipher cipher, Dh dh, HashAlgorithmName hashName)
+		public SymmetricState(byte[] protocolName)
 		{
 			if (protocolName == null)
 			{
 				throw new ArgumentNullException(nameof(protocolName));
 			}
-
-			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-			this.dh = dh ?? throw new ArgumentNullException(nameof(dh));
-			this.hash = hashName.Create();
-			this.hashName = hashName;
 
 			if (protocolName.Length <= this.hash.HashLen)
 			{
@@ -45,7 +42,6 @@ namespace Noise
 				h = this.hash.GetHashAndReset();
 			}
 
-			state = new CipherState(cipher);
 			ck = h;
 		}
 
@@ -58,7 +54,7 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			var (ck, tempK) = Hkdf.ExtractAndExpand2(hashName, this.ck, inputKeyMaterial);
+			var (ck, tempK) = Hkdf<HashType>.ExtractAndExpand2(this.ck, inputKeyMaterial);
 
 			Array.Clear(this.ck, 0, this.ck.Length);
 			this.ck = ck;
@@ -87,7 +83,7 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			var (ck, tempH, tempK) = Hkdf.ExtractAndExpand3(hashName, this.ck, inputKeyMaterial);
+			var (ck, tempH, tempK) = Hkdf<HashType>.ExtractAndExpand3(this.ck, inputKeyMaterial);
 
 			Array.Clear(this.ck, 0, this.ck.Length);
 			this.ck = ck;
@@ -132,12 +128,12 @@ namespace Noise
 		/// <summary>
 		/// Returns a pair of CipherState objects for encrypting transport messages.
 		/// </summary>
-		public (CipherState c1, CipherState c2) Split()
+		public (CipherState<CipherType> c1, CipherState<CipherType> c2) Split()
 		{
-			var (tempK1, tempK2) = Hkdf.ExtractAndExpand2(hashName, ck, null);
+			var (tempK1, tempK2) = Hkdf<HashType>.ExtractAndExpand2(ck, null);
 
-			var c1 = new CipherState(cipher);
-			var c2 = new CipherState(cipher);
+			var c1 = new CipherState<CipherType>();
+			var c2 = new CipherState<CipherType>();
 
 			c1.InitializeKey(Truncate(tempK1));
 			c2.InitializeKey(Truncate(tempK2));
