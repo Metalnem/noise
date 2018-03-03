@@ -26,12 +26,20 @@ namespace Noise
 		/// </summary>
 		public Span<byte> Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			ref byte c = ref MemoryMarshal.GetReference(ciphertext);
-			ref byte m = ref MemoryMarshal.GetReference(plaintext);
-			byte[] nonce = EncodeNonce(n);
+			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
+			EncodeNonce(n, nonce);
 
-			int result = Libsodium.crypto_aead_aes256gcm_encrypt(ref c, out long length,
-			 	ref m, plaintext.Length, ad, ad?.LongLength ?? 0, IntPtr.Zero, nonce, k);
+			int result = Libsodium.crypto_aead_aes256gcm_encrypt(
+				ref MemoryMarshal.GetReference(ciphertext),
+				out long length,
+			 	ref MemoryMarshal.GetReference(plaintext),
+				plaintext.Length,
+				ad,
+				ad?.LongLength ?? 0,
+				IntPtr.Zero,
+				ref MemoryMarshal.GetReference(nonce),
+				k
+			);
 
 			if (result != 0)
 			{
@@ -47,12 +55,20 @@ namespace Noise
 		/// </summary>
 		public Span<byte> Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			ref byte m = ref MemoryMarshal.GetReference(plaintext);
-			ref byte c = ref MemoryMarshal.GetReference(ciphertext);
-			byte[] nonce = EncodeNonce(n);
+			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
+			EncodeNonce(n, nonce);
 
-			int result = Libsodium.crypto_aead_aes256gcm_decrypt(ref m, out long length,
-				IntPtr.Zero, ref c, ciphertext.Length, ad, ad?.LongLength ?? 0, nonce, k);
+			int result = Libsodium.crypto_aead_aes256gcm_decrypt(
+				ref MemoryMarshal.GetReference(plaintext),
+				out long length,
+				IntPtr.Zero,
+				ref MemoryMarshal.GetReference(ciphertext),
+				ciphertext.Length,
+				ad,
+				ad?.LongLength ?? 0,
+				ref MemoryMarshal.GetReference(nonce),
+				k
+			);
 
 			if (result != 0)
 			{
@@ -62,9 +78,8 @@ namespace Noise
 			return plaintext.Slice(0, (int)length);
 		}
 
-		private static byte[] EncodeNonce(ulong n)
+		private static void EncodeNonce(ulong n, Span<byte> nonce)
 		{
-			byte[] nonce = new byte[Constants.NonceSize];
 			int end = nonce.Length - 1;
 
 			for (int i = 0; i < 8; ++i)
@@ -72,8 +87,6 @@ namespace Noise
 				nonce[end - i] = (byte)(n & 0xff);
 				n = n >> 8;
 			}
-
-			return nonce;
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace Noise
 			byte[] ad,
 			long adlen,
 			IntPtr nsec,
-			byte[] npub,
+			ref byte npub,
 			byte[] k
 		);
 
@@ -51,7 +51,7 @@ namespace Noise
 			long clen,
 			byte[] ad,
 			long adlen,
-			byte[] npub,
+			ref byte npub,
 			byte[] k
 		);
 
@@ -64,7 +64,7 @@ namespace Noise
 			byte[] ad,
 			long adlen,
 			IntPtr nsec,
-			byte[] npub,
+			ref byte npub,
 			byte[] k
 		);
 
@@ -77,7 +77,7 @@ namespace Noise
 			long clen,
 			byte[] ad,
 			long adlen,
-			byte[] npub,
+			ref byte npub,
 			byte[] k
 		);
 
