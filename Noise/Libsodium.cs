@@ -31,7 +31,7 @@ namespace Noise
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_aes256gcm_encrypt(
-			byte[] c,
+			ref byte c,
 			out long clen_p,
 			ref byte m,
 			long mlen,
@@ -44,7 +44,7 @@ namespace Noise
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_aes256gcm_decrypt(
-			byte[] m,
+			ref byte m,
 			out long mlen_p,
 			IntPtr nsec,
 			ref byte c,
@@ -57,7 +57,7 @@ namespace Noise
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_chacha20poly1305_ietf_encrypt(
-			byte[] c,
+			ref byte c,
 			out long clen_p,
 			ref byte m,
 			long mlen,
@@ -70,7 +70,7 @@ namespace Noise
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_aead_chacha20poly1305_ietf_decrypt(
-			byte[] m,
+			ref byte m,
 			out long mlen_p,
 			IntPtr nsec,
 			ref byte c,

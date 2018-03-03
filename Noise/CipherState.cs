@@ -52,22 +52,28 @@ namespace Noise
 		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
 		/// Otherwise returns plaintext.
 		/// </summary>
-		public Span<byte> EncryptWithAd(byte[] ad, Span<byte> plaintext)
+		public Span<byte> EncryptWithAd(byte[] ad, Span<byte> plaintext, Span<byte> ciphertext)
 		{
 			if (n == MaxNonce)
 			{
 				throw new OverflowException("Nonce has reached its maximum value.");
 			}
 
-			if (k == null)
+			if (ciphertext.Length < plaintext.Length + Constants.TagSize)
 			{
-				return plaintext;
+				throw new ArgumentException("Buffer too small to hold the ciphertext.", nameof(ciphertext));
 			}
 
-			var ciphertext = cipher.Encrypt(k, n, ad, plaintext);
+			if (k == null)
+			{
+				plaintext.CopyTo(ciphertext);
+				return ciphertext.Slice(0, plaintext.Length);
+			}
+
+			var result = cipher.Encrypt(k, n, ad, plaintext, ciphertext);
 			++n;
 
-			return ciphertext;
+			return result;
 		}
 
 		/// <summary>
@@ -76,22 +82,28 @@ namespace Noise
 		/// occurs in DECRYPT() then n is not incremented and an error
 		/// is signaled to the caller.
 		/// </summary>
-		public Span<byte> DecryptWithAd(byte[] ad, Span<byte> ciphertext)
+		public Span<byte> DecryptWithAd(byte[] ad, Span<byte> ciphertext, Span<byte> plaintext)
 		{
 			if (n == MaxNonce)
 			{
 				throw new OverflowException("Nonce has reached its maximum value.");
 			}
 
-			if (k == null)
+			if (plaintext.Length < ciphertext.Length - Constants.TagSize)
 			{
-				return ciphertext;
+				throw new ArgumentException("Buffer too small to hold the plaintext.", nameof(plaintext));
 			}
 
-			var plaintext = cipher.Decrypt(k, n, ad, ciphertext);
+			if (k == null)
+			{
+				ciphertext.CopyTo(plaintext);
+				return plaintext.Slice(0, ciphertext.Length);
+			}
+
+			var result = cipher.Decrypt(k, n, ad, ciphertext, plaintext);
 			++n;
 
-			return plaintext;
+			return result;
 		}
 
 		/// <summary>
@@ -99,7 +111,8 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
-			InitializeKey(cipher.Encrypt(k, MaxNonce, zeroLen, zeros));
+			k = k ?? new byte[Constants.KeySize];
+			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, k);
 		}
 
 		/// <summary>

@@ -12,46 +12,41 @@ namespace Noise
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public byte[] Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext)
+		public Span<byte> Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			Utilities.ValidateKey(k);
-
-			ref byte message = ref MemoryMarshal.GetReference(plaintext);
-			byte[] ciphertext = new byte[plaintext.Length + Constants.TagSize];
+			ref byte c = ref MemoryMarshal.GetReference(ciphertext);
+			ref byte m = ref MemoryMarshal.GetReference(plaintext);
 			byte[] nonce = EncodeNonce(n);
 
-			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_encrypt(ciphertext, out long length,
-			 	ref message, plaintext.Length, ad, ad?.LongLength ?? 0, IntPtr.Zero, nonce, k);
+			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_encrypt(ref c, out long length,
+			 	ref m, plaintext.Length, ad, ad?.LongLength ?? 0, IntPtr.Zero, nonce, k);
 
 			if (result != 0)
 			{
 				throw new CryptographicException("Encryption failed.");
 			}
 
-			return Utilities.Trim(ciphertext, length);
+			return ciphertext.Slice(0, (int)length);
 		}
 
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public byte[] Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext)
+		public Span<byte> Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			Utilities.ValidateKey(k);
-			Utilities.ValidateCiphertext(ciphertext);
-
-			ref byte message = ref MemoryMarshal.GetReference(ciphertext);
-			byte[] plaintext = new byte[ciphertext.Length - Constants.TagSize];
+			ref byte m = ref MemoryMarshal.GetReference(plaintext);
+			ref byte c = ref MemoryMarshal.GetReference(ciphertext);
 			byte[] nonce = EncodeNonce(n);
 
-			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_decrypt(plaintext, out long length,
-				IntPtr.Zero, ref message, ciphertext.Length, ad, ad?.LongLength ?? 0, nonce, k);
+			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_decrypt(ref m, out long length,
+				IntPtr.Zero, ref c, ciphertext.Length, ad, ad?.LongLength ?? 0, nonce, k);
 
 			if (result != 0)
 			{
 				throw new CryptographicException("Decryption failed.");
 			}
 
-			return Utilities.Trim(plaintext, length);
+			return plaintext.Slice(0, (int)length);
 		}
 
 		private static byte[] EncodeNonce(ulong n)

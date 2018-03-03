@@ -18,14 +18,17 @@ namespace Noise.Tests
 
 			foreach (var cipher in ciphers)
 			{
-				byte[] key = new byte[32];
-				byte[] data = Encoding.UTF8.GetBytes("Ice Ice Baby");
-				string message = "I'm cooking MC's like a pound of bacon";
+				var key = new byte[32];
+				var data = Encoding.UTF8.GetBytes("Ice Ice Baby");
+				var message = "I'm cooking MC's like a pound of bacon";
 
-				byte[] ciphertext = cipher.Encrypt(key, UInt64.MaxValue, data, Encoding.UTF8.GetBytes(message));
-				byte[] plaintext = cipher.Decrypt(key, UInt64.MaxValue, data, ciphertext);
+				var ciphertextBuffer = new byte[message.Length + Constants.TagSize];
+				var ciphertext = cipher.Encrypt(key, UInt64.MaxValue, data, Encoding.UTF8.GetBytes(message), ciphertextBuffer);
 
-				Assert.Equal(message, Encoding.UTF8.GetString(plaintext));
+				var plaintextBuffer = new byte[message.Length];
+				var plaintext = cipher.Decrypt(key, UInt64.MaxValue, data, ciphertext, plaintextBuffer);
+
+				Assert.Equal(message, Encoding.UTF8.GetString(plaintext.ToArray()));
 			}
 		}
 	}
