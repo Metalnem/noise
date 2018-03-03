@@ -22,7 +22,7 @@ namespace Noise
 		/// <summary>
 		/// Appends the specified data to the data already processed in the hash.
 		/// </summary>
-		void AppendData(byte[] data);
+		void AppendData(ReadOnlySpan<byte> data);
 
 		/// <summary>
 		/// Retrieves the hash for the accumulated data,

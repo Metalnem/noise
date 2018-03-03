@@ -11,27 +11,6 @@ namespace Noise
 		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
 
 		/// <summary>
-		/// Creates a new instance of Hash for the specified algorithm.
-		/// </summary>
-		public static Hash Create(this HashAlgorithmName hashName)
-		{
-			if (hashName == HashAlgorithmName.SHA256)
-			{
-				return new Sha256();
-			}
-			else if (hashName == HashAlgorithmName.SHA512)
-			{
-				return new Sha512();
-			}
-			else if (hashName == Blake2b.HashName)
-			{
-				return new Blake2b();
-			}
-
-			throw new ArgumentException($"Unknown hash algorithm name: {hashName.Name}.", nameof(hashName));
-		}
-
-		/// <summary>
 		/// Verify that the secret key is 32 bytes long.
 		/// </summary>
 		public static void ValidateKey(byte[] k)
@@ -43,22 +22,11 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Verify that the plaintext is not null.
-		/// </summary>
-		public static void ValidatePlaintext(byte[] plaintext)
-		{
-			if (plaintext == null)
-			{
-				throw new ArgumentNullException(nameof(plaintext));
-			}
-		}
-
-		/// <summary>
 		/// Verify that the ciphertext is at least 16 bytes long.
 		/// </summary>
-		public static void ValidateCiphertext(byte[] ciphertext)
+		public static void ValidateCiphertext(ReadOnlySpan<byte> ciphertext)
 		{
-			if (ciphertext == null || ciphertext.Length < Constants.TagSize)
+			if (ciphertext.Length < Constants.TagSize)
 			{
 				throw new CryptographicException($"Ciphertext must be at least {Constants.TagSize} bytes long.");
 			}

@@ -33,7 +33,7 @@ namespace Noise
 		public static extern int crypto_aead_aes256gcm_encrypt(
 			byte[] c,
 			out long clen_p,
-			byte[] m,
+			ref byte m,
 			long mlen,
 			byte[] ad,
 			long adlen,
@@ -47,7 +47,7 @@ namespace Noise
 			byte[] m,
 			out long mlen_p,
 			IntPtr nsec,
-			byte[] c,
+			ref byte c,
 			long clen,
 			byte[] ad,
 			long adlen,
@@ -59,7 +59,7 @@ namespace Noise
 		public static extern int crypto_aead_chacha20poly1305_ietf_encrypt(
 			byte[] c,
 			out long clen_p,
-			byte[] m,
+			ref byte m,
 			long mlen,
 			byte[] ad,
 			long adlen,
@@ -73,7 +73,7 @@ namespace Noise
 			byte[] m,
 			out long mlen_p,
 			IntPtr nsec,
-			byte[] c,
+			ref byte c,
 			long clen,
 			byte[] ad,
 			long adlen,
@@ -95,6 +95,42 @@ namespace Noise
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha256_init(
+			IntPtr state
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha256_update(
+			IntPtr state,
+			ref byte @in,
+			ulong inlen
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha256_final(
+			IntPtr state,
+			byte[] @out
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha512_init(
+			IntPtr state
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha512_update(
+			IntPtr state,
+			ref byte @in,
+			ulong inlen
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int crypto_hash_sha512_final(
+			IntPtr state,
+			byte[] @out
+		);
+
+		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_generichash_blake2b_init(
 			IntPtr state,
 			byte[] key,
@@ -105,7 +141,7 @@ namespace Noise
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_generichash_blake2b_update(
 			IntPtr state,
-			byte[] @in,
+			ref byte @in,
 			ulong inlen
 		);
 

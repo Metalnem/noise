@@ -65,7 +65,7 @@ namespace Noise
 		/// <summary>
 		/// Sets h = HASH(h || data).
 		/// </summary>
-		public void MixHash(byte[] data)
+		public void MixHash(ReadOnlySpan<byte> data)
 		{
 			hash.AppendData(h);
 			hash.AppendData(data);
@@ -105,7 +105,7 @@ namespace Noise
 		/// Sets ciphertext = EncryptWithAd(h, plaintext),
 		/// calls MixHash(ciphertext), and returns ciphertext.
 		/// </summary>
-		public byte[] EncryptAndHash(byte[] plaintext)
+		public Span<byte> EncryptAndHash(Span<byte> plaintext)
 		{
 			var ciphertext = state.EncryptWithAd(h, plaintext);
 			MixHash(ciphertext);
@@ -117,7 +117,7 @@ namespace Noise
 		/// Sets plaintext = DecryptWithAd(h, ciphertext),
 		/// calls MixHash(ciphertext), and returns plaintext.
 		/// </summary>
-		public byte[] DecryptAndHash(byte[] ciphertext)
+		public Span<byte> DecryptAndHash(Span<byte> ciphertext)
 		{
 			var plaintext = state.DecryptWithAd(h, ciphertext);
 			MixHash(ciphertext);

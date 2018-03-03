@@ -1,3 +1,5 @@
+using System;
+
 namespace Noise
 {
 	/// <summary>
@@ -13,7 +15,7 @@ namespace Noise
 		/// associated data ad and returns a ciphertext that is the
 		/// same size as the plaintext plus 16 bytes for authentication data.
 		/// </summary>
-		byte[] Encrypt(byte[] k, ulong n, byte[] ad, byte[] plaintext);
+		byte[] Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext);
 
 		/// <summary>
 		/// Decrypts ciphertext using a cipher key k of 32 bytes,
@@ -21,6 +23,6 @@ namespace Noise
 		/// Returns the plaintext, unless authentication fails,
 		/// in which case an error is signaled to the caller.
 		/// </summary>
-		byte[] Decrypt(byte[] k, ulong n, byte[] ad, byte[] ciphertext);
+		byte[] Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext);
 	}
 }

@@ -52,7 +52,7 @@ namespace Noise
 		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
 		/// Otherwise returns plaintext.
 		/// </summary>
-		public byte[] EncryptWithAd(byte[] ad, byte[] plaintext)
+		public Span<byte> EncryptWithAd(byte[] ad, Span<byte> plaintext)
 		{
 			if (n == MaxNonce)
 			{
@@ -76,7 +76,7 @@ namespace Noise
 		/// occurs in DECRYPT() then n is not incremented and an error
 		/// is signaled to the caller.
 		/// </summary>
-		public byte[] DecryptWithAd(byte[] ad, byte[] ciphertext)
+		public Span<byte> DecryptWithAd(byte[] ad, Span<byte> ciphertext)
 		{
 			if (n == MaxNonce)
 			{

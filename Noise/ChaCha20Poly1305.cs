@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Noise
@@ -11,16 +12,16 @@ namespace Noise
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public byte[] Encrypt(byte[] k, ulong n, byte[] ad, byte[] plaintext)
+		public byte[] Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext)
 		{
 			Utilities.ValidateKey(k);
-			Utilities.ValidatePlaintext(plaintext);
 
-			byte[] ciphertext = new byte[plaintext.LongLength + Constants.TagSize];
+			ref byte message = ref MemoryMarshal.GetReference(plaintext);
+			byte[] ciphertext = new byte[plaintext.Length + Constants.TagSize];
 			byte[] nonce = EncodeNonce(n);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_encrypt(ciphertext, out long length,
-			 	plaintext, plaintext.LongLength, ad, ad?.LongLength ?? 0, IntPtr.Zero, nonce, k);
+			 	ref message, plaintext.Length, ad, ad?.LongLength ?? 0, IntPtr.Zero, nonce, k);
 
 			if (result != 0)
 			{
@@ -33,16 +34,17 @@ namespace Noise
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public byte[] Decrypt(byte[] k, ulong n, byte[] ad, byte[] ciphertext)
+		public byte[] Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext)
 		{
 			Utilities.ValidateKey(k);
 			Utilities.ValidateCiphertext(ciphertext);
 
-			byte[] plaintext = new byte[ciphertext.LongLength - Constants.TagSize];
+			ref byte message = ref MemoryMarshal.GetReference(ciphertext);
+			byte[] plaintext = new byte[ciphertext.Length - Constants.TagSize];
 			byte[] nonce = EncodeNonce(n);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_decrypt(plaintext, out long length,
-				IntPtr.Zero, ciphertext, ciphertext.LongLength, ad, ad?.LongLength ?? 0, nonce, k);
+				IntPtr.Zero, ref message, ciphertext.Length, ad, ad?.LongLength ?? 0, nonce, k);
 
 			if (result != 0)
 			{

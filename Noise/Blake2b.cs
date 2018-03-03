@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 
 namespace Noise
 {
@@ -9,11 +8,6 @@ namespace Noise
 	/// </summary>
 	internal sealed class Blake2b : Hash
 	{
-		/// <summary>
-		/// Gets the name of the algorithm being performed.
-		/// </summary>
-		public static readonly HashAlgorithmName HashName = new HashAlgorithmName("BLAKE2b");
-
 		private readonly IntPtr raw;
 		private readonly IntPtr aligned;
 		private bool disposed;
@@ -36,19 +30,15 @@ namespace Noise
 		public int HashLen => 64;
 		public int BlockLen => 128;
 
-		public void AppendData(byte[] data)
+		public void AppendData(ReadOnlySpan<byte> data)
 		{
 			if (disposed)
 			{
 				throw new ObjectDisposedException(nameof(Blake2b));
 			}
 
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-
-			Libsodium.crypto_generichash_blake2b_update(aligned, data, (ulong)data.LongLength);
+			ref byte message = ref MemoryMarshal.GetReference(data);
+			Libsodium.crypto_generichash_blake2b_update(aligned, ref message, (ulong)data.Length);
 		}
 
 		public byte[] GetHashAndReset()
