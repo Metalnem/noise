@@ -46,32 +46,5 @@ namespace Noise
 		/// Type of the hash function.
 		/// </summary>
 		public HashType Hash { get; }
-
-		/// <summary>
-		/// Available cipher functions.
-		/// </summary>
-		public enum CipherType
-		{
-			AesGcm,
-			ChaChaPoly
-		}
-
-		/// <summary>
-		/// Available DH functions.
-		/// </summary>
-		public enum DhType
-		{
-			Curve25519
-		}
-
-		/// <summary>
-		/// Available hash functions.
-		/// </summary>
-		public enum HashType
-		{
-			Sha256,
-			Sha512,
-			Blake2b
-		}
 	}
 }

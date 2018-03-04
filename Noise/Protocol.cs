@@ -17,7 +17,7 @@ namespace Noise
 			bool initiator,
 			byte[] prologue)
 		{
-			return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue);
+			return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, new Curve25519());
 		}
 
 		/// <summary>
@@ -31,7 +31,34 @@ namespace Noise
 			byte[] prologue,
 			Dh dh)
 		{
-			return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, dh);
+			if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha256)
+			{
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, prologue, dh);
+			}
+			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha512)
+			{
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, prologue, dh);
+			}
+			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Blake2b)
+			{
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, dh);
+			}
+			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha256)
+			{
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, prologue, dh);
+			}
+			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha512)
+			{
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, prologue, dh);
+			}
+			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Blake2b)
+			{
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, prologue, dh);
+			}
+			else
+			{
+				throw new ArgumentException("Cipher suite not supported.", nameof(cipherSuite));
+			}
 		}
 
 		/// <summary>
@@ -45,16 +72,43 @@ namespace Noise
 			Dh dh,
 			out IHandshakeState handshakeState)
 		{
-			if (protocolName == "Noise_NN_25519_AESGCM_BLAKE2b")
-			{
-				handshakeState = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, initiator, prologue, dh);
-				return true;
-			}
-			else
+			string[] parts = protocolName.Split('_');
+
+			if (parts[1] != "NN")
 			{
 				handshakeState = null;
 				return false;
 			}
+
+			DhType dhType;
+			CipherType cipherType;
+			HashType hashType;
+
+			switch (parts[2])
+			{
+				case "25519": dhType = DhType.Curve25519; break;
+				default: handshakeState = null; return false;
+			}
+
+			switch (parts[3])
+			{
+				case "AESGCM": cipherType = CipherType.AesGcm; break;
+				case "ChaChaPoly": cipherType = CipherType.ChaChaPoly; break;
+				default: handshakeState = null; return false;
+			}
+
+			switch (parts[4])
+			{
+				case "SHA256": hashType = HashType.Sha256; break;
+				case "SHA512": hashType = HashType.Sha512; break;
+				case "BLAKE2b": hashType = HashType.Blake2b; break;
+				default: handshakeState = null; return false;
+			}
+
+			CipherSuite cipherSuite = new CipherSuite(cipherType, dhType, hashType);
+			handshakeState = Create(cipherSuite, HandshakePattern.NN, initiator, prologue, dh);
+
+			return true;
 		}
 	}
 }
