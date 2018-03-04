@@ -35,11 +35,11 @@ namespace Noise.Tests
 				var initDh = new FixedKeyDh(initEphemeral);
 				var respDh = new FixedKeyDh(respEphemeral);
 
-				var init = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, true, initPrologue, initDh);
-				var resp = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, false, respPrologue, respDh);
+				IHandshakeState init = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, true, initPrologue, initDh);
+				IHandshakeState resp = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, false, respPrologue, respDh);
 
-				Transport<Aes256Gcm> initTransport = null;
-				Transport<Aes256Gcm> respTransport = null;
+				ITransport respTransport = null;
+				ITransport initTransport = null;
 
 				foreach (var message in vector["messages"])
 				{

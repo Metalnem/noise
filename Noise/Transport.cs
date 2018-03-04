@@ -5,7 +5,7 @@ namespace Noise
 	/// <summary>
 	/// A pair of CipherState objects for encrypting transport messages.
 	/// </summary>
-	internal sealed class Transport<CipherType> : IDisposable where CipherType : Cipher, new()
+	internal sealed class Transport<CipherType> : ITransport where CipherType : Cipher, new()
 	{
 		private readonly bool initiator;
 		private readonly CipherState<CipherType> c1;

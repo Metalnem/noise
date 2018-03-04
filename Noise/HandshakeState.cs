@@ -11,7 +11,7 @@ namespace Noise
 	/// a boolean indicating the initiator or responder role, and
 	/// the remaining portion of the handshake pattern.
 	/// </summary>
-	internal sealed class HandshakeState<CipherType, DhType, HashType> : IDisposable
+	internal sealed class HandshakeState<CipherType, DhType, HashType> : IHandshakeState
 		where CipherType : Cipher, new()
 		where DhType : Dh, new()
 		where HashType : Hash, new()
@@ -62,7 +62,7 @@ namespace Noise
 		/// Takes a payload byte sequence which may be zero-length,
 		/// and a messageBuffer to write the output into. 
 		/// </summary>
-		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> messageBuffer, out Transport<CipherType> transport)
+		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> messageBuffer, out ITransport transport)
 		{
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
@@ -112,7 +112,7 @@ namespace Noise
 		/// Takes a byte sequence containing a Noise handshake message,
 		/// and a payloadBuffer to write the message's plaintext payload into.
 		/// </summary>
-		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payloadBuffer, out Transport<CipherType> transport)
+		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payloadBuffer, out ITransport transport)
 		{
 			var next = messagePatterns.Dequeue();
 
