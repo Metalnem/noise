@@ -8,7 +8,7 @@ namespace Noise
 	/// the initiator, a pre-message pattern for the responder, and
 	/// a sequence of message patterns for the actual handshake messages.
 	/// </summary>
-	internal sealed class HandshakePattern
+	public sealed class HandshakePattern
 	{
 		/// <summary>
 		/// NN():
@@ -26,7 +26,7 @@ namespace Noise
 		/// <summary>
 		/// Initializes a new HandshakePattern.
 		/// </summary>
-		public HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
+		internal HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -42,21 +42,21 @@ namespace Noise
 		/// <summary>
 		/// Gets the name of the handshake pattern.
 		/// </summary>
-		public string Name { get; }
+		internal string Name { get; }
 
 		/// <summary>
 		/// Gets the pre-message pattern for the initiator.
 		/// </summary>
-		public PreMessagePattern Initiator { get; }
+		internal PreMessagePattern Initiator { get; }
 
 		/// <summary>
 		/// Gets the pre-message pattern for the responder.
 		/// </summary>
-		public PreMessagePattern Responder { get; }
+		internal PreMessagePattern Responder { get; }
 
 		/// <summary>
 		/// Gets the message patterns of the handshake pattern.
 		/// </summary>
-		public IEnumerable<MessagePattern> Patterns { get; }
+		internal IEnumerable<MessagePattern> Patterns { get; }
 	}
 }

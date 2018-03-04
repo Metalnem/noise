@@ -20,12 +20,6 @@ namespace Noise.Tests
 			foreach (var vector in json["vectors"])
 			{
 				var protocolName = GetString(vector, "protocol_name");
-
-				if (protocolName != "Noise_NN_25519_AESGCM_BLAKE2b")
-				{
-					continue;
-				}
-
 				var initPrologue = GetBytes(vector, "init_prologue");
 				var initEphemeral = GetBytes(vector, "init_ephemeral");
 				var respPrologue = GetBytes(vector, "resp_prologue");
@@ -35,8 +29,15 @@ namespace Noise.Tests
 				var initDh = new FixedKeyDh(initEphemeral);
 				var respDh = new FixedKeyDh(respEphemeral);
 
-				IHandshakeState init = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, true, initPrologue, initDh);
-				IHandshakeState resp = new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(HandshakePattern.NN, false, respPrologue, respDh);
+				if (!Protocol.Create(protocolName, true, initPrologue, initDh, out var init))
+				{
+					continue;
+				}
+
+				if (!Protocol.Create(protocolName, false, respPrologue, respDh, out var resp))
+				{
+					continue;
+				}
 
 				ITransport respTransport = null;
 				ITransport initTransport = null;
