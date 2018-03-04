@@ -60,8 +60,8 @@ namespace Noise
 				byte[] ipad = new byte[blockLen];
 				byte[] opad = new byte[blockLen];
 
-				Array.Copy(key, ipad, ipad.Length);
-				Array.Copy(key, opad, opad.Length);
+				Array.Copy(key, ipad, key.Length);
+				Array.Copy(key, opad, key.Length);
 
 				for (int i = 0; i < blockLen; ++i)
 				{
