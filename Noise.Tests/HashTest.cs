@@ -10,7 +10,7 @@ namespace Noise.Tests
 		[Fact]
 		public void TestGetHashAndReset()
 		{
-			int maxSize = 4096;
+			int maxSize = 2048;
 
 			var algorithms = new Dictionary<Hash, HashAlgorithm>
 			{

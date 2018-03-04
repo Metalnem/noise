@@ -1,7 +1,7 @@
 namespace Noise
 {
 	/// <summary>
-	/// AEAD constants.
+	/// Noise protocol constants.
 	/// </summary>
 	internal static class Constants
 	{
@@ -19,5 +19,10 @@ namespace Noise
 		/// Authentication tag size in bytes.
 		/// </summary>
 		public const int TagSize = 16;
+
+		/// <summary>
+		/// Maximum size of Noise messages in bytes.
+		/// </summary>
+		public const int MaxMessageLength = 65535;
 	}
 }

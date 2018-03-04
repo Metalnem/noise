@@ -7,6 +7,7 @@ namespace Noise
 	/// </summary>
 	internal sealed class Transport<CipherType> : IDisposable where CipherType : Cipher, new()
 	{
+		private readonly bool initiator;
 		private readonly CipherState<CipherType> c1;
 		private readonly CipherState<CipherType> c2;
 		private bool disposed;
@@ -14,8 +15,9 @@ namespace Noise
 		/// <summary>
 		/// Initializes a new Transport.
 		/// </summary>
-		public Transport(CipherState<CipherType> c1, CipherState<CipherType> c2)
+		public Transport(bool initiator, CipherState<CipherType> c1, CipherState<CipherType> c2)
 		{
+			this.initiator = initiator;
 			this.c1 = c1;
 			this.c2 = c2;
 		}
@@ -25,7 +27,8 @@ namespace Noise
 		/// </summary>
 		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> message)
 		{
-			return c1.EncryptWithAd(null, payload, message);
+			var cipher = initiator ? c2 : c1;
+			return cipher.EncryptWithAd(null, payload, message);
 		}
 
 		/// <summary>
@@ -33,7 +36,8 @@ namespace Noise
 		/// </summary>
 		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payload)
 		{
-			return c2.DecryptWithAd(null, message, payload);
+			var cipher = initiator ? c1 : c2;
+			return cipher.DecryptWithAd(null, message, payload);
 		}
 
 		/// <summary>
