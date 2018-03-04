@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Noise
@@ -26,15 +27,133 @@ namespace Noise
 		};
 
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
+		private readonly Dh dh;
+		private readonly bool initiator;
+		private readonly Queue<MessagePattern> messagePatterns;
+		private KeyPair e;
+		private byte[] re;
 		private bool disposed;
 
 		/// <summary>
 		/// Initializes a new HandshakeState.
 		/// </summary>
-		public HandshakeState(HandshakePattern handshakePattern)
+		public HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue)
+			: this(handshakePattern, initiator, prologue, new DhType())
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new HandshakeState.
+		/// </summary>
+		internal HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue, Dh dh)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
+
 			state = new SymmetricState<CipherType, DhType, HashType>(protocolName);
+			state.MixHash(prologue);
+
+			this.dh = dh;
+			this.initiator = initiator;
+
+			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
+		}
+
+		/// <summary>
+		/// Takes a payload byte sequence which may be zero-length,
+		/// and a messageBuffer to write the output into. 
+		/// </summary>
+		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> messageBuffer, out Transport<CipherType> transport)
+		{
+			var next = messagePatterns.Dequeue();
+			var message = messageBuffer;
+
+			foreach (var token in next.Tokens)
+			{
+				switch (token)
+				{
+					case Token.E: messageBuffer = WriteE(messageBuffer); break;
+					case Token.EE: WriteEE(); break;
+					default: throw new NotImplementedException();
+				}
+			}
+
+			var ciphertext = state.EncryptAndHash(payload, messageBuffer);
+			transport = null;
+
+			if (messagePatterns.Count == 0)
+			{
+				var (c1, c2) = state.Split();
+				transport = new Transport<CipherType>(initiator, c1, c2);
+			}
+
+			return message.Slice(0, message.Length - messageBuffer.Length + ciphertext.Length);
+		}
+
+		private Span<byte> WriteE(Span<byte> buffer)
+		{
+			if (e != null)
+			{
+				throw new CryptographicException("Ephemeral key can be initialized only once.");
+			}
+
+			e = dh.GenerateKeyPair();
+			e.PublicKey.CopyTo(buffer);
+			state.MixHash(e.PublicKey);
+
+			return buffer.Slice(e.PublicKey.Length);
+		}
+
+		private void WriteEE()
+		{
+			state.MixKey(dh.Dh(e, re));
+		}
+
+		/// <summary>
+		/// Takes a byte sequence containing a Noise handshake message,
+		/// and a payloadBuffer to write the message's plaintext payload into.
+		/// </summary>
+		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payloadBuffer, out Transport<CipherType> transport)
+		{
+			var next = messagePatterns.Dequeue();
+
+			foreach (var token in next.Tokens)
+			{
+				switch (token)
+				{
+					case Token.E: message = ReadE(message); break;
+					case Token.EE: ReadEE(); break;
+					default: throw new NotImplementedException();
+				}
+			}
+
+			var payload = state.DecryptAndHash(message, payloadBuffer);
+			transport = null;
+
+			if (messagePatterns.Count == 0)
+			{
+				var (c1, c2) = state.Split();
+				transport = new Transport<CipherType>(initiator, c1, c2);
+			}
+
+			return payload;
+		}
+
+		private Span<byte> ReadE(Span<byte> buffer)
+		{
+			if (re != null)
+			{
+				throw new CryptographicException("Remote ephemeral key can be initialized only once.");
+			}
+
+			re = buffer.Slice(0, dh.DhLen).ToArray();
+			state.MixHash(re);
+
+			return buffer.Slice(re.Length);
+		}
+
+		private void ReadEE()
+		{
+			state.MixKey(dh.Dh(e, re));
 		}
 
 		private static string GetFunctionName<T>()
@@ -65,6 +184,7 @@ namespace Noise
 			if (!disposed)
 			{
 				state.Dispose();
+				e?.Dispose();
 				disposed = true;
 			}
 		}
