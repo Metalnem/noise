@@ -167,7 +167,7 @@ namespace Noise
 			string hash = GetFunctionName<HashType>();
 			string protocolName = $"Noise_{handshakePatternName}_{dh}_{cipher}_{hash}";
 
-			if (protocolName.Length > 255)
+			if (protocolName.Length > Constants.MaxProtocolNameLength)
 			{
 				throw new ArgumentException("The Noise protocol name is too long.");
 			}

@@ -58,11 +58,27 @@ namespace Noise
 			byte[] prologue,
 			out IHandshakeState handshakeState)
 		{
+			if (protocolName == null)
+			{
+				throw new ArgumentNullException(nameof(protocolName));
+			}
+
+			handshakeState = null;
+
+			if (protocolName.Length > Constants.MaxProtocolNameLength)
+			{
+				return false;
+			}
+
 			string[] parts = protocolName.Split('_');
 
-			if (parts[1] != "NN")
+			if (parts.Length != 5 || parts[0] != "Noise")
 			{
-				handshakeState = null;
+				return false;
+			}
+
+			if (!HandshakePattern.TryGetValue(parts[1], out var pattern))
+			{
 				return false;
 			}
 
@@ -73,14 +89,14 @@ namespace Noise
 			switch (parts[2])
 			{
 				case "25519": dhType = DhType.Curve25519; break;
-				default: handshakeState = null; return false;
+				default: return false;
 			}
 
 			switch (parts[3])
 			{
 				case "AESGCM": cipherType = CipherType.AesGcm; break;
 				case "ChaChaPoly": cipherType = CipherType.ChaChaPoly; break;
-				default: handshakeState = null; return false;
+				default: return false;
 			}
 
 			switch (parts[4])
@@ -88,11 +104,11 @@ namespace Noise
 				case "SHA256": hashType = HashType.Sha256; break;
 				case "SHA512": hashType = HashType.Sha512; break;
 				case "BLAKE2b": hashType = HashType.Blake2b; break;
-				default: handshakeState = null; return false;
+				default: return false;
 			}
 
 			CipherSuite cipherSuite = new CipherSuite(cipherType, dhType, hashType);
-			handshakeState = Create(cipherSuite, HandshakePattern.NN, initiator, prologue);
+			handshakeState = Create(cipherSuite, pattern, initiator, prologue);
 
 			return true;
 		}
