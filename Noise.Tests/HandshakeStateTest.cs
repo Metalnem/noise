@@ -1,6 +1,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -26,18 +27,24 @@ namespace Noise.Tests
 				var respEphemeral = GetBytes(vector, "resp_ephemeral");
 				var handshakeHash = GetBytes(vector, "handshake_hash");
 
+				if (!Protocol.Create(protocolName, true, initPrologue, out var init))
+				{
+					continue;
+				}
+
+				if (!Protocol.Create(protocolName, false, respPrologue, out var resp))
+				{
+					continue;
+				}
+
+				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+				var setDh = init.GetType().GetMethod("SetDh", flags);
+
 				var initDh = new FixedKeyDh(initEphemeral);
 				var respDh = new FixedKeyDh(respEphemeral);
 
-				if (!Protocol.Create(protocolName, true, initPrologue, initDh, out var init))
-				{
-					continue;
-				}
-
-				if (!Protocol.Create(protocolName, false, respPrologue, respDh, out var resp))
-				{
-					continue;
-				}
+				setDh.Invoke(init, new object[] { initDh });
+				setDh.Invoke(resp, new object[] { respDh });
 
 				ITransport respTransport = null;
 				ITransport initTransport = null;

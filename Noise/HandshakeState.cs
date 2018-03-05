@@ -26,8 +26,8 @@ namespace Noise
 			{typeof(Blake2b), "BLAKE2b"}
 		};
 
+		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
-		private readonly Dh dh;
 		private readonly bool initiator;
 		private readonly Queue<MessagePattern> messagePatterns;
 		private KeyPair e;
@@ -38,24 +38,23 @@ namespace Noise
 		/// Initializes a new HandshakeState.
 		/// </summary>
 		public HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue)
-			: this(handshakePattern, initiator, prologue, new DhType())
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new HandshakeState.
-		/// </summary>
-		internal HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue, Dh dh)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocolName);
 			state.MixHash(prologue);
 
-			this.dh = dh;
 			this.initiator = initiator;
-
 			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
+		}
+
+		/// <summary>
+		/// Overrides the DH function. It should only be used
+		/// from Noise.Tests to fix the ephemeral private key.
+		/// </summary>
+		internal void SetDh(Dh dh)
+		{
+			this.dh = dh;
 		}
 
 		/// <summary>

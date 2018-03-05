@@ -17,43 +17,30 @@ namespace Noise
 			bool initiator,
 			byte[] prologue)
 		{
-			return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, new Curve25519());
-		}
 
-		/// <summary>
-		/// Instantiates a Noise protocol with a concrete set of
-		/// cipher functions, DH functions, and hash functions.
-		/// </summary>
-		internal static IHandshakeState Create(
-			CipherSuite cipherSuite,
-			HandshakePattern handshakePattern,
-			bool initiator,
-			byte[] prologue,
-			Dh dh)
-		{
 			if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha256)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, prologue);
 			}
 			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha512)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, prologue);
 			}
 			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Blake2b)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue);
 			}
 			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha256)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, prologue);
 			}
 			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha512)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, prologue);
 			}
 			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Blake2b)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, prologue, dh);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, prologue);
 			}
 			else
 			{
@@ -69,7 +56,6 @@ namespace Noise
 			string protocolName,
 			bool initiator,
 			byte[] prologue,
-			Dh dh,
 			out IHandshakeState handshakeState)
 		{
 			string[] parts = protocolName.Split('_');
@@ -106,7 +92,7 @@ namespace Noise
 			}
 
 			CipherSuite cipherSuite = new CipherSuite(cipherType, dhType, hashType);
-			handshakeState = Create(cipherSuite, HandshakePattern.NN, initiator, prologue, dh);
+			handshakeState = Create(cipherSuite, HandshakePattern.NN, initiator, prologue);
 
 			return true;
 		}
