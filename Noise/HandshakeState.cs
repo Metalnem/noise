@@ -31,13 +31,15 @@ namespace Noise
 		private readonly bool initiator;
 		private readonly Queue<MessagePattern> messagePatterns;
 		private KeyPair e;
+		private KeyPair s;
 		private byte[] re;
+		private byte[] rs;
 		private bool disposed;
 
 		/// <summary>
 		/// Initializes a new HandshakeState.
 		/// </summary>
-		public HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue)
+		public HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue, KeyPair s, byte[] rs)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
 
@@ -46,6 +48,25 @@ namespace Noise
 
 			this.initiator = initiator;
 			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
+
+			this.s = s;
+			this.rs = rs;
+
+			foreach (var preMessage in handshakePattern.Initiator.Tokens)
+			{
+				if (preMessage == Token.S)
+				{
+					state.MixHash(initiator ? s.PublicKey : rs);
+				}
+			}
+
+			foreach (var preMessage in handshakePattern.Responder.Tokens)
+			{
+				if (preMessage == Token.S)
+				{
+					state.MixHash(initiator ? rs : s.PublicKey);
+				}
+			}
 		}
 
 		/// <summary>
@@ -71,7 +92,10 @@ namespace Noise
 				switch (token)
 				{
 					case Token.E: messageBuffer = WriteE(messageBuffer); break;
+					case Token.S: messageBuffer = WriteS(messageBuffer); break;
 					case Token.EE: WriteEE(); break;
+					case Token.ES: WriteES(); break;
+					case Token.SE: WriteSE(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -102,9 +126,25 @@ namespace Noise
 			return buffer.Slice(e.PublicKey.Length);
 		}
 
+		private Span<byte> WriteS(Span<byte> buffer)
+		{
+			var ciphertext = state.EncryptAndHash(s.PublicKey, buffer);
+			return buffer.Slice(ciphertext.Length);
+		}
+
 		private void WriteEE()
 		{
 			state.MixKey(dh.Dh(e, re));
+		}
+
+		private void WriteES()
+		{
+			state.MixKey(initiator ? dh.Dh(e, rs) : dh.Dh(s, re));
+		}
+
+		private void WriteSE()
+		{
+			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
 		}
 
 		/// <summary>
@@ -120,7 +160,10 @@ namespace Noise
 				switch (token)
 				{
 					case Token.E: message = ReadE(message); break;
+					case Token.S: message = ReadS(message); break;
 					case Token.EE: ReadEE(); break;
+					case Token.ES: ReadES(); break;
+					case Token.SE: ReadSE(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -150,9 +193,30 @@ namespace Noise
 			return buffer.Slice(re.Length);
 		}
 
+		private Span<byte> ReadS(Span<byte> message)
+		{
+			var length = state.HasKey() ? dh.DhLen + Constants.TagSize : dh.DhLen;
+			var temp = message.Slice(0, length);
+
+			rs = new byte[dh.DhLen];
+			state.DecryptAndHash(temp, rs);
+
+			return message.Slice(length);
+		}
+
 		private void ReadEE()
 		{
 			state.MixKey(dh.Dh(e, re));
+		}
+
+		private void ReadES()
+		{
+			state.MixKey(initiator ? dh.Dh(e, rs) : dh.Dh(s, re));
+		}
+
+		private void ReadSE()
+		{
+			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
 		}
 
 		private static string GetFunctionName<T>()
@@ -184,6 +248,7 @@ namespace Noise
 			{
 				state.Dispose();
 				e?.Dispose();
+				s?.Dispose();
 				disposed = true;
 			}
 		}

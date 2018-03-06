@@ -5,7 +5,7 @@ namespace Noise
 	/// <summary>
 	/// A Diffie-Hellman private/public key pair.
 	/// </summary>
-	internal sealed class KeyPair : IDisposable
+	public sealed class KeyPair : IDisposable
 	{
 		private bool disposed;
 

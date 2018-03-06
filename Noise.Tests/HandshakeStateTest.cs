@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using System.Reflection;
@@ -10,7 +9,7 @@ namespace Noise.Tests
 	public class HandshakeStateTest
 	{
 		[Fact]
-		public void TestHandshake()
+		public void TestProtocol()
 		{
 			var s = File.ReadAllText("Cacophony.txt");
 			var json = JObject.Parse(s);
@@ -22,17 +21,24 @@ namespace Noise.Tests
 			{
 				var protocolName = GetString(vector, "protocol_name");
 				var initPrologue = GetBytes(vector, "init_prologue");
+				var initStatic = GetBytes(vector, "init_static");
 				var initEphemeral = GetBytes(vector, "init_ephemeral");
+				var initRemoteStatic = GetBytes(vector, "init_remote_static");
 				var respPrologue = GetBytes(vector, "resp_prologue");
+				var respStatic = GetBytes(vector, "resp_static");
 				var respEphemeral = GetBytes(vector, "resp_ephemeral");
+				var respRemoteStatic = GetBytes(vector, "resp_remote_static");
 				var handshakeHash = GetBytes(vector, "handshake_hash");
 
-				if (!Protocol.Create(protocolName, true, initPrologue, out var init))
+				var initStaticPair = GetKeyPair(initStatic);
+				var respStaticPair = GetKeyPair(respStatic);
+
+				if (!Protocol.Create(protocolName, true, initPrologue, initStaticPair, initRemoteStatic, out var init))
 				{
 					continue;
 				}
 
-				if (!Protocol.Create(protocolName, false, respPrologue, out var resp))
+				if (!Protocol.Create(protocolName, false, respPrologue, respStaticPair, respRemoteStatic, out var resp))
 				{
 					continue;
 				}
@@ -77,6 +83,9 @@ namespace Noise.Tests
 
 					Swap(ref initBuffer, ref respBuffer);
 				}
+
+				init.Dispose();
+				resp.Dispose();
 			}
 		}
 
@@ -88,6 +97,19 @@ namespace Noise.Tests
 		private static byte[] GetBytes(JToken token, string property)
 		{
 			return Hex.Decode(GetString(token, property));
+		}
+
+		private static KeyPair GetKeyPair(byte[] privateKey)
+		{
+			if (privateKey == null)
+			{
+				return null;
+			}
+
+			var publicKey = new byte[privateKey.Length];
+			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKey);
+
+			return new KeyPair(privateKey, publicKey);
 		}
 
 		private static void Swap<T>(ref T x, ref T y)

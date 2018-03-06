@@ -141,6 +141,14 @@ namespace Noise
 			return (c1, c2);
 		}
 
+		/// <summary>
+		/// Returns true if k is non-empty, false otherwise.
+		/// </summary>
+		public bool HasKey()
+		{
+			return state.HasKey();
+		}
+
 		private void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
 		{
 			if (inputKeyMaterial == null)
