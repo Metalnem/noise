@@ -90,6 +90,9 @@ namespace Noise.Tests
 					Swap(ref initBuffer, ref respBuffer);
 				}
 
+				Assert.Equal(handshakeHash, init.GetHandshakeHash());
+				Assert.Equal(handshakeHash, resp.GetHandshakeHash());
+
 				init.Dispose();
 				resp.Dispose();
 			}

@@ -231,6 +231,15 @@ namespace Noise
 			state.MixKey(dh.Dh(s, rs));
 		}
 
+		/// <summary>
+		/// Returns h. This function should only be called at the end of
+		/// a handshake, i.e. after the Split() function has been called.
+		/// </summary>
+		public byte[] GetHandshakeHash()
+		{
+			return state.GetHandshakeHash();
+		}
+
 		private static string GetFunctionName<T>()
 		{
 			return functionNames[typeof(T)];

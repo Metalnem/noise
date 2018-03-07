@@ -98,7 +98,10 @@ namespace Noise
 		/// </summary>
 		public byte[] GetHandshakeHash()
 		{
-			return h;
+			byte[] handshakeHash = new byte[h.Length];
+			Array.Copy(h, handshakeHash, h.Length);
+
+			return handshakeHash;
 		}
 
 		/// <summary>

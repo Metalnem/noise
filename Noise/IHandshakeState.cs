@@ -21,5 +21,11 @@ namespace Noise
 		/// and a payloadBuffer to write the message's plaintext payload into.
 		/// </summary>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer, out ITransport transport);
+
+		/// <summary>
+		/// Returns h. This function should only be called at the end of
+		/// a handshake, i.e. after the Split() function has been called.
+		/// </summary>
+		byte[] GetHandshakeHash();
 	}
 }
