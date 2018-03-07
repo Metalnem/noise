@@ -82,7 +82,7 @@ namespace Noise
 		/// Takes a payload byte sequence which may be zero-length,
 		/// and a messageBuffer to write the output into.
 		/// </summary>
-		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> messageBuffer, out ITransport transport)
+		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer, out ITransport transport)
 		{
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
@@ -101,7 +101,7 @@ namespace Noise
 				}
 			}
 
-			var ciphertext = state.EncryptAndHash(payload, messageBuffer);
+			int bytesWritten = state.EncryptAndHash(payload, messageBuffer);
 			transport = null;
 
 			if (messagePatterns.Count == 0)
@@ -110,7 +110,7 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return message.Slice(0, message.Length - messageBuffer.Length + ciphertext.Length);
+			return message.Length - messageBuffer.Length + bytesWritten;
 		}
 
 		private Span<byte> WriteE(Span<byte> buffer)
@@ -129,8 +129,8 @@ namespace Noise
 
 		private Span<byte> WriteS(Span<byte> buffer)
 		{
-			var ciphertext = state.EncryptAndHash(s.PublicKey, buffer);
-			return buffer.Slice(ciphertext.Length);
+			var bytesWritten = state.EncryptAndHash(s.PublicKey, buffer);
+			return buffer.Slice(bytesWritten);
 		}
 
 		private void WriteEE()
@@ -157,7 +157,7 @@ namespace Noise
 		/// Takes a byte sequence containing a Noise handshake message,
 		/// and a payloadBuffer to write the message's plaintext payload into.
 		/// </summary>
-		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payloadBuffer, out ITransport transport)
+		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer, out ITransport transport)
 		{
 			var next = messagePatterns.Dequeue();
 
@@ -175,7 +175,7 @@ namespace Noise
 				}
 			}
 
-			var payload = state.DecryptAndHash(message, payloadBuffer);
+			int bytesRead = state.DecryptAndHash(message, payloadBuffer);
 			transport = null;
 
 			if (messagePatterns.Count == 0)
@@ -184,10 +184,10 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return payload;
+			return bytesRead;
 		}
 
-		private Span<byte> ReadE(Span<byte> buffer)
+		private ReadOnlySpan<byte> ReadE(ReadOnlySpan<byte> buffer)
 		{
 			if (re != null)
 			{
@@ -200,7 +200,7 @@ namespace Noise
 			return buffer.Slice(re.Length);
 		}
 
-		private Span<byte> ReadS(Span<byte> message)
+		private ReadOnlySpan<byte> ReadS(ReadOnlySpan<byte> message)
 		{
 			var length = state.HasKey() ? dh.DhLen + Constants.TagSize : dh.DhLen;
 			var temp = message.Slice(0, length);

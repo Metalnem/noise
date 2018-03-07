@@ -25,7 +25,7 @@ namespace Noise
 		/// <summary>
 		/// Encrypts the payload and writes the ciphertext into message.
 		/// </summary>
-		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> message)
+		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message)
 		{
 			var cipher = initiator ? c2 : c1;
 			return cipher.EncryptWithAd(null, payload, message);
@@ -34,7 +34,7 @@ namespace Noise
 		/// <summary>
 		/// Decrypts the message and writes the plaintext into payload.
 		/// </summary>
-		public Span<byte> ReadMessage(Span<byte> message, Span<byte> payload)
+		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload)
 		{
 			var cipher = initiator ? c1 : c2;
 			return cipher.DecryptWithAd(null, message, payload);

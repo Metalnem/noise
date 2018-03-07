@@ -12,7 +12,7 @@ namespace Noise
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public Span<byte> Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public int Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
@@ -34,13 +34,13 @@ namespace Noise
 				throw new CryptographicException("Encryption failed.");
 			}
 
-			return ciphertext.Slice(0, (int)length);
+			return (int)length;
 		}
 
 		/// <summary>
 		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
 		/// </summary>
-		public Span<byte> Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		public int Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
@@ -62,7 +62,7 @@ namespace Noise
 				throw new CryptographicException("Decryption failed.");
 			}
 
-			return plaintext.Slice(0, (int)length);
+			return (int)length;
 		}
 
 		private static void EncodeNonce(ulong n, Span<byte> nonce)

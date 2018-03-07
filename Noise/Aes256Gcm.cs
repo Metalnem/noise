@@ -24,7 +24,7 @@ namespace Noise
 		/// AES256 with GCM from NIST Special Publication
 		/// <see href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf">800-38D</see>.
 		/// </summary>
-		public Span<byte> Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public int Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
@@ -46,14 +46,14 @@ namespace Noise
 				throw new CryptographicException("Encryption failed.");
 			}
 
-			return ciphertext.Slice(0, (int)length);
+			return (int)length;
 		}
 
 		/// <summary>
 		/// AES256 with GCM from NIST Special Publication
 		/// <see href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf">800-38D</see>.
 		/// </summary>
-		public Span<byte> Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		public int Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
@@ -75,7 +75,7 @@ namespace Noise
 				throw new CryptographicException("Decryption failed.");
 			}
 
-			return plaintext.Slice(0, (int)length);
+			return (int)length;
 		}
 
 		private static void EncodeNonce(ulong n, Span<byte> nonce)

@@ -52,7 +52,7 @@ namespace Noise
 		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
 		/// Otherwise returns plaintext.
 		/// </summary>
-		public Span<byte> EncryptWithAd(byte[] ad, Span<byte> plaintext, Span<byte> ciphertext)
+		public int EncryptWithAd(byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
 			if (n == MaxNonce)
 			{
@@ -67,13 +67,13 @@ namespace Noise
 			if (k == null)
 			{
 				plaintext.CopyTo(ciphertext);
-				return ciphertext.Slice(0, plaintext.Length);
+				return plaintext.Length;
 			}
 
-			var result = cipher.Encrypt(k, n, ad, plaintext, ciphertext);
+			int bytesWritten = cipher.Encrypt(k, n, ad, plaintext, ciphertext);
 			++n;
 
-			return result;
+			return bytesWritten;
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Noise
 		/// occurs in DECRYPT() then n is not incremented and an error
 		/// is signaled to the caller.
 		/// </summary>
-		public Span<byte> DecryptWithAd(byte[] ad, Span<byte> ciphertext, Span<byte> plaintext)
+		public int DecryptWithAd(byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
 			if (n == MaxNonce)
 			{
@@ -97,13 +97,13 @@ namespace Noise
 			if (k == null)
 			{
 				ciphertext.CopyTo(plaintext);
-				return plaintext.Slice(0, ciphertext.Length);
+				return ciphertext.Length;
 			}
 
-			var result = cipher.Decrypt(k, n, ad, ciphertext, plaintext);
+			int bytesRead = cipher.Decrypt(k, n, ad, ciphertext, plaintext);
 			++n;
 
-			return result;
+			return bytesRead;
 		}
 
 		/// <summary>

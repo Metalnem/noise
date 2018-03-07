@@ -65,15 +65,21 @@ namespace Noise.Tests
 
 					if (initTransport == null && respTransport == null)
 					{
-						initMessage = init.WriteMessage(payload, initBuffer, out initTransport);
-						respMessage = resp.ReadMessage(initMessage, respBuffer, out respTransport);
+						int initMessageSize = init.WriteMessage(payload, initBuffer, out initTransport);
+						initMessage = initBuffer.AsSpan().Slice(0, initMessageSize);
+
+						int respMessageSize = resp.ReadMessage(initMessage, respBuffer, out respTransport);
+						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
 
 						Swap(ref init, ref resp);
 					}
 					else
 					{
-						initMessage = initTransport.WriteMessage(payload, initBuffer);
-						respMessage = respTransport.ReadMessage(initMessage, respBuffer);
+						int initMessageSize = initTransport.WriteMessage(payload, initBuffer);
+						initMessage = initBuffer.AsSpan().Slice(0, initMessageSize);
+
+						int respMessageSize = respTransport.ReadMessage(initMessage, respBuffer);
+						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
 
 						Swap(ref initTransport, ref respTransport);
 					}

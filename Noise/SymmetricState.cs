@@ -105,24 +105,24 @@ namespace Noise
 		/// Sets ciphertext = EncryptWithAd(h, plaintext),
 		/// calls MixHash(ciphertext), and returns ciphertext.
 		/// </summary>
-		public Span<byte> EncryptAndHash(Span<byte> plaintext, Span<byte> ciphertext)
+		public int EncryptAndHash(ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			var result = state.EncryptWithAd(h, plaintext, ciphertext);
-			MixHash(result);
+			int bytesWritten = state.EncryptWithAd(h, plaintext, ciphertext);
+			MixHash(ciphertext.Slice(0, bytesWritten));
 
-			return result;
+			return bytesWritten;
 		}
 
 		/// <summary>
 		/// Sets plaintext = DecryptWithAd(h, ciphertext),
 		/// calls MixHash(ciphertext), and returns plaintext.
 		/// </summary>
-		public Span<byte> DecryptAndHash(Span<byte> ciphertext, Span<byte> plaintext)
+		public int DecryptAndHash(ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			var result = state.DecryptWithAd(h, ciphertext, plaintext);
+			var bytesRead = state.DecryptWithAd(h, ciphertext, plaintext);
 			MixHash(ciphertext);
 
-			return result;
+			return bytesRead;
 		}
 
 		/// <summary>
