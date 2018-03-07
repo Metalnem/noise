@@ -99,6 +99,93 @@ namespace Noise
 			new MessagePattern(Token.S, Token.SE)
 		);
 
+		/// <summary>
+		/// KN():
+		///   → s
+		///   ...
+		///   → e
+		///   ← e, ee, se
+		/// </summary>
+		public static readonly HandshakePattern KN = new HandshakePattern(
+			nameof(KN),
+			PreMessagePattern.S,
+			PreMessagePattern.Empty,
+			new MessagePattern(Token.E),
+			new MessagePattern(Token.E, Token.EE, Token.SE)
+		);
+
+		/// <summary>
+		/// KK():
+		///   → s
+		///   ← s
+		///   ...
+		///   → e, es, ss
+		///   ← e, ee, se
+		/// </summary>
+		public static readonly HandshakePattern KK = new HandshakePattern(
+			nameof(KK),
+			PreMessagePattern.S,
+			PreMessagePattern.S,
+			new MessagePattern(Token.E, Token.ES, Token.SS),
+			new MessagePattern(Token.E, Token.EE, Token.SE)
+		);
+
+		/// <summary>
+		/// KX():
+		///   → s
+		///   ...
+		///   → e
+		///   ← e, ee, se, s, es
+		/// </summary>
+		public static readonly HandshakePattern KX = new HandshakePattern(
+			nameof(KX),
+			PreMessagePattern.S,
+			PreMessagePattern.Empty,
+			new MessagePattern(Token.E),
+			new MessagePattern(Token.E, Token.EE, Token.SE, Token.S, Token.ES)
+		);
+
+		/// <summary>
+		/// IN():
+		///   → e, s
+		///   ← e, ee, se
+		/// </summary>
+		public static readonly HandshakePattern IN = new HandshakePattern(
+			nameof(IN),
+			PreMessagePattern.Empty,
+			PreMessagePattern.Empty,
+			new MessagePattern(Token.E, Token.S),
+			new MessagePattern(Token.E, Token.EE, Token.SE)
+		);
+
+		/// <summary>
+		/// IK():
+		///   ← s
+		///   ...
+		///   → e, es, s, ss
+		///   ← e, ee, se
+		/// </summary>
+		public static readonly HandshakePattern IK = new HandshakePattern(
+			nameof(IK),
+			PreMessagePattern.Empty,
+			PreMessagePattern.S,
+			new MessagePattern(Token.E, Token.ES, Token.S, Token.SS),
+			new MessagePattern(Token.E, Token.EE, Token.SE)
+		);
+
+		/// <summary>
+		/// IX():
+		///   → e, s
+		///   ← e, ee, se, s, es
+		/// </summary>
+		public static readonly HandshakePattern IX = new HandshakePattern(
+			nameof(IX),
+			PreMessagePattern.Empty,
+			PreMessagePattern.Empty,
+			new MessagePattern(Token.E, Token.S),
+			new MessagePattern(Token.E, Token.EE, Token.SE, Token.S, Token.ES)
+		);
+
 		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetFields()
 			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
 			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));

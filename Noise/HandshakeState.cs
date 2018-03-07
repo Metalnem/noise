@@ -80,7 +80,7 @@ namespace Noise
 
 		/// <summary>
 		/// Takes a payload byte sequence which may be zero-length,
-		/// and a messageBuffer to write the output into. 
+		/// and a messageBuffer to write the output into.
 		/// </summary>
 		public Span<byte> WriteMessage(Span<byte> payload, Span<byte> messageBuffer, out ITransport transport)
 		{
@@ -96,6 +96,7 @@ namespace Noise
 					case Token.EE: WriteEE(); break;
 					case Token.ES: WriteES(); break;
 					case Token.SE: WriteSE(); break;
+					case Token.SS: WriteSS(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -147,6 +148,11 @@ namespace Noise
 			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
 		}
 
+		private void WriteSS()
+		{
+			state.MixKey(dh.Dh(s, rs));
+		}
+
 		/// <summary>
 		/// Takes a byte sequence containing a Noise handshake message,
 		/// and a payloadBuffer to write the message's plaintext payload into.
@@ -164,6 +170,7 @@ namespace Noise
 					case Token.EE: ReadEE(); break;
 					case Token.ES: ReadES(); break;
 					case Token.SE: ReadSE(); break;
+					case Token.SS: ReadSS(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -217,6 +224,11 @@ namespace Noise
 		private void ReadSE()
 		{
 			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
+		}
+
+		private void ReadSS()
+		{
+			state.MixKey(dh.Dh(s, rs));
 		}
 
 		private static string GetFunctionName<T>()
