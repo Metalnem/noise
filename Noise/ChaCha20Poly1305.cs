@@ -1,19 +1,22 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Noise
 {
 	/// <summary>
-	/// The ChaChaPoly cipher functions.
+	/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
+	/// The 96-bit nonce is formed by encoding 32 bits
+	/// of zeros followed by little-endian encoding of n.
 	/// </summary>
 	internal sealed class ChaCha20Poly1305 : Cipher
 	{
-		/// <summary>
-		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
-		/// </summary>
-		public int Encrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public int Encrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
+			Debug.Assert(k.Length == Constants.KeySize);
+			Debug.Assert(ciphertext.Length >= plaintext.Length + Constants.TagSize);
+
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
 
@@ -22,11 +25,11 @@ namespace Noise
 				out long length,
 			 	ref MemoryMarshal.GetReference(plaintext),
 				plaintext.Length,
-				ad,
-				ad?.LongLength ?? 0,
+				ref MemoryMarshal.GetReference(ad),
+				ad.Length,
 				IntPtr.Zero,
 				ref MemoryMarshal.GetReference(nonce),
-				k
+				ref MemoryMarshal.GetReference(k)
 			);
 
 			if (result != 0)
@@ -34,14 +37,16 @@ namespace Noise
 				throw new CryptographicException("Encryption failed.");
 			}
 
+			Debug.Assert(length == plaintext.Length + Constants.TagSize);
 			return (int)length;
 		}
 
-		/// <summary>
-		/// AEAD_CHACHA20_POLY1305 from <see href="https://tools.ietf.org/html/rfc7539">RFC 7539</see>.
-		/// </summary>
-		public int Decrypt(byte[] k, ulong n, byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		public int Decrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
+			Debug.Assert(k.Length == Constants.KeySize);
+			Debug.Assert(ciphertext.Length >= Constants.TagSize);
+			Debug.Assert(plaintext.Length >= ciphertext.Length - Constants.TagSize);
+
 			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
 			EncodeNonce(n, nonce);
 
@@ -51,10 +56,10 @@ namespace Noise
 				IntPtr.Zero,
 				ref MemoryMarshal.GetReference(ciphertext),
 				ciphertext.Length,
-				ad,
-				ad?.LongLength ?? 0,
+				ref MemoryMarshal.GetReference(ad),
+				ad.Length,
 				ref MemoryMarshal.GetReference(nonce),
-				k
+				ref MemoryMarshal.GetReference(k)
 			);
 
 			if (result != 0)
@@ -62,6 +67,7 @@ namespace Noise
 				throw new CryptographicException("Decryption failed.");
 			}
 
+			Debug.Assert(length == ciphertext.Length - Constants.TagSize);
 			return (int)length;
 		}
 

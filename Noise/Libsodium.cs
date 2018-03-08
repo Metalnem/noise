@@ -35,11 +35,11 @@ namespace Noise
 			out long clen_p,
 			ref byte m,
 			long mlen,
-			byte[] ad,
+			ref byte ad,
 			long adlen,
 			IntPtr nsec,
 			ref byte npub,
-			byte[] k
+			ref byte k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
@@ -49,10 +49,10 @@ namespace Noise
 			IntPtr nsec,
 			ref byte c,
 			long clen,
-			byte[] ad,
+			ref byte ad,
 			long adlen,
 			ref byte npub,
-			byte[] k
+			ref byte k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
@@ -61,11 +61,11 @@ namespace Noise
 			out long clen_p,
 			ref byte m,
 			long mlen,
-			byte[] ad,
+			ref byte ad,
 			long adlen,
 			IntPtr nsec,
 			ref byte npub,
-			byte[] k
+			ref byte k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
@@ -75,10 +75,10 @@ namespace Noise
 			IntPtr nsec,
 			ref byte c,
 			long clen,
-			byte[] ad,
+			ref byte ad,
 			long adlen,
 			ref byte npub,
-			byte[] k
+			ref byte k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
