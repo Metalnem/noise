@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Noise
 {
 	/// <summary>
-	/// The BLAKE2b hash function.
+	/// BLAKE2b from <see href="https://tools.ietf.org/html/rfc7693">RFC 7693</see>
+	/// with digest length 64.
 	/// </summary>
 	internal sealed class Blake2b : Hash
 	{
@@ -32,28 +34,24 @@ namespace Noise
 
 		public void AppendData(ReadOnlySpan<byte> data)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(nameof(Blake2b));
-			}
-
-			ref byte message = ref MemoryMarshal.GetReference(data);
-			Libsodium.crypto_generichash_blake2b_update(aligned, ref message, (ulong)data.Length);
+			Libsodium.crypto_generichash_blake2b_update(
+				aligned,
+				ref MemoryMarshal.GetReference(data),
+				(ulong)data.Length
+			);
 		}
 
-		public byte[] GetHashAndReset()
+		public void GetHashAndReset(Span<byte> hash)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(nameof(Blake2b));
-			}
+			Debug.Assert(hash.Length == HashLen);
 
-			byte[] hash = new byte[HashLen];
-			Libsodium.crypto_generichash_blake2b_final(aligned, hash, (UIntPtr)hash.Length);
+			Libsodium.crypto_generichash_blake2b_final(
+				aligned,
+				ref MemoryMarshal.GetReference(hash),
+				(UIntPtr)hash.Length
+			);
 
 			Reset();
-
-			return hash;
 		}
 
 		private void Reset()

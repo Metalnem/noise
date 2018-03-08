@@ -1,10 +1,9 @@
 using System;
-using System.Security.Cryptography;
 
 namespace Noise
 {
 	/// <summary>
-	/// Hash functions and associated constants.
+	/// Hash functions (and associated constants).
 	/// </summary>
 	internal interface Hash : IDisposable
 	{
@@ -25,9 +24,9 @@ namespace Noise
 		void AppendData(ReadOnlySpan<byte> data);
 
 		/// <summary>
-		/// Retrieves the hash for the accumulated data,
+		/// Retrieves the hash for the accumulated data into the hash variable,
 		/// and resets the object to its initial state.
 		/// </summary>
-		byte[] GetHashAndReset();
+		void GetHashAndReset(Span<byte> hash);
 	}
 }

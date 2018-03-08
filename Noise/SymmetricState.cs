@@ -17,7 +17,7 @@ namespace Noise
 		private readonly Hash hash = new HashType();
 		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
 		private byte[] ck;
-		private byte[] h;
+		private readonly byte[] h;
 		private bool disposed;
 
 		/// <summary>
@@ -31,18 +31,22 @@ namespace Noise
 				throw new ArgumentNullException(nameof(protocolName));
 			}
 
-			if (protocolName.Length <= this.hash.HashLen)
+			int length = hash.HashLen;
+
+			ck = new byte[length];
+			h = new byte[length];
+
+			if (protocolName.Length <= length)
 			{
-				h = new byte[this.hash.HashLen];
 				Array.Copy(protocolName, h, protocolName.Length);
 			}
 			else
 			{
-				this.hash.AppendData(protocolName);
-				h = this.hash.GetHashAndReset();
+				hash.AppendData(protocolName);
+				hash.GetHashAndReset(h);
 			}
 
-			ck = h;
+			Array.Copy(h, ck, length);
 		}
 
 		/// <summary>
@@ -69,8 +73,7 @@ namespace Noise
 		{
 			hash.AppendData(h);
 			hash.AppendData(data);
-
-			h = hash.GetHashAndReset();
+			hash.GetHashAndReset(h);
 		}
 
 		/// <summary>

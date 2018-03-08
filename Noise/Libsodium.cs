@@ -109,7 +109,7 @@ namespace Noise
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha256_final(
 			IntPtr state,
-			byte[] @out
+			ref byte @out
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
@@ -127,7 +127,7 @@ namespace Noise
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha512_final(
 			IntPtr state,
-			byte[] @out
+			ref byte @out
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
@@ -148,7 +148,7 @@ namespace Noise
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_generichash_blake2b_final(
 			IntPtr state,
-			byte[] @out,
+			ref byte @out,
 			UIntPtr outlen
 		);
 	}

@@ -1,10 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Noise
 {
 	/// <summary>
-	/// The SHA512 hash function.
+	/// SHA-512 from <see href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS 180-4</see>.
 	/// </summary>
 	internal sealed class Sha512 : Hash
 	{
@@ -24,28 +25,23 @@ namespace Noise
 
 		public void AppendData(ReadOnlySpan<byte> data)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(nameof(Sha512));
-			}
-
-			ref byte message = ref MemoryMarshal.GetReference(data);
-			Libsodium.crypto_hash_sha512_update(state, ref message, (ulong)data.Length);
+			Libsodium.crypto_hash_sha512_update(
+				state,
+				ref MemoryMarshal.GetReference(data),
+				(ulong)data.Length
+			);
 		}
 
-		public byte[] GetHashAndReset()
+		public void GetHashAndReset(Span<byte> hash)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(nameof(Sha512));
-			}
+			Debug.Assert(hash.Length == HashLen);
 
-			byte[] hash = new byte[HashLen];
-			Libsodium.crypto_hash_sha512_final(state, hash);
+			Libsodium.crypto_hash_sha512_final(
+				state,
+				ref MemoryMarshal.GetReference(hash)
+			);
 
 			Reset();
-
-			return hash;
 		}
 
 		private void Reset()

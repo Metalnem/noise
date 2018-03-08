@@ -49,12 +49,15 @@ namespace Noise
 			using (var inner = new HashType())
 			using (var outer = new HashType())
 			{
-				int blockLen = inner.BlockLen;
+				var blockLen = inner.BlockLen;
+				var temp = new byte[inner.HashLen];
 
 				if (key.Length > blockLen)
 				{
 					outer.AppendData(key);
-					key = outer.GetHashAndReset();
+					outer.GetHashAndReset(temp);
+
+					key = temp;
 				}
 
 				byte[] ipad = new byte[blockLen];
@@ -76,10 +79,13 @@ namespace Noise
 					inner.AppendData(item);
 				}
 
-				outer.AppendData(opad);
-				outer.AppendData(inner.GetHashAndReset());
+				inner.GetHashAndReset(temp);
 
-				return outer.GetHashAndReset();
+				outer.AppendData(opad);
+				outer.AppendData(temp);
+				outer.GetHashAndReset(temp);
+
+				return temp;
 			}
 		}
 	}

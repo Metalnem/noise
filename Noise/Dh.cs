@@ -1,7 +1,7 @@
 namespace Noise
 {
 	/// <summary>
-	/// DH functions and an associated constant.
+	/// DH functions (and an associated constant).
 	/// </summary>
 	internal interface Dh
 	{
