@@ -1,21 +1,17 @@
 using System;
-using System.Security.Cryptography;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Noise
 {
 	/// <summary>
-	/// The 25519 DH functions.
+	/// The Curve25519 DH function (aka "X25519" in
+	/// <see href="https://tools.ietf.org/html/rfc7748">RFC 7748</see>).
 	/// </summary>
 	internal sealed class Curve25519 : Dh
 	{
-		/// <summary>
-		/// Size in bytes of the Curve25519 public keys and DH outputs.
-		/// </summary>
 		public int DhLen => Libsodium.crypto_scalarmult_curve25519_SCALARBYTES;
 
-		/// <summary>
-		/// Returns a new Curve25519 key pair.
-		/// </summary>
 		public KeyPair GenerateKeyPair()
 		{
 			var privateKey = Utilities.GetRandomBytes(DhLen);
@@ -26,27 +22,17 @@ namespace Noise
 			return new KeyPair(privateKey, publicKey);
 		}
 
-		/// <summary>
-		/// Executes the Curve25519 DH function (aka "X25519" in
-		/// <see href="https://tools.ietf.org/html/rfc7748">RFC 7748</see>).
-		/// </summary>
-		public byte[] Dh(KeyPair keyPair, byte[] publicKey)
+		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
 		{
-			ValidateKey(keyPair.PrivateKey);
-			ValidateKey(publicKey);
+			Debug.Assert(keyPair.PrivateKey != null && keyPair.PrivateKey.Length == DhLen);
+			Debug.Assert(publicKey.Length == DhLen);
+			Debug.Assert(sharedKey.Length == DhLen);
 
-			var sharedKey = new byte[DhLen];
-			Libsodium.crypto_scalarmult_curve25519(sharedKey, keyPair.PrivateKey, publicKey);
-
-			return sharedKey;
-		}
-
-		private void ValidateKey(byte[] key)
-		{
-			if (key == null || key.Length != DhLen)
-			{
-				throw new CryptographicException($"Key must be {DhLen} bytes long.");
-			}
+			Libsodium.crypto_scalarmult_curve25519(
+				ref MemoryMarshal.GetReference(sharedKey),
+				keyPair.PrivateKey,
+				ref MemoryMarshal.GetReference(publicKey)
+			);
 		}
 	}
 }

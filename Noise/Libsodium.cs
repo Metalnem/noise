@@ -89,9 +89,9 @@ namespace Noise
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_scalarmult_curve25519(
-			byte[] q,
+			ref byte q,
 			byte[] n,
-			byte[] p
+			ref byte p
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]

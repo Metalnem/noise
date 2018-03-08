@@ -135,22 +135,22 @@ namespace Noise
 
 		private void WriteEE()
 		{
-			state.MixKey(dh.Dh(e, re));
+			state.MixKey(Dh(e, re));
 		}
 
 		private void WriteES()
 		{
-			state.MixKey(initiator ? dh.Dh(e, rs) : dh.Dh(s, re));
+			state.MixKey(initiator ? Dh(e, rs) : Dh(s, re));
 		}
 
 		private void WriteSE()
 		{
-			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
+			state.MixKey(initiator ? Dh(s, re) : Dh(e, rs));
 		}
 
 		private void WriteSS()
 		{
-			state.MixKey(dh.Dh(s, rs));
+			state.MixKey(Dh(s, rs));
 		}
 
 		/// <summary>
@@ -213,22 +213,22 @@ namespace Noise
 
 		private void ReadEE()
 		{
-			state.MixKey(dh.Dh(e, re));
+			state.MixKey(Dh(e, re));
 		}
 
 		private void ReadES()
 		{
-			state.MixKey(initiator ? dh.Dh(e, rs) : dh.Dh(s, re));
+			state.MixKey(initiator ? Dh(e, rs) : Dh(s, re));
 		}
 
 		private void ReadSE()
 		{
-			state.MixKey(initiator ? dh.Dh(s, re) : dh.Dh(e, rs));
+			state.MixKey(initiator ? Dh(s, re) : Dh(e, rs));
 		}
 
 		private void ReadSS()
 		{
-			state.MixKey(dh.Dh(s, rs));
+			state.MixKey(Dh(s, rs));
 		}
 
 		/// <summary>
@@ -238,6 +238,14 @@ namespace Noise
 		public byte[] GetHandshakeHash()
 		{
 			return state.GetHandshakeHash();
+		}
+
+		private byte[] Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
+		{
+			byte[] sharedKey = new byte[dh.DhLen];
+			dh.Dh(keyPair, publicKey, sharedKey);
+
+			return sharedKey;
 		}
 
 		private static string GetFunctionName<T>()

@@ -1,3 +1,5 @@
+using System;
+
 namespace Noise.Tests
 {
 	internal class FixedKeyDh : Dh
@@ -24,9 +26,9 @@ namespace Noise.Tests
 			return new KeyPair(privateKey, publicKey);
 		}
 
-		public byte[] Dh(KeyPair keyPair, byte[] publicKey)
+		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
 		{
-			return dh.Dh(keyPair, publicKey);
+			dh.Dh(keyPair, publicKey, sharedKey);
 		}
 	}
 }

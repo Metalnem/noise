@@ -1,3 +1,5 @@
+using System;
+
 namespace Noise
 {
 	/// <summary>
@@ -7,6 +9,7 @@ namespace Noise
 	{
 		/// <summary>
 		/// A constant specifying the size in bytes of public keys and DH outputs.
+		/// For security reasons, DhLen must be 32 or greater.
 		/// </summary>
 		int DhLen { get; }
 
@@ -17,9 +20,9 @@ namespace Noise
 
 		/// <summary>
 		/// Performs a Diffie-Hellman calculation between the private
-		/// key in keyPair and the publicKey and returns an output
-		/// sequence of bytes of length DhLen.
+		/// key in keyPair and the publicKey and writes an output
+		/// sequence of bytes of length DhLen into sharedKey variable.
 		/// </summary>
-		byte[] Dh(KeyPair keyPair, byte[] publicKey);
+		void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey);
 	}
 }
