@@ -28,9 +28,6 @@ namespace Noise
 		/// </summary>
 		public static readonly PreMessagePattern Empty = new PreMessagePattern();
 
-		/// <summary>
-		/// Initializes a new PreMessagePattern.
-		/// </summary>
 		private PreMessagePattern(params Token[] tokens)
 		{
 			Tokens = tokens;

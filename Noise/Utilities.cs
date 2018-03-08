@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Noise
@@ -24,7 +25,7 @@ namespace Noise
 		/// </summary>
 		public static byte[] GetRandomBytes(int n)
 		{
-			Exceptions.ThrowIfOutOfRange(n, nameof(n), 1);
+			Debug.Assert(n > 0);
 
 			var bytes = new byte[n];
 			random.GetBytes(bytes);

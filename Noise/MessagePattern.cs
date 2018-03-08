@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Noise
 {
@@ -9,20 +9,10 @@ namespace Noise
 	/// </summary>
 	internal sealed class MessagePattern
 	{
-		/// <summary>
-		/// Initializes a new MessagePattern.
-		/// </summary>
 		public MessagePattern(params Token[] tokens)
 		{
-			if (tokens == null)
-			{
-				throw new ArgumentNullException(nameof(tokens));
-			}
-
-			if (tokens.Length == 0)
-			{
-				throw new ArgumentException("Message pattern must have at least one token.", nameof(tokens));
-			}
+			Debug.Assert(tokens != null);
+			Debug.Assert(tokens.Length > 0);
 
 			Tokens = tokens;
 		}
