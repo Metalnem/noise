@@ -10,19 +10,19 @@ namespace Noise
 		/// <summary>
 		/// Initializes a new CipherSuite.
 		/// </summary>
-		public CipherSuite(CipherType cipher, DhType dh, HashType hash)
+		public CipherSuite(CipherFunction cipher, DhFunction dh, HashFunction hash)
 		{
-			if (!Enum.IsDefined(typeof(CipherType), cipher))
+			if (!Enum.IsDefined(typeof(CipherFunction), cipher))
 			{
 				throw new ArgumentException($"Unknown cipher: {cipher}.");
 			}
 
-			if (!Enum.IsDefined(typeof(DhType), dh))
+			if (!Enum.IsDefined(typeof(DhFunction), dh))
 			{
 				throw new ArgumentException($"Unknown DH: {dh}.");
 			}
 
-			if (!Enum.IsDefined(typeof(HashType), hash))
+			if (!Enum.IsDefined(typeof(HashFunction), hash))
 			{
 				throw new ArgumentException($"Unknown hash: {hash}.");
 			}
@@ -35,16 +35,16 @@ namespace Noise
 		/// <summary>
 		/// Type of the cipher function.
 		/// </summary>
-		public CipherType Cipher { get; }
+		public CipherFunction Cipher { get; }
 
 		/// <summary>
 		/// Type of the DH function.
 		/// </summary>
-		public DhType Dh { get; }
+		public DhFunction Dh { get; }
 
 		/// <summary>
 		/// Type of the hash function.
 		/// </summary>
-		public HashType Hash { get; }
+		public HashFunction Hash { get; }
 	}
 }

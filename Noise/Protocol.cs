@@ -20,27 +20,27 @@ namespace Noise
 			byte[] rs)
 		{
 
-			if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha256)
+			if (cipherSuite.Cipher == CipherFunction.AesGcm && cipherSuite.Hash == HashFunction.Sha256)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, prologue, s, rs);
 			}
-			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Sha512)
+			else if (cipherSuite.Cipher == CipherFunction.AesGcm && cipherSuite.Hash == HashFunction.Sha512)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, prologue, s, rs);
 			}
-			else if (cipherSuite.Cipher == CipherType.AesGcm && cipherSuite.Hash == HashType.Blake2b)
+			else if (cipherSuite.Cipher == CipherFunction.AesGcm && cipherSuite.Hash == HashFunction.Blake2b)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, prologue, s, rs);
 			}
-			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha256)
+			else if (cipherSuite.Cipher == CipherFunction.ChaChaPoly && cipherSuite.Hash == HashFunction.Sha256)
 			{
 				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, prologue, s, rs);
 			}
-			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Sha512)
+			else if (cipherSuite.Cipher == CipherFunction.ChaChaPoly && cipherSuite.Hash == HashFunction.Sha512)
 			{
 				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, prologue, s, rs);
 			}
-			else if (cipherSuite.Cipher == CipherType.ChaChaPoly && cipherSuite.Hash == HashType.Blake2b)
+			else if (cipherSuite.Cipher == CipherFunction.ChaChaPoly && cipherSuite.Hash == HashFunction.Blake2b)
 			{
 				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, prologue, s, rs);
 			}
@@ -86,28 +86,28 @@ namespace Noise
 				return false;
 			}
 
-			DhType dhType;
-			CipherType cipherType;
-			HashType hashType;
+			DhFunction dhType;
+			CipherFunction cipherType;
+			HashFunction hashType;
 
 			switch (parts[2])
 			{
-				case "25519": dhType = DhType.Curve25519; break;
+				case "25519": dhType = DhFunction.Curve25519; break;
 				default: return false;
 			}
 
 			switch (parts[3])
 			{
-				case "AESGCM": cipherType = CipherType.AesGcm; break;
-				case "ChaChaPoly": cipherType = CipherType.ChaChaPoly; break;
+				case "AESGCM": cipherType = CipherFunction.AesGcm; break;
+				case "ChaChaPoly": cipherType = CipherFunction.ChaChaPoly; break;
 				default: return false;
 			}
 
 			switch (parts[4])
 			{
-				case "SHA256": hashType = HashType.Sha256; break;
-				case "SHA512": hashType = HashType.Sha512; break;
-				case "BLAKE2b": hashType = HashType.Blake2b; break;
+				case "SHA256": hashType = HashFunction.Sha256; break;
+				case "SHA512": hashType = HashFunction.Sha512; break;
+				case "BLAKE2b": hashType = HashFunction.Blake2b; break;
 				default: return false;
 			}
 

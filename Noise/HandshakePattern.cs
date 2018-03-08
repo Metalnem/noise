@@ -190,9 +190,6 @@ namespace Noise
 			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
 			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));
 
-		/// <summary>
-		/// Initializes a new HandshakePattern.
-		/// </summary>
 		internal HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
 		{
 			if (String.IsNullOrEmpty(name))
