@@ -1,7 +1,7 @@
 namespace Noise
 {
 	/// <summary>
-	/// Tokens are arranged into message patterns.
+	/// The smallest unit of the Noise handshake language.
 	/// </summary>
 	internal enum Token
 	{
@@ -34,7 +34,10 @@ namespace Noise
 
 		/// <summary>
 		/// Noise provides a pre-shared symmetric key or PSK mode to support
-		///  protocols where both parties have a 32-byte shared secret key.
+		/// protocols where both parties have a 32-byte shared secret key.
+		/// In a PSK handshake, a "psk" token is allowed to appear one or
+		/// more times in a handshake pattern. This token can only appear
+		/// in message patterns (not pre-message patterns).
 		/// </summary>
 		PSK
 	}

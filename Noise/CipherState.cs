@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Noise
 {
@@ -23,6 +24,8 @@ namespace Noise
 		/// </summary>
 		public void InitializeKey(byte[] key)
 		{
+			Debug.Assert(key == null || key.Length == Constants.KeySize);
+
 			if (k != null)
 			{
 				Array.Clear(k, 0, k.Length);
@@ -41,7 +44,7 @@ namespace Noise
 		}
 
 		/// <summary>
-		///  Sets n = nonce. This function is used for handling out-of-order transport messages.
+		/// Sets n = nonce. This function is used for handling out-of-order transport messages.
 		/// </summary>
 		public void SetNonce(ulong nonce)
 		{
@@ -49,19 +52,15 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
-		/// Otherwise returns plaintext.
+		/// If k is non-empty returns Encrypt(k, n++, ad, plaintext, ciphertext).
+		/// Otherwise copies the plaintext to the ciphertext variable and returns
+		/// the length of the plaintext.
 		/// </summary>
-		public int EncryptWithAd(byte[] ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public int EncryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
 			if (n == MaxNonce)
 			{
 				throw new OverflowException("Nonce has reached its maximum value.");
-			}
-
-			if (ciphertext.Length < plaintext.Length + Constants.TagSize)
-			{
-				throw new ArgumentException("Buffer too small to hold the ciphertext.", nameof(ciphertext));
 			}
 
 			if (k == null)
@@ -70,28 +69,20 @@ namespace Noise
 				return plaintext.Length;
 			}
 
-			int bytesWritten = cipher.Encrypt(k, n, ad, plaintext, ciphertext);
-			++n;
-
-			return bytesWritten;
+			return cipher.Encrypt(k, n++, ad, plaintext, ciphertext);
 		}
 
 		/// <summary>
-		/// If k is non-empty returns DECRYPT(k, n++, ad, ciphertext).
-		/// Otherwise returns ciphertext. If an authentication failure
-		/// occurs in DECRYPT() then n is not incremented and an error
-		/// is signaled to the caller.
+		/// If k is non-empty returns Decrypt(k, n++, ad, ciphertext, plaintext).
+		/// Otherwise copies the ciphertext to the plaintext variable and returns
+		/// the length of the ciphertext. If an authentication failure occurs in
+		/// Decrypt() then n is not incremented and an error is signaled to the caller.
 		/// </summary>
-		public int DecryptWithAd(byte[] ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		public int DecryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
 			if (n == MaxNonce)
 			{
 				throw new OverflowException("Nonce has reached its maximum value.");
-			}
-
-			if (plaintext.Length < ciphertext.Length - Constants.TagSize)
-			{
-				throw new ArgumentException("Buffer too small to hold the plaintext.", nameof(plaintext));
 			}
 
 			if (k == null)
@@ -115,9 +106,6 @@ namespace Noise
 			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, k);
 		}
 
-		/// <summary>
-		/// Disposes the object.
-		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

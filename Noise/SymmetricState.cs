@@ -182,9 +182,6 @@ namespace Noise
 			return temp;
 		}
 
-		/// <summary>
-		/// Disposes the object.
-		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)
