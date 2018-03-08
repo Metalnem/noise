@@ -11,7 +11,7 @@ namespace Noise
 		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
 
 		/// <summary>
-		/// Alignes the pointer to the nearest alignment boundary.
+		/// Alignes the pointer up to the nearest alignment boundary.
 		/// </summary>
 		public static IntPtr Align(IntPtr ptr, int alignment)
 		{
@@ -20,14 +20,11 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// Generates a cryptographically strong random sequence of n bytes.
+		/// Generates a cryptographically strong pseudorandom sequence of n bytes.
 		/// </summary>
 		public static byte[] GetRandomBytes(int n)
 		{
-			if (n <= 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(n));
-			}
+			Exceptions.ThrowIfOutOfRange(n, nameof(n), 1);
 
 			var bytes = new byte[n];
 			random.GetBytes(bytes);
