@@ -84,6 +84,8 @@ namespace Noise
 		/// </summary>
 		public (int, ITransport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
 
@@ -159,6 +161,8 @@ namespace Noise
 		/// </summary>
 		public (int, ITransport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+
 			var next = messagePatterns.Dequeue();
 
 			foreach (var token in next.Tokens)

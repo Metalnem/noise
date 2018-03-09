@@ -52,8 +52,8 @@ namespace Noise.Tests
 				setDh.Invoke(init, new object[] { initDh });
 				setDh.Invoke(resp, new object[] { respDh });
 
-				ITransport respTransport = null;
 				ITransport initTransport = null;
+				ITransport respTransport = null;
 
 				foreach (var message in vector["messages"])
 				{
@@ -98,6 +98,9 @@ namespace Noise.Tests
 
 				init.Dispose();
 				resp.Dispose();
+
+				initTransport?.Dispose();
+				respTransport?.Dispose();
 			}
 		}
 

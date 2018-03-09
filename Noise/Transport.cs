@@ -27,6 +27,8 @@ namespace Noise
 		/// </summary>
 		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message)
 		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+
 			var cipher = initiator ? c2 : c1;
 			return cipher.EncryptWithAd(null, payload, message);
 		}
@@ -36,6 +38,8 @@ namespace Noise
 		/// </summary>
 		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload)
 		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+
 			var cipher = initiator ? c1 : c2;
 			return cipher.DecryptWithAd(null, message, payload);
 		}
