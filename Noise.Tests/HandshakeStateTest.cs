@@ -14,8 +14,8 @@ namespace Noise.Tests
 			var s = File.ReadAllText("Cacophony.txt");
 			var json = JObject.Parse(s);
 
-			var initBuffer = new byte[Constants.MaxMessageLength];
-			var respBuffer = new byte[Constants.MaxMessageLength];
+			var initBuffer = new byte[Protocol.MaxMessageLength];
+			var respBuffer = new byte[Protocol.MaxMessageLength];
 
 			foreach (var vector in json["vectors"])
 			{

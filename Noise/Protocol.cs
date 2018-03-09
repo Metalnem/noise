@@ -8,6 +8,11 @@ namespace Noise
 	public static class Protocol
 	{
 		/// <summary>
+		/// Maximum size of Noise messages in bytes.
+		/// </summary>
+		public const int MaxMessageLength = 65535;
+
+		/// <summary>
 		/// Instantiates a Noise protocol with a concrete set of
 		/// cipher functions, DH functions, and hash functions.
 		/// </summary>
