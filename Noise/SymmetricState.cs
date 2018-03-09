@@ -24,13 +24,8 @@ namespace Noise
 		/// Initializes a new SymmetricState with an
 		/// arbitrary-length protocolName byte sequence.
 		/// </summary>
-		public SymmetricState(byte[] protocolName)
+		public SymmetricState(ReadOnlySpan<byte> protocolName)
 		{
-			if (protocolName == null)
-			{
-				throw new ArgumentNullException(nameof(protocolName));
-			}
-
 			int length = hash.HashLen;
 
 			ck = new byte[length];
@@ -38,7 +33,7 @@ namespace Noise
 
 			if (protocolName.Length <= length)
 			{
-				Array.Copy(protocolName, h, protocolName.Length);
+				protocolName.CopyTo(h);
 			}
 			else
 			{
@@ -54,7 +49,7 @@ namespace Noise
 		/// If HashLen is 64, then truncates tempK to 32 bytes.
 		/// Calls InitializeKey(tempK).
 		/// </summary>
-		public void MixKey(byte[] inputKeyMaterial)
+		public void MixKey(ReadOnlySpan<byte> inputKeyMaterial)
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
@@ -83,7 +78,7 @@ namespace Noise
 		/// If HashLen is 64, then truncates tempK to 32 bytes.
 		/// Calls InitializeKey(tempK).
 		/// </summary>
-		public void MixKeyAndHash(byte[] inputKeyMaterial)
+		public void MixKeyAndHash(ReadOnlySpan<byte> inputKeyMaterial)
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
@@ -163,13 +158,8 @@ namespace Noise
 			return state.HasKey();
 		}
 
-		private void ValidateInputKeyMaterial(byte[] inputKeyMaterial)
+		private void ValidateInputKeyMaterial(ReadOnlySpan<byte> inputKeyMaterial)
 		{
-			if (inputKeyMaterial == null)
-			{
-				throw new ArgumentNullException(nameof(inputKeyMaterial));
-			}
-
 			int length = inputKeyMaterial.Length;
 
 			if (length != 0 && length != Aead.KeySize && length != dh.DhLen)

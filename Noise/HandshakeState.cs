@@ -39,7 +39,7 @@ namespace Noise
 		/// <summary>
 		/// Initializes a new HandshakeState.
 		/// </summary>
-		public HandshakeState(HandshakePattern handshakePattern, bool initiator, byte[] prologue, KeyPair s, byte[] rs)
+		public HandshakeState(HandshakePattern handshakePattern, bool initiator, ReadOnlySpan<byte> prologue, KeyPair s, byte[] rs)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
 
