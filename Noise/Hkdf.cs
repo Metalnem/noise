@@ -1,5 +1,5 @@
 using System;
-using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace Noise
 {
@@ -16,55 +16,73 @@ namespace Noise
 		/// <summary>
 		/// Takes a chainingKey byte sequence of length HashLen,
 		/// and an inputKeyMaterial byte sequence with length
-		/// either zero bytes, 32 bytes, or DhLen bytes. Returns
-		/// a pair of byte sequences each of length HashLen.
+		/// either zero bytes, 32 bytes, or DhLen bytes. Writes a
+		/// byte sequences of length 2 * HashLen into output variable.
 		/// </summary>
-		public static (byte[], byte[]) ExtractAndExpand2(byte[] chainingKey, byte[] inputKeyMaterial)
+		public static void ExtractAndExpand2(
+			ReadOnlySpan<byte> chainingKey,
+			ReadOnlySpan<byte> inputKeyMaterial,
+			Span<byte> output)
 		{
-			var tempKey = HmacHash(chainingKey, inputKeyMaterial);
-			var output1 = HmacHash(tempKey, one);
-			var output2 = HmacHash(tempKey, output1, two);
+			int hashLen = chainingKey.Length;
+			Debug.Assert(output.Length == 2 * hashLen);
 
-			return (output1, output2);
+			Span<byte> tempKey = stackalloc byte[hashLen];
+			HmacHash(chainingKey, tempKey, inputKeyMaterial);
+
+			var output1 = output.Slice(0, hashLen);
+			HmacHash(tempKey, output1, one);
+
+			var output2 = output.Slice(hashLen, hashLen);
+			HmacHash(tempKey, output2, output1, two);
 		}
 
 		/// <summary>
 		/// Takes a chainingKey byte sequence of length HashLen,
 		/// and an inputKeyMaterial byte sequence with length
-		/// either zero bytes, 32 bytes, or DhLen bytes. Returns
-		/// a triple of byte sequences each of length HashLen.
+		/// either zero bytes, 32 bytes, or DhLen bytes. Writes a
+		/// byte sequences of length 3 * HashLen into output variable.
 		/// </summary>
-		public static (byte[], byte[], byte[]) ExtractAndExpand3(byte[] chainingKey, byte[] inputKeyMaterial)
+		public static void ExtractAndExpand3(
+			ReadOnlySpan<byte> chainingKey,
+			ReadOnlySpan<byte> inputKeyMaterial,
+			Span<byte> output)
 		{
-			var tempKey = HmacHash(chainingKey, inputKeyMaterial);
-			var output1 = HmacHash(tempKey, one);
-			var output2 = HmacHash(tempKey, output1, two);
-			var output3 = HmacHash(tempKey, output2, three);
+			int hashLen = chainingKey.Length;
+			Debug.Assert(output.Length == 3 * hashLen);
 
-			return (output1, output2, output3);
+			Span<byte> tempKey = stackalloc byte[hashLen];
+			HmacHash(chainingKey, tempKey, inputKeyMaterial);
+
+			var output1 = output.Slice(0, hashLen);
+			HmacHash(tempKey, output1, one);
+
+			var output2 = output.Slice(hashLen, hashLen);
+			HmacHash(tempKey, output2, output1, two);
+
+			var output3 = output.Slice(2 * hashLen, hashLen);
+			HmacHash(tempKey, output3, output2, three);
 		}
 
-		private static byte[] HmacHash(byte[] key, params byte[][] data)
+		private static void HmacHash(
+			ReadOnlySpan<byte> key,
+			Span<byte> hmac,
+			ReadOnlySpan<byte> data1 = default,
+			ReadOnlySpan<byte> data2 = default)
 		{
 			using (var inner = new HashType())
 			using (var outer = new HashType())
 			{
+				Debug.Assert(key.Length == inner.HashLen);
+				Debug.Assert(hmac.Length == inner.HashLen);
+
 				var blockLen = inner.BlockLen;
-				var temp = new byte[inner.HashLen];
 
-				if (key.Length > blockLen)
-				{
-					outer.AppendData(key);
-					outer.GetHashAndReset(temp);
+				Span<byte> ipad = stackalloc byte[blockLen];
+				Span<byte> opad = stackalloc byte[blockLen];
 
-					key = temp;
-				}
-
-				byte[] ipad = new byte[blockLen];
-				byte[] opad = new byte[blockLen];
-
-				Array.Copy(key, ipad, key.Length);
-				Array.Copy(key, opad, key.Length);
+				key.CopyTo(ipad);
+				key.CopyTo(opad);
 
 				for (int i = 0; i < blockLen; ++i)
 				{
@@ -73,19 +91,13 @@ namespace Noise
 				}
 
 				inner.AppendData(ipad);
-
-				foreach (var item in data)
-				{
-					inner.AppendData(item);
-				}
-
-				inner.GetHashAndReset(temp);
+				inner.AppendData(data1);
+				inner.AppendData(data2);
+				inner.GetHashAndReset(hmac);
 
 				outer.AppendData(opad);
-				outer.AppendData(temp);
-				outer.GetHashAndReset(temp);
-
-				return temp;
+				outer.AppendData(hmac);
+				outer.GetHashAndReset(hmac);
 			}
 		}
 	}

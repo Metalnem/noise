@@ -58,12 +58,13 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			var (ck, tempK) = Hkdf<HashType>.ExtractAndExpand2(this.ck, inputKeyMaterial);
+			Span<byte> output = stackalloc byte[2 * hash.HashLen];
+			Hkdf<HashType>.ExtractAndExpand2(ck, inputKeyMaterial, output);
 
-			Array.Clear(this.ck, 0, this.ck.Length);
-			this.ck = ck;
+			output.Slice(0, hash.HashLen).CopyTo(ck);
 
-			state.InitializeKey(Truncate(tempK));
+			var tempK = output.Slice(hash.HashLen, Constants.KeySize);
+			state.InitializeKey(tempK);
 		}
 
 		/// <summary>
@@ -86,13 +87,16 @@ namespace Noise
 		{
 			ValidateInputKeyMaterial(inputKeyMaterial);
 
-			var (ck, tempH, tempK) = Hkdf<HashType>.ExtractAndExpand3(this.ck, inputKeyMaterial);
+			Span<byte> output = stackalloc byte[3 * hash.HashLen];
+			Hkdf<HashType>.ExtractAndExpand3(ck, inputKeyMaterial, output);
 
-			Array.Clear(this.ck, 0, this.ck.Length);
-			this.ck = ck;
+			output.Slice(0, hash.HashLen).CopyTo(ck);
+
+			var tempH = output.Slice(hash.HashLen, hash.HashLen);
+			var tempK = output.Slice(2 * hash.HashLen, Constants.KeySize);
 
 			MixHash(tempH);
-			state.InitializeKey(Truncate(tempK));
+			state.InitializeKey(tempK);
 		}
 
 		/// <summary>
@@ -136,13 +140,17 @@ namespace Noise
 		/// </summary>
 		public (CipherState<CipherType> c1, CipherState<CipherType> c2) Split()
 		{
-			var (tempK1, tempK2) = Hkdf<HashType>.ExtractAndExpand2(ck, null);
+			Span<byte> output = stackalloc byte[2 * hash.HashLen];
+			Hkdf<HashType>.ExtractAndExpand2(ck, null, output);
+
+			var tempK1 = output.Slice(0, Constants.KeySize);
+			var tempK2 = output.Slice(hash.HashLen, Constants.KeySize);
 
 			var c1 = new CipherState<CipherType>();
 			var c2 = new CipherState<CipherType>();
 
-			c1.InitializeKey(Truncate(tempK1));
-			c2.InitializeKey(Truncate(tempK2));
+			c1.InitializeKey(tempK1);
+			c2.InitializeKey(tempK2);
 
 			return (c1, c2);
 		}
@@ -168,21 +176,6 @@ namespace Noise
 			{
 				throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
 			}
-		}
-
-		private static byte[] Truncate(byte[] key)
-		{
-			if (key.Length == Constants.KeySize)
-			{
-				return key;
-			}
-
-			var temp = new byte[Constants.KeySize];
-
-			Array.Copy(key, temp, temp.Length);
-			Array.Clear(key, 0, key.Length);
-
-			return temp;
 		}
 
 		public void Dispose()

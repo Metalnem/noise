@@ -22,16 +22,13 @@ namespace Noise
 		/// <summary>
 		/// Sets k = key. Sets n = 0.
 		/// </summary>
-		public void InitializeKey(byte[] key)
+		public void InitializeKey(ReadOnlySpan<byte> key)
 		{
-			Debug.Assert(key == null || key.Length == Constants.KeySize);
+			Debug.Assert(key.Length == Constants.KeySize);
 
-			if (k != null)
-			{
-				Array.Clear(k, 0, k.Length);
-			}
+			k = k ?? new byte[Constants.KeySize];
+			key.CopyTo(k);
 
-			k = key;
 			n = 0;
 		}
 
@@ -110,7 +107,11 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				InitializeKey(null);
+				if (k != null)
+				{
+					Array.Clear(k, 0, k.Length);
+				}
+
 				disposed = true;
 			}
 		}
