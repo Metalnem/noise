@@ -82,7 +82,7 @@ namespace Noise
 		/// Takes a payload byte sequence which may be zero-length,
 		/// and a messageBuffer to write the output into.
 		/// </summary>
-		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer, out ITransport transport)
+		public (int, ITransport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
@@ -102,7 +102,7 @@ namespace Noise
 			}
 
 			int bytesWritten = state.EncryptAndHash(payload, messageBuffer);
-			transport = null;
+			ITransport transport = null;
 
 			if (messagePatterns.Count == 0)
 			{
@@ -110,7 +110,7 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return message.Length - messageBuffer.Length + bytesWritten;
+			return (message.Length - messageBuffer.Length + bytesWritten, transport);
 		}
 
 		private Span<byte> WriteE(Span<byte> buffer)
@@ -157,7 +157,7 @@ namespace Noise
 		/// Takes a byte sequence containing a Noise handshake message,
 		/// and a payloadBuffer to write the message's plaintext payload into.
 		/// </summary>
-		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer, out ITransport transport)
+		public (int, ITransport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
 			var next = messagePatterns.Dequeue();
 
@@ -176,7 +176,7 @@ namespace Noise
 			}
 
 			int bytesRead = state.DecryptAndHash(message, payloadBuffer);
-			transport = null;
+			ITransport transport = null;
 
 			if (messagePatterns.Count == 0)
 			{
@@ -184,7 +184,7 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return bytesRead;
+			return (bytesRead, transport);
 		}
 
 		private ReadOnlySpan<byte> ReadE(ReadOnlySpan<byte> buffer)
