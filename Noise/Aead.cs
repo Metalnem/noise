@@ -1,9 +1,9 @@
 namespace Noise
 {
 	/// <summary>
-	/// Noise protocol constants.
+	/// AEAD constants.
 	/// </summary>
-	internal static class Constants
+	internal static class Aead
 	{
 		/// <summary>
 		/// Secret key size in bytes.
@@ -19,10 +19,5 @@ namespace Noise
 		/// Authentication tag size in bytes.
 		/// </summary>
 		public const int TagSize = 16;
-
-		/// <summary>
-		/// Maximum size of the protocol name in bytes.
-		/// </summary>
-		public const int MaxProtocolNameLength = 255;
 	}
 }

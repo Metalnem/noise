@@ -24,9 +24,9 @@ namespace Noise
 		/// </summary>
 		public void InitializeKey(ReadOnlySpan<byte> key)
 		{
-			Debug.Assert(key.Length == Constants.KeySize);
+			Debug.Assert(key.Length == Aead.KeySize);
 
-			k = k ?? new byte[Constants.KeySize];
+			k = k ?? new byte[Aead.KeySize];
 			key.CopyTo(k);
 
 			n = 0;
@@ -99,7 +99,7 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
-			k = k ?? new byte[Constants.KeySize];
+			k = k ?? new byte[Aead.KeySize];
 			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, k);
 		}
 

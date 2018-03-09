@@ -63,7 +63,7 @@ namespace Noise
 
 			output.Slice(0, hash.HashLen).CopyTo(ck);
 
-			var tempK = output.Slice(hash.HashLen, Constants.KeySize);
+			var tempK = output.Slice(hash.HashLen, Aead.KeySize);
 			state.InitializeKey(tempK);
 		}
 
@@ -93,7 +93,7 @@ namespace Noise
 			output.Slice(0, hash.HashLen).CopyTo(ck);
 
 			var tempH = output.Slice(hash.HashLen, hash.HashLen);
-			var tempK = output.Slice(2 * hash.HashLen, Constants.KeySize);
+			var tempK = output.Slice(2 * hash.HashLen, Aead.KeySize);
 
 			MixHash(tempH);
 			state.InitializeKey(tempK);
@@ -143,8 +143,8 @@ namespace Noise
 			Span<byte> output = stackalloc byte[2 * hash.HashLen];
 			Hkdf<HashType>.ExtractAndExpand2(ck, null, output);
 
-			var tempK1 = output.Slice(0, Constants.KeySize);
-			var tempK2 = output.Slice(hash.HashLen, Constants.KeySize);
+			var tempK1 = output.Slice(0, Aead.KeySize);
+			var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);
 
 			var c1 = new CipherState<CipherType>();
 			var c2 = new CipherState<CipherType>();
@@ -172,7 +172,7 @@ namespace Noise
 
 			int length = inputKeyMaterial.Length;
 
-			if (length != 0 && length != Constants.KeySize && length != dh.DhLen)
+			if (length != 0 && length != Aead.KeySize && length != dh.DhLen)
 			{
 				throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
 			}

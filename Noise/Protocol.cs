@@ -13,6 +13,11 @@ namespace Noise
 		public const int MaxMessageLength = 65535;
 
 		/// <summary>
+		/// Maximum size of the protocol name in bytes.
+		/// </summary>
+		internal const int MaxProtocolNameLength = 255;
+
+		/// <summary>
 		/// Instantiates a Noise protocol with a concrete set of
 		/// cipher functions, DH functions, and hash functions.
 		/// </summary>
@@ -76,7 +81,7 @@ namespace Noise
 
 			handshakeState = null;
 
-			if (protocolName.Length > Constants.MaxProtocolNameLength)
+			if (protocolName.Length > MaxProtocolNameLength)
 			{
 				return false;
 			}

@@ -202,7 +202,7 @@ namespace Noise
 
 		private ReadOnlySpan<byte> ReadS(ReadOnlySpan<byte> message)
 		{
-			var length = state.HasKey() ? dh.DhLen + Constants.TagSize : dh.DhLen;
+			var length = state.HasKey() ? dh.DhLen + Aead.TagSize : dh.DhLen;
 			var temp = message.Slice(0, length);
 
 			rs = new byte[dh.DhLen];
@@ -260,7 +260,7 @@ namespace Noise
 			string hash = GetFunctionName<HashType>();
 			string protocolName = $"Noise_{handshakePatternName}_{dh}_{cipher}_{hash}";
 
-			if (protocolName.Length > Constants.MaxProtocolNameLength)
+			if (protocolName.Length > Protocol.MaxProtocolNameLength)
 			{
 				throw new ArgumentException("The Noise protocol name is too long.");
 			}

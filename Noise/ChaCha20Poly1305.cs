@@ -14,10 +14,10 @@ namespace Noise
 	{
 		public int Encrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			Debug.Assert(k.Length == Constants.KeySize);
-			Debug.Assert(ciphertext.Length >= plaintext.Length + Constants.TagSize);
+			Debug.Assert(k.Length == Aead.KeySize);
+			Debug.Assert(ciphertext.Length >= plaintext.Length + Aead.TagSize);
 
-			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
+			Span<byte> nonce = stackalloc byte[Aead.NonceSize];
 			EncodeNonce(n, nonce);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_encrypt(
@@ -37,17 +37,17 @@ namespace Noise
 				throw new CryptographicException("Encryption failed.");
 			}
 
-			Debug.Assert(length == plaintext.Length + Constants.TagSize);
+			Debug.Assert(length == plaintext.Length + Aead.TagSize);
 			return (int)length;
 		}
 
 		public int Decrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			Debug.Assert(k.Length == Constants.KeySize);
-			Debug.Assert(ciphertext.Length >= Constants.TagSize);
-			Debug.Assert(plaintext.Length >= ciphertext.Length - Constants.TagSize);
+			Debug.Assert(k.Length == Aead.KeySize);
+			Debug.Assert(ciphertext.Length >= Aead.TagSize);
+			Debug.Assert(plaintext.Length >= ciphertext.Length - Aead.TagSize);
 
-			Span<byte> nonce = stackalloc byte[Constants.NonceSize];
+			Span<byte> nonce = stackalloc byte[Aead.NonceSize];
 			EncodeNonce(n, nonce);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_decrypt(
@@ -67,7 +67,7 @@ namespace Noise
 				throw new CryptographicException("Decryption failed.");
 			}
 
-			Debug.Assert(length == ciphertext.Length - Constants.TagSize);
+			Debug.Assert(length == ciphertext.Length - Aead.TagSize);
 			return (int)length;
 		}
 
