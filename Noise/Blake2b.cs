@@ -34,11 +34,14 @@ namespace Noise
 
 		public void AppendData(ReadOnlySpan<byte> data)
 		{
-			Libsodium.crypto_generichash_blake2b_update(
-				aligned,
-				ref MemoryMarshal.GetReference(data),
-				(ulong)data.Length
-			);
+			if (!data.IsEmpty)
+			{
+				Libsodium.crypto_generichash_blake2b_update(
+					aligned,
+					ref MemoryMarshal.GetReference(data),
+					(ulong)data.Length
+				);
+			}
 		}
 
 		public void GetHashAndReset(Span<byte> hash)

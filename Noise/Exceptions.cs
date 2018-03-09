@@ -20,7 +20,7 @@ namespace Noise
 			}
 		}
 
-		public static void ThrowIfDisposed(string name, bool disposed)
+		public static void ThrowIfDisposed(bool disposed, string name)
 		{
 			if (disposed)
 			{

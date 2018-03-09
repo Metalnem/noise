@@ -25,11 +25,14 @@ namespace Noise
 
 		public void AppendData(ReadOnlySpan<byte> data)
 		{
-			Libsodium.crypto_hash_sha256_update(
-				state,
-				ref MemoryMarshal.GetReference(data),
-				(ulong)data.Length
-			);
+			if (!data.IsEmpty)
+			{
+				Libsodium.crypto_hash_sha256_update(
+					state,
+					ref MemoryMarshal.GetReference(data),
+					(ulong)data.Length
+				);
+			}
 		}
 
 		public void GetHashAndReset(Span<byte> hash)
