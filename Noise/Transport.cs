@@ -36,7 +36,7 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
-			var cipher = initiator ? c2 : c1;
+			var cipher = initiator ? c1 : c2;
 			return cipher.EncryptWithAd(null, payload, message);
 		}
 
@@ -44,7 +44,7 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
-			var cipher = initiator ? c1 : c2;
+			var cipher = initiator ? c2 : c1;
 			return cipher.DecryptWithAd(null, message, payload);
 		}
 

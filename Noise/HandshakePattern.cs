@@ -11,6 +11,46 @@ namespace Noise
 	/// </summary>
 	public sealed class HandshakePattern
 	{
+		// /// <summary>
+		// /// N():
+		// ///   ← s
+		// ///   ...
+		// ///   → e, es
+		// /// </summary>
+		// public static readonly HandshakePattern N = new HandshakePattern(
+		// 	nameof(N),
+		// 	PreMessagePattern.Empty,
+		// 	PreMessagePattern.S,
+		// 	new MessagePattern(Token.E, Token.ES)
+		// );
+
+		// /// <summary>
+		// /// K():
+		// ///   → s
+		// ///   ← s
+		// ///   ...
+		// ///   → e, es, ss
+		// /// </summary>
+		// public static readonly HandshakePattern K = new HandshakePattern(
+		// 	nameof(K),
+		// 	PreMessagePattern.S,
+		// 	PreMessagePattern.S,
+		// 	new MessagePattern(Token.E, Token.ES, Token.SS)
+		// );
+
+		// /// <summary>
+		// /// X():
+		// ///   ← s
+		// ///   ...
+		// ///   → e, es, s, ss
+		// /// </summary>
+		// public static readonly HandshakePattern X = new HandshakePattern(
+		// 	nameof(X),
+		// 	PreMessagePattern.Empty,
+		// 	PreMessagePattern.S,
+		// 	new MessagePattern(Token.E, Token.ES, Token.S, Token.SS)
+		// );
+
 		/// <summary>
 		/// NN():
 		///   → e

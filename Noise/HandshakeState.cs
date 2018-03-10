@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -50,6 +51,7 @@ namespace Noise
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
+		private readonly bool isOneWayPattern;
 		private readonly Queue<MessagePattern> messagePatterns;
 		private KeyPair e;
 		private KeyPair s;
@@ -65,6 +67,7 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
+			isOneWayPattern = handshakePattern.Patterns.Count() == 1;
 			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
 
 			this.s = s;
@@ -195,6 +198,13 @@ namespace Noise
 			if (messagePatterns.Count == 0)
 			{
 				var (c1, c2) = state.Split();
+
+				if (isOneWayPattern)
+				{
+					c2.Dispose();
+					c2 = null;
+				}
+
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 

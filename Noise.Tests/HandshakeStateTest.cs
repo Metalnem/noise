@@ -73,8 +73,6 @@ namespace Noise.Tests
 
 						(respMessageSize, respTransport) = resp.ReadMessage(initMessage, respBuffer);
 						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
-
-						Swap(ref init, ref resp);
 					}
 					else
 					{
@@ -83,14 +81,14 @@ namespace Noise.Tests
 
 						respMessageSize = respTransport.ReadMessage(initMessage, respBuffer);
 						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
-
-						Swap(ref initTransport, ref respTransport);
 					}
 
 					Assert.Equal(ciphertext, initMessage.ToArray());
 					Assert.Equal(payload, respMessage.ToArray());
 
 					Swap(ref initBuffer, ref respBuffer);
+					Swap(ref init, ref resp);
+					Swap(ref initTransport, ref respTransport);
 				}
 
 				Assert.Equal(handshakeHash, init.GetHandshakeHash());
