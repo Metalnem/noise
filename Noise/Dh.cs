@@ -21,7 +21,7 @@ namespace Noise
 		/// <summary>
 		/// Performs a Diffie-Hellman calculation between the private
 		/// key in keyPair and the publicKey and writes an output
-		/// sequence of bytes of length DhLen into sharedKey variable.
+		/// sequence of bytes of length DhLen into sharedKey parameter.
 		/// </summary>
 		void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey);
 	}

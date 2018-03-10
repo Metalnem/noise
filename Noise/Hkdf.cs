@@ -17,7 +17,7 @@ namespace Noise
 		/// Takes a chainingKey byte sequence of length HashLen,
 		/// and an inputKeyMaterial byte sequence with length
 		/// either zero bytes, 32 bytes, or DhLen bytes. Writes a
-		/// byte sequences of length 2 * HashLen into output variable.
+		/// byte sequences of length 2 * HashLen into output parameter.
 		/// </summary>
 		public static void ExtractAndExpand2(
 			ReadOnlySpan<byte> chainingKey,
@@ -41,7 +41,7 @@ namespace Noise
 		/// Takes a chainingKey byte sequence of length HashLen,
 		/// and an inputKeyMaterial byte sequence with length
 		/// either zero bytes, 32 bytes, or DhLen bytes. Writes a
-		/// byte sequences of length 3 * HashLen into output variable.
+		/// byte sequences of length 3 * HashLen into output parameter.
 		/// </summary>
 		public static void ExtractAndExpand3(
 			ReadOnlySpan<byte> chainingKey,

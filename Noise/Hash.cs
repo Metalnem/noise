@@ -24,7 +24,7 @@ namespace Noise
 		void AppendData(ReadOnlySpan<byte> data);
 
 		/// <summary>
-		/// Retrieves the hash for the accumulated data into the hash variable,
+		/// Retrieves the hash for the accumulated data into the hash parameter,
 		/// and resets the object to its initial state.
 		/// </summary>
 		void GetHashAndReset(Span<byte> hash);

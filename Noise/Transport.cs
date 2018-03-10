@@ -9,19 +9,25 @@ namespace Noise
 	public interface Transport : IDisposable
 	{
 		/// <summary>
-		/// Indicates if this Transport is one-way (supporting only a
-		/// one-way stream of data from a sender to a recipient).
+		/// Gets a value indicating whether the <see cref="Transport"/> is one-way.
 		/// </summary>
+		/// <returns>True if the <see cref="Transport"/> is one-way, false otherwise.</returns>
 		bool IsOneWay { get; }
 
 		/// <summary>
-		/// Encrypts the payload and writes the ciphertext into message.
+		/// Encrypts the <paramref name="payload"/> and writes the result into <paramref name="message"/>.
 		/// </summary>
+		/// <param name="payload">The payload to encrypt.</param>
+		/// <param name="message">The buffer for the encrypted message.</param>
+		/// <returns>The ciphertext size in bytes.</returns>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
 
 		/// <summary>
-		/// Decrypts the message and writes the plaintext into payload.
+		/// Decrypts the <paramref name="message"/> and writes the result into <paramref name="payload"/>.
 		/// </summary>
+		/// <param name="message">The message to decrypt.</param>
+		/// <param name="payload">The buffer for the decrypted payload.</param>
+		/// <returns>The plaintext size in bytes.</returns>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload);
 	}
 
