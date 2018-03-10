@@ -11,7 +11,28 @@ namespace Noise
 	/// a boolean indicating the initiator or responder role, and
 	/// the remaining portion of the handshake pattern.
 	/// </summary>
-	internal sealed class HandshakeState<CipherType, DhType, HashType> : IHandshakeState
+	public interface HandshakeState : IDisposable
+	{
+		/// <summary>
+		/// Takes a payload byte sequence which may be zero-length,
+		/// and a messageBuffer to write the output into. 
+		/// </summary>
+		(int, Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
+
+		/// <summary>
+		/// Takes a byte sequence containing a Noise handshake message,
+		/// and a payloadBuffer to write the message's plaintext payload into.
+		/// </summary>
+		(int, Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
+
+		/// <summary>
+		/// Returns h. This function should only be called at the end of
+		/// a handshake, i.e. after the Split() function has been called.
+		/// </summary>
+		byte[] GetHandshakeHash();
+	}
+
+	internal sealed class HandshakeState<CipherType, DhType, HashType> : HandshakeState
 		where CipherType : Cipher, new()
 		where DhType : Dh, new()
 		where HashType : Hash, new()
@@ -36,9 +57,6 @@ namespace Noise
 		private byte[] rs;
 		private bool disposed;
 
-		/// <summary>
-		/// Initializes a new HandshakeState.
-		/// </summary>
 		public HandshakeState(HandshakePattern handshakePattern, bool initiator, ReadOnlySpan<byte> prologue, KeyPair s, byte[] rs)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
@@ -78,11 +96,7 @@ namespace Noise
 			this.dh = dh;
 		}
 
-		/// <summary>
-		/// Takes a payload byte sequence which may be zero-length,
-		/// and a messageBuffer to write the output into.
-		/// </summary>
-		public (int, ITransport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
+		public (int, Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
@@ -104,7 +118,7 @@ namespace Noise
 			}
 
 			int bytesWritten = state.EncryptAndHash(payload, messageBuffer);
-			ITransport transport = null;
+			Transport transport = null;
 
 			if (messagePatterns.Count == 0)
 			{
@@ -155,11 +169,7 @@ namespace Noise
 			state.MixKey(Dh(s, rs));
 		}
 
-		/// <summary>
-		/// Takes a byte sequence containing a Noise handshake message,
-		/// and a payloadBuffer to write the message's plaintext payload into.
-		/// </summary>
-		public (int, ITransport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
+		public (int, Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
@@ -180,7 +190,7 @@ namespace Noise
 			}
 
 			int bytesRead = state.DecryptAndHash(message, payloadBuffer);
-			ITransport transport = null;
+			Transport transport = null;
 
 			if (messagePatterns.Count == 0)
 			{
@@ -235,10 +245,6 @@ namespace Noise
 			state.MixKey(Dh(s, rs));
 		}
 
-		/// <summary>
-		/// Returns h. This function should only be called at the end of
-		/// a handshake, i.e. after the Split() function has been called.
-		/// </summary>
 		public byte[] GetHandshakeHash()
 		{
 			return state.GetHandshakeHash();
@@ -272,9 +278,6 @@ namespace Noise
 			return Encoding.ASCII.GetBytes(protocolName);
 		}
 
-		/// <summary>
-		/// Disposes the object.
-		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

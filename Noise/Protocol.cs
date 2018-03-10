@@ -21,7 +21,7 @@ namespace Noise
 		/// Instantiates a Noise protocol with a concrete set of
 		/// cipher functions, DH functions, and hash functions.
 		/// </summary>
-		public static IHandshakeState Create(
+		public static HandshakeState Create(
 			CipherFunction cipher,
 			DhFunction dh,
 			HashFunction hash,
@@ -72,7 +72,7 @@ namespace Noise
 			byte[] prologue,
 			KeyPair s,
 			byte[] rs,
-			out IHandshakeState handshakeState)
+			out HandshakeState handshakeState)
 		{
 			if (protocolName == null)
 			{

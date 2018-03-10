@@ -52,8 +52,8 @@ namespace Noise.Tests
 				setDh.Invoke(init, new object[] { initDh });
 				setDh.Invoke(resp, new object[] { respDh });
 
-				ITransport initTransport = null;
-				ITransport respTransport = null;
+				Transport initTransport = null;
+				Transport respTransport = null;
 
 				foreach (var message in vector["messages"])
 				{
