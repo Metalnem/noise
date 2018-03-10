@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Noise
 {
@@ -34,7 +35,7 @@ namespace Noise
 		public Transport(bool initiator, CipherState<CipherType> c1, CipherState<CipherType> c2)
 		{
 			this.initiator = initiator;
-			this.c1 = c1;
+			this.c1 = c1 ?? throw new ArgumentNullException(nameof(c1));
 			this.c2 = c2;
 		}
 
@@ -44,7 +45,24 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
+			if (!initiator && IsOneWay)
+			{
+				throw new InvalidOperationException("Responder cannot write messages to a one-way stream.");
+			}
+
+			if (payload.Length + Aead.TagSize > Protocol.MaxMessageLength)
+			{
+				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
+			}
+
+			if (payload.Length + Aead.TagSize > message.Length)
+			{
+				throw new ArgumentException("Message buffer does not have enough space to hold the ciphertext.");
+			}
+
 			var cipher = initiator ? c1 : c2;
+			Debug.Assert(cipher.HasKey());
+
 			return cipher.EncryptWithAd(null, payload, message);
 		}
 
@@ -52,7 +70,29 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
+			if (initiator && IsOneWay)
+			{
+				throw new InvalidOperationException("Initiator cannot read messages from a one-way stream.");
+			}
+
+			if (message.Length > Protocol.MaxMessageLength)
+			{
+				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
+			}
+
+			if (message.Length < Aead.TagSize)
+			{
+				throw new ArgumentException($"Noise message must be greater than {Aead.TagSize} bytes in length.");
+			}
+
+			if (message.Length - Aead.TagSize > payload.Length)
+			{
+				throw new ArgumentException("Message buffer does not have enough space to hold the plaintext.");
+			}
+
 			var cipher = initiator ? c2 : c1;
+			Debug.Assert(cipher.HasKey());
+
 			return cipher.DecryptWithAd(null, message, payload);
 		}
 
