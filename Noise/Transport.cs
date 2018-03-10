@@ -8,6 +8,12 @@ namespace Noise
 	public interface Transport : IDisposable
 	{
 		/// <summary>
+		/// Indicates if this Transport is one-way (supporting only a
+		/// one-way stream of data from a sender to a recipient).
+		/// </summary>
+		bool IsOneWay { get; }
+
+		/// <summary>
 		/// Encrypts the payload and writes the ciphertext into message.
 		/// </summary>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
@@ -32,6 +38,8 @@ namespace Noise
 			this.c2 = c2;
 		}
 
+		public bool IsOneWay => c2 == null;
+
 		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
@@ -53,7 +61,7 @@ namespace Noise
 			if (!disposed)
 			{
 				c1.Dispose();
-				c2.Dispose();
+				c2?.Dispose();
 				disposed = true;
 			}
 		}

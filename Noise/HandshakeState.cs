@@ -51,8 +51,8 @@ namespace Noise
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
-		private readonly bool isOneWayPattern;
 		private readonly Queue<MessagePattern> messagePatterns;
+		private readonly bool isOneWay;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
@@ -67,8 +67,8 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
-			isOneWayPattern = handshakePattern.Patterns.Count() == 1;
 			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
+			isOneWay = messagePatterns.Count == 1;
 
 			this.s = s;
 			this.rs = rs;
@@ -126,6 +126,13 @@ namespace Noise
 			if (messagePatterns.Count == 0)
 			{
 				var (c1, c2) = state.Split();
+
+				if (isOneWay)
+				{
+					c2.Dispose();
+					c2 = null;
+				}
+
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
@@ -199,7 +206,7 @@ namespace Noise
 			{
 				var (c1, c2) = state.Split();
 
-				if (isOneWayPattern)
+				if (isOneWay)
 				{
 					c2.Dispose();
 					c2 = null;

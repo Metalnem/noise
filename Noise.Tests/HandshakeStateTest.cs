@@ -88,7 +88,11 @@ namespace Noise.Tests
 
 					Swap(ref initBuffer, ref respBuffer);
 					Swap(ref init, ref resp);
-					Swap(ref initTransport, ref respTransport);
+
+					if (initTransport != null && !initTransport.IsOneWay)
+					{
+						Swap(ref initTransport, ref respTransport);
+					}
 				}
 
 				Assert.Equal(handshakeHash, init.GetHandshakeHash());
