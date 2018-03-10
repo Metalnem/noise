@@ -30,7 +30,7 @@ namespace Noise
 
 			Libsodium.crypto_scalarmult_curve25519(
 				ref MemoryMarshal.GetReference(sharedKey),
-				keyPair.PrivateKey,
+				ref MemoryMarshal.GetReference(keyPair.PrivateKey),
 				ref MemoryMarshal.GetReference(publicKey)
 			);
 		}

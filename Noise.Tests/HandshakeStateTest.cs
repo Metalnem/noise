@@ -116,7 +116,7 @@ namespace Noise.Tests
 
 		private static KeyPair GetKeyPair(byte[] privateKey)
 		{
-			if (privateKey == null)
+			if (privateKey == null || privateKey.Length == 0)
 			{
 				return null;
 			}
