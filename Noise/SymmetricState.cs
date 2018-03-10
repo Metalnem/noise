@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Noise
@@ -16,7 +17,7 @@ namespace Noise
 		private readonly DhType dh = new DhType();
 		private readonly Hash hash = new HashType();
 		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
-		private byte[] ck;
+		private readonly byte[] ck;
 		private readonly byte[] h;
 		private bool disposed;
 
@@ -51,7 +52,8 @@ namespace Noise
 		/// </summary>
 		public void MixKey(ReadOnlySpan<byte> inputKeyMaterial)
 		{
-			ValidateInputKeyMaterial(inputKeyMaterial);
+			int length = inputKeyMaterial.Length;
+			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
 			Span<byte> output = stackalloc byte[2 * hash.HashLen];
 			Hkdf<HashType>.ExtractAndExpand2(ck, inputKeyMaterial, output);
@@ -80,7 +82,8 @@ namespace Noise
 		/// </summary>
 		public void MixKeyAndHash(ReadOnlySpan<byte> inputKeyMaterial)
 		{
-			ValidateInputKeyMaterial(inputKeyMaterial);
+			int length = inputKeyMaterial.Length;
+			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
 			Span<byte> output = stackalloc byte[3 * hash.HashLen];
 			Hkdf<HashType>.ExtractAndExpand3(ck, inputKeyMaterial, output);
@@ -156,16 +159,6 @@ namespace Noise
 		public bool HasKey()
 		{
 			return state.HasKey();
-		}
-
-		private void ValidateInputKeyMaterial(ReadOnlySpan<byte> inputKeyMaterial)
-		{
-			int length = inputKeyMaterial.Length;
-
-			if (length != 0 && length != Aead.KeySize && length != dh.DhLen)
-			{
-				throw new CryptographicException("Input key material must be either 0 bytes, 32 byte, or DhLen bytes long.");
-			}
 		}
 
 		public void Dispose()

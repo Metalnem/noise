@@ -49,7 +49,7 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// If k is non-empty returns Encrypt(k, n++, ad, plaintext, ciphertext).
+		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
 		/// Otherwise copies the plaintext to the ciphertext variable and returns
 		/// the length of the plaintext.
 		/// </summary>
@@ -70,10 +70,10 @@ namespace Noise
 		}
 
 		/// <summary>
-		/// If k is non-empty returns Decrypt(k, n++, ad, ciphertext, plaintext).
+		/// If k is non-empty returns DECRYPT(k, n++, ad, ciphertext).
 		/// Otherwise copies the ciphertext to the plaintext variable and returns
-		/// the length of the ciphertext. If an authentication failure occurs in
-		/// Decrypt() then n is not incremented and an error is signaled to the caller.
+		/// the length of the ciphertext. If an authentication failure occurs
+		/// then n is not incremented and an error is signaled to the caller.
 		/// </summary>
 		public int DecryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
