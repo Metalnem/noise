@@ -30,6 +30,10 @@ namespace Noise
 		/// <exception cref="InvalidOperationException">
 		/// Thrown if the responder has attempted to write a message to a one-way stream.
 		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Throw if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
+		/// </exception>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
 
 		/// <summary>
@@ -43,6 +47,13 @@ namespace Noise
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
 		/// Thrown if the initiator has attempted to read a message from a one-way stream.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Throw if the message was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// bytes in length, or if the output buffer did not have enough space to hold the plaintext.
+		/// </exception>
+		/// <exception cref="System.Security.Cryptography.CryptographicException">
+		/// Throw if the decryption of the message has failed.
 		/// </exception>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload);
 	}
