@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Noise
 {
 	/// <summary>
-	/// A handshake pattern consists of a pre-message pattern for
-	/// the initiator, a pre-message pattern for the responder, and
-	/// a sequence of message patterns for the actual handshake messages.
+	/// A <see href="https://noiseprotocol.org/noise.html#handshake-patterns">handshake pattern</see>
+	/// consists of a pre-message pattern for the initiator, a pre-message pattern for the responder,
+	/// and a sequence of message patterns for the actual handshake messages.
 	/// </summary>
 	public sealed class HandshakePattern
 	{
@@ -232,14 +233,11 @@ namespace Noise
 
 		internal HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
 		{
-			Exceptions.ThrowIfNull(initiator, nameof(initiator));
-			Exceptions.ThrowIfNull(responder, nameof(responder));
-			Exceptions.ThrowIfNull(patterns, nameof(patterns));
-
-			if (String.IsNullOrEmpty(name))
-			{
-				throw new ArgumentException("Name of the handshake pattern must not be empty.", nameof(name));
-			}
+			Debug.Assert(!String.IsNullOrEmpty(name));
+			Debug.Assert(initiator != null);
+			Debug.Assert(responder != null);
+			Debug.Assert(patterns != null);
+			Debug.Assert(patterns.Length > 0);
 
 			Name = name;
 			Initiator = initiator;
@@ -247,32 +245,17 @@ namespace Noise
 			Patterns = patterns;
 		}
 
-		/// <summary>
-		/// Gets the name of the handshake pattern.
-		/// </summary>
 		internal string Name { get; }
-
-		/// <summary>
-		/// Gets the pre-message pattern for the initiator.
-		/// </summary>
 		internal PreMessagePattern Initiator { get; }
-
-		/// <summary>
-		/// Gets the pre-message pattern for the responder.
-		/// </summary>
 		internal PreMessagePattern Responder { get; }
-
-		/// <summary>
-		/// Gets the message patterns of the handshake pattern.
-		/// </summary>
 		internal IEnumerable<MessagePattern> Patterns { get; }
 
 		/// <summary>
 		/// Gets the pattern with the given name.
 		/// </summary>
-		public static bool TryGetValue(string key, out HandshakePattern value)
+		internal static bool TryGetValue(string name, out HandshakePattern pattern)
 		{
-			return patterns.TryGetValue(key, out value);
+			return patterns.TryGetValue(name, out pattern);
 		}
 	}
 }
