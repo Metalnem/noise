@@ -27,6 +27,9 @@ namespace Noise
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if the responder has attempted to write a message to a one-way stream.
+		/// </exception>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
 
 		/// <summary>
@@ -37,6 +40,9 @@ namespace Noise
 		/// <returns>The plaintext size in bytes.</returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if the initiator has attempted to read a message from a one-way stream.
 		/// </exception>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload);
 	}
