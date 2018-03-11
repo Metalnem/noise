@@ -62,6 +62,7 @@ namespace Noise
 		public HandshakeState(
 			HandshakePattern handshakePattern,
 			bool initiator,
+			PatternModifiers modifiers,
 			ReadOnlySpan<byte> prologue,
 			KeyPair s,
 			ReadOnlySpan<byte> rs)

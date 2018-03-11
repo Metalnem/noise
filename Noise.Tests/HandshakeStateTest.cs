@@ -33,12 +33,12 @@ namespace Noise.Tests
 				var initStaticPair = GetKeyPair(initStatic);
 				var respStaticPair = GetKeyPair(respStatic);
 
-				if (!Protocol.Create(protocolName, true, out var init, initPrologue, initStaticPair, initRemoteStatic))
+				if (!Protocol.Create(protocolName, true, out var init, PatternModifiers.None, initPrologue, initStaticPair, initRemoteStatic))
 				{
 					continue;
 				}
 
-				if (!Protocol.Create(protocolName, false, out var resp, respPrologue, respStaticPair, respRemoteStatic))
+				if (!Protocol.Create(protocolName, false, out var resp, PatternModifiers.None, respPrologue, respStaticPair, respRemoteStatic))
 				{
 					continue;
 				}
