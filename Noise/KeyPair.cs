@@ -24,15 +24,8 @@ namespace Noise
 		/// </exception>
 		public KeyPair(byte[] privateKey, byte[] publicKey)
 		{
-			if (privateKey == null)
-			{
-				throw new ArgumentNullException(nameof(privateKey));
-			}
-
-			if (publicKey == null)
-			{
-				throw new ArgumentNullException(nameof(publicKey));
-			}
+			Exceptions.ThrowIfNull(privateKey, nameof(privateKey));
+			Exceptions.ThrowIfNull(publicKey, nameof(publicKey));
 
 			if (privateKey.Length != 32 && privateKey.Length != 56)
 			{
@@ -48,9 +41,10 @@ namespace Noise
 			this.publicKey = publicKey;
 		}
 
-		/// <summary>
-		/// Gets the private key.
-		/// </summary>
+		/// <summary>Gets the private key.</summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		public ReadOnlySpan<byte> PrivateKey
 		{
 			get
@@ -60,9 +54,10 @@ namespace Noise
 			}
 		}
 
-		/// <summary>
-		/// Gets the public key.
-		/// </summary>
+		/// <summary>Gets the public key.</summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		public ReadOnlySpan<byte> PublicKey
 		{
 			get

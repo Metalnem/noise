@@ -232,15 +232,19 @@ namespace Noise
 
 		internal HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
 		{
+			Exceptions.ThrowIfNull(initiator, nameof(initiator));
+			Exceptions.ThrowIfNull(responder, nameof(responder));
+			Exceptions.ThrowIfNull(patterns, nameof(patterns));
+
 			if (String.IsNullOrEmpty(name))
 			{
 				throw new ArgumentException("Name of the handshake pattern must not be empty.", nameof(name));
 			}
 
 			Name = name;
-			Initiator = initiator ?? throw new ArgumentNullException(nameof(initiator));
-			Responder = responder ?? throw new ArgumentNullException(nameof(responder));
-			Patterns = patterns ?? throw new ArgumentNullException(nameof(patterns));
+			Initiator = initiator;
+			Responder = responder;
+			Patterns = patterns;
 		}
 
 		/// <summary>

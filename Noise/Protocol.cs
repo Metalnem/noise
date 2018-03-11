@@ -74,10 +74,7 @@ namespace Noise
 			byte[] rs,
 			out HandshakeState handshakeState)
 		{
-			if (protocolName == null)
-			{
-				throw new ArgumentNullException(nameof(protocolName));
-			}
+			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
 
 			handshakeState = null;
 

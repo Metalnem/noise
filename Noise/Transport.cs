@@ -4,7 +4,8 @@ using System.Diagnostics;
 namespace Noise
 {
 	/// <summary>
-	/// A pair of CipherState objects for encrypting transport messages.
+	/// A pair of <see href="https://noiseprotocol.org/noise.html#the-cipherstate-object">CipherState</see>
+	/// objects for encrypting transport messages.
 	/// </summary>
 	public interface Transport : IDisposable
 	{
@@ -12,6 +13,9 @@ namespace Noise
 		/// Gets a value indicating whether the <see cref="Transport"/> is one-way.
 		/// </summary>
 		/// <returns>True if the <see cref="Transport"/> is one-way, false otherwise.</returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		bool IsOneWay { get; }
 
 		/// <summary>
@@ -20,6 +24,9 @@ namespace Noise
 		/// <param name="payload">The payload to encrypt.</param>
 		/// <param name="message">The buffer for the encrypted message.</param>
 		/// <returns>The ciphertext size in bytes.</returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
 
 		/// <summary>
@@ -28,6 +35,9 @@ namespace Noise
 		/// <param name="message">The message to decrypt.</param>
 		/// <param name="payload">The buffer for the decrypted payload.</param>
 		/// <returns>The plaintext size in bytes.</returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload);
 	}
 
@@ -40,12 +50,21 @@ namespace Noise
 
 		public Transport(bool initiator, CipherState<CipherType> c1, CipherState<CipherType> c2)
 		{
+			Exceptions.ThrowIfNull(c1, nameof(c1));
+
 			this.initiator = initiator;
-			this.c1 = c1 ?? throw new ArgumentNullException(nameof(c1));
+			this.c1 = c1;
 			this.c2 = c2;
 		}
 
-		public bool IsOneWay => c2 == null;
+		public bool IsOneWay
+		{
+			get
+			{
+				Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+				return c2 == null;
+			}
+		}
 
 		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message)
 		{
