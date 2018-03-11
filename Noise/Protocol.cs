@@ -22,14 +22,14 @@ namespace Noise
 		/// cipher functions, DH functions, and hash functions.
 		/// </summary>
 		public static HandshakeState Create(
-			CipherFunction cipher,
-			DhFunction dh,
-			HashFunction hash,
 			HandshakePattern handshakePattern,
 			bool initiator,
-			byte[] prologue,
-			KeyPair s,
-			byte[] rs)
+			CipherFunction cipher = CipherFunction.ChaChaPoly,
+			DhFunction dh = DhFunction.Curve25519,
+			HashFunction hash = HashFunction.Sha256,
+			ReadOnlySpan<byte> prologue = default,
+			KeyPair s = default,
+			ReadOnlySpan<byte> rs = default)
 		{
 
 			if (cipher == CipherFunction.AesGcm && hash == HashFunction.Sha256)
@@ -69,10 +69,10 @@ namespace Noise
 		internal static bool Create(
 			string protocolName,
 			bool initiator,
-			byte[] prologue,
-			KeyPair s,
-			byte[] rs,
-			out HandshakeState handshakeState)
+			out HandshakeState handshakeState,
+			ReadOnlySpan<byte> prologue = default,
+			KeyPair s = default,
+			ReadOnlySpan<byte> rs = default)
 		{
 			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
 
@@ -120,7 +120,7 @@ namespace Noise
 				default: return false;
 			}
 
-			handshakeState = Create(cipher, dh, hash, pattern, initiator, prologue, s, rs);
+			handshakeState = Create(pattern, initiator, cipher, dh, hash, prologue, s, rs);
 			return true;
 		}
 	}

@@ -59,7 +59,12 @@ namespace Noise
 		private byte[] rs;
 		private bool disposed;
 
-		public HandshakeState(HandshakePattern handshakePattern, bool initiator, ReadOnlySpan<byte> prologue, KeyPair s, byte[] rs)
+		public HandshakeState(
+			HandshakePattern handshakePattern,
+			bool initiator,
+			ReadOnlySpan<byte> prologue,
+			KeyPair s,
+			ReadOnlySpan<byte> rs)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
 
@@ -71,7 +76,7 @@ namespace Noise
 			isOneWay = messagePatterns.Count == 1;
 
 			this.s = s;
-			this.rs = rs;
+			this.rs = rs.ToArray();
 
 			foreach (var preMessage in handshakePattern.Initiator.Tokens)
 			{
