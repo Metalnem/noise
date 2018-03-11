@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
@@ -21,10 +22,12 @@ namespace Noise.Tests
 			{
 				var protocolName = GetString(vector, "protocol_name");
 				var initPrologue = GetBytes(vector, "init_prologue");
+				var initPsks = GetPsks(vector, "init_psks");
 				var initStatic = GetBytes(vector, "init_static");
 				var initEphemeral = GetBytes(vector, "init_ephemeral");
 				var initRemoteStatic = GetBytes(vector, "init_remote_static");
 				var respPrologue = GetBytes(vector, "resp_prologue");
+				var respPsks = GetPsks(vector, "resp_psks");
 				var respStatic = GetBytes(vector, "resp_static");
 				var respEphemeral = GetBytes(vector, "resp_ephemeral");
 				var respRemoteStatic = GetBytes(vector, "resp_remote_static");
@@ -33,12 +36,12 @@ namespace Noise.Tests
 				var initStaticPair = GetKeyPair(initStatic);
 				var respStaticPair = GetKeyPair(respStatic);
 
-				if (!Protocol.Create(protocolName, true, out var init, PatternModifiers.None, initPrologue, initStaticPair, initRemoteStatic))
+				if (!Protocol.Create(protocolName, true, out var init, initPrologue, initStaticPair, initRemoteStatic, initPsks))
 				{
 					continue;
 				}
 
-				if (!Protocol.Create(protocolName, false, out var resp, PatternModifiers.None, respPrologue, respStaticPair, respRemoteStatic))
+				if (!Protocol.Create(protocolName, false, out var resp, respPrologue, respStaticPair, respRemoteStatic, respPsks))
 				{
 					continue;
 				}
@@ -114,6 +117,25 @@ namespace Noise.Tests
 		private static byte[] GetBytes(JToken token, string property)
 		{
 			return Hex.Decode(GetString(token, property));
+		}
+
+		private static byte[][] GetPsks(JToken token, string property)
+		{
+			var psks = token[property];
+
+			if (psks == null)
+			{
+				return null;
+			}
+
+			var result = new List<byte[]>();
+
+			foreach (var psk in psks)
+			{
+				result.Add(Hex.Decode((string)psk));
+			}
+
+			return result.ToArray();
 		}
 
 		private static KeyPair GetKeyPair(byte[] privateKey)

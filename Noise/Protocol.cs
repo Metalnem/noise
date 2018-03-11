@@ -30,31 +30,32 @@ namespace Noise
 			PatternModifiers modifiers = PatternModifiers.None,
 			ReadOnlySpan<byte> prologue = default,
 			KeyPair s = default,
-			ReadOnlySpan<byte> rs = default)
+			ReadOnlySpan<byte> rs = default,
+			ReadOnlySpan<byte[]> psks = default)
 		{
 			if (cipher == CipherFunction.AesGcm && hash == HashFunction.Sha256)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else if (cipher == CipherFunction.AesGcm && hash == HashFunction.Sha512)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else if (cipher == CipherFunction.AesGcm && hash == HashFunction.Blake2b)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else if (cipher == CipherFunction.ChaChaPoly && hash == HashFunction.Sha256)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else if (cipher == CipherFunction.ChaChaPoly && hash == HashFunction.Sha512)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else if (cipher == CipherFunction.ChaChaPoly && hash == HashFunction.Blake2b)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, modifiers, prologue, s, rs);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(handshakePattern, initiator, modifiers, prologue, s, rs, psks);
 			}
 			else
 			{
@@ -70,10 +71,10 @@ namespace Noise
 			string protocolName,
 			bool initiator,
 			out HandshakeState handshakeState,
-			PatternModifiers modifiers = PatternModifiers.None,
 			ReadOnlySpan<byte> prologue = default,
 			KeyPair s = default,
-			ReadOnlySpan<byte> rs = default)
+			ReadOnlySpan<byte> rs = default,
+			ReadOnlySpan<byte[]> psks = default)
 		{
 			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
 
@@ -96,6 +97,7 @@ namespace Noise
 				return false;
 			}
 
+			PatternModifiers modifiers = PatternModifiers.None;
 			DhFunction dh;
 			CipherFunction cipher;
 			HashFunction hash;
@@ -121,7 +123,7 @@ namespace Noise
 				default: return false;
 			}
 
-			handshakeState = Create(pattern, initiator, cipher, dh, hash, modifiers, prologue, s, rs);
+			handshakeState = Create(pattern, initiator, cipher, dh, hash, modifiers, prologue, s, rs, psks);
 			return true;
 		}
 	}

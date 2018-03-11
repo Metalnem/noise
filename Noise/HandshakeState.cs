@@ -65,7 +65,8 @@ namespace Noise
 			PatternModifiers modifiers,
 			ReadOnlySpan<byte> prologue,
 			KeyPair s,
-			ReadOnlySpan<byte> rs)
+			ReadOnlySpan<byte> rs,
+			ReadOnlySpan<byte[]> psks)
 		{
 			var protocolName = GetProtocolName(handshakePattern.Name);
 
