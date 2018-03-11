@@ -31,7 +31,6 @@ namespace Noise
 			KeyPair s = default,
 			ReadOnlySpan<byte> rs = default)
 		{
-
 			if (cipher == CipherFunction.AesGcm && hash == HashFunction.Sha256)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(handshakePattern, initiator, prologue, s, rs);
