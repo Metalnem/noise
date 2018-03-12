@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Noise
@@ -63,7 +61,7 @@ namespace Noise
 			ReadOnlySpan<byte> rs,
 			IEnumerable<byte[]> psks)
 		{
-			var protocolName = GetProtocolName(handshakePattern.Name);
+			var protocolName = GetProtocolName(handshakePattern, modifiers);
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocolName);
 			state.MixHash(prologue);
@@ -293,21 +291,40 @@ namespace Noise
 			state.MixKey(sharedKey);
 		}
 
-		private static string GetFunctionName<T>()
+		private byte[] GetProtocolName(HandshakePattern handshakePattern, PatternModifiers modifiers)
 		{
-			return functionNames[typeof(T)];
-		}
+			var protocolName = new StringBuilder("Noise");
 
-		private static byte[] GetProtocolName(string handshakePatternName)
-		{
-			string cipher = GetFunctionName<CipherType>();
-			string dh = GetFunctionName<DhType>();
-			string hash = GetFunctionName<HashType>();
-			string protocolName = $"Noise_{handshakePatternName}_{dh}_{cipher}_{hash}";
+			protocolName.Append('_');
+			protocolName.Append(handshakePattern.Name);
+
+			if (modifiers != PatternModifiers.None)
+			{
+				var separator = String.Empty;
+
+				foreach (PatternModifiers modifier in Enum.GetValues(typeof(PatternModifiers)))
+				{
+					if (modifier != PatternModifiers.None)
+					{
+						protocolName.Append(separator);
+						protocolName.Append(modifier.ToString().ToLowerInvariant());
+						separator = "+";
+					}
+				}
+			}
+
+			protocolName.Append('_');
+			protocolName.Append(functionNames[typeof(DhType)]);
+
+			protocolName.Append('_');
+			protocolName.Append(functionNames[typeof(CipherType)]);
+
+			protocolName.Append('_');
+			protocolName.Append(functionNames[typeof(HashType)]);
 
 			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
 
-			return Encoding.ASCII.GetBytes(protocolName);
+			return Encoding.ASCII.GetBytes(protocolName.ToString());
 		}
 
 		public void Dispose()
