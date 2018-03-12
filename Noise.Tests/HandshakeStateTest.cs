@@ -119,7 +119,7 @@ namespace Noise.Tests
 			return Hex.Decode(GetString(token, property));
 		}
 
-		private static byte[][] GetPsks(JToken token, string property)
+		private static List<byte[]> GetPsks(JToken token, string property)
 		{
 			var psks = token[property];
 
@@ -135,7 +135,7 @@ namespace Noise.Tests
 				result.Add(Hex.Decode((string)psk));
 			}
 
-			return result.ToArray();
+			return result;
 		}
 
 		private static KeyPair GetKeyPair(byte[] privateKey)
