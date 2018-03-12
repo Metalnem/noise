@@ -16,6 +16,7 @@ namespace Noise
 		private readonly Cipher cipher = new CipherType();
 		private readonly DhType dh = new DhType();
 		private readonly Hash hash = new HashType();
+		private readonly Hkdf<HashType> hkdf = new Hkdf<HashType>();
 		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
 		private readonly byte[] ck;
 		private readonly byte[] h;
@@ -56,7 +57,7 @@ namespace Noise
 			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
 			Span<byte> output = stackalloc byte[2 * hash.HashLen];
-			Hkdf<HashType>.ExtractAndExpand2(ck, inputKeyMaterial, output);
+			hkdf.ExtractAndExpand2(ck, inputKeyMaterial, output);
 
 			output.Slice(0, hash.HashLen).CopyTo(ck);
 
@@ -86,7 +87,7 @@ namespace Noise
 			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
 			Span<byte> output = stackalloc byte[3 * hash.HashLen];
-			Hkdf<HashType>.ExtractAndExpand3(ck, inputKeyMaterial, output);
+			hkdf.ExtractAndExpand3(ck, inputKeyMaterial, output);
 
 			output.Slice(0, hash.HashLen).CopyTo(ck);
 
@@ -139,7 +140,7 @@ namespace Noise
 		public (CipherState<CipherType> c1, CipherState<CipherType> c2) Split()
 		{
 			Span<byte> output = stackalloc byte[2 * hash.HashLen];
-			Hkdf<HashType>.ExtractAndExpand2(ck, null, output);
+			hkdf.ExtractAndExpand2(ck, null, output);
 
 			var tempK1 = output.Slice(0, Aead.KeySize);
 			var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);
@@ -166,6 +167,7 @@ namespace Noise
 			if (!disposed)
 			{
 				hash.Dispose();
+				hkdf.Dispose();
 				state.Dispose();
 				Array.Clear(ck, 0, ck.Length);
 				Array.Clear(h, 0, h.Length);
