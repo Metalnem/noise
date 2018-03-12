@@ -22,15 +22,15 @@ namespace Noise
 
 		public Protocol(
 			HandshakePattern handshakePattern,
-			CipherFunction cipher = CipherFunction.ChaChaPoly,
-			DhFunction dh = DhFunction.Curve25519,
-			HashFunction hash = HashFunction.Sha256,
+			CipherFunction cipher,
+			DhFunction dh,
+			HashFunction hash,
 			PatternModifiers modifiers = PatternModifiers.None)
 		{
 			Exceptions.ThrowIfNull(handshakePattern, nameof(handshakePattern));
-			Exceptions.ThrowIfNotDefined(typeof(CipherFunction), cipher, nameof(cipher));
-			Exceptions.ThrowIfNotDefined(typeof(DhFunction), dh, nameof(dh));
-			Exceptions.ThrowIfNotDefined(typeof(HashFunction), hash, nameof(hash));
+			Exceptions.ThrowIfNull(cipher, nameof(cipher));
+			Exceptions.ThrowIfNull(dh, nameof(dh));
+			Exceptions.ThrowIfNull(hash, nameof(hash));
 
 			HandshakePattern = handshakePattern;
 			Cipher = cipher;
@@ -178,28 +178,13 @@ namespace Noise
 			}
 
 			protocolName.Append('_');
-
-			switch (Dh)
-			{
-				case DhFunction.Curve25519: protocolName.Append("25519"); break;
-			}
+			protocolName.Append(Dh.Name);
 
 			protocolName.Append('_');
-
-			switch (Cipher)
-			{
-				case CipherFunction.AesGcm: protocolName.Append("AESGCM"); break;
-				case CipherFunction.ChaChaPoly: protocolName.Append("ChaChaPoly"); break;
-			}
+			protocolName.Append(Cipher.Name);
 
 			protocolName.Append('_');
-
-			switch (Hash)
-			{
-				case HashFunction.Sha256: protocolName.Append("SHA256"); break;
-				case HashFunction.Sha512: protocolName.Append("SHA512"); break;
-				case HashFunction.Blake2b: protocolName.Append("BLAKE2b"); break;
-			}
+			protocolName.Append(Hash.Name);
 
 			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
 

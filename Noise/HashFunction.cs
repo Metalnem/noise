@@ -1,23 +1,30 @@
 namespace Noise
 {
 	/// <summary>
-	/// Enum representing the available hash functions.
+	/// Constants representing the available hash functions.
 	/// </summary>
-	public enum HashFunction
+	public sealed class HashFunction
 	{
 		/// <summary>
 		/// SHA-256 from <see href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS 180-4</see>.
 		/// </summary>
-		Sha256,
+		public static readonly HashFunction Sha256 = new HashFunction("SHA256");
 
 		/// <summary>
 		/// SHA-512 from <see href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS 180-4</see>.
 		/// </summary>
-		Sha512,
+		public static readonly HashFunction Sha512 = new HashFunction("SHA512");
 
 		/// <summary>
 		/// BLAKE2b from <see href="https://tools.ietf.org/html/rfc7693">RFC 7693</see>.
 		/// </summary>
-		Blake2b
+		public static readonly HashFunction Blake2b = new HashFunction("BLAKE2b");
+
+		private HashFunction(string name)
+		{
+			Name = name;
+		}
+
+		internal string Name { get; }
 	}
 }
