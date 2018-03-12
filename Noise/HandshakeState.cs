@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,19 +19,13 @@ namespace Noise
 		/// Takes a payload byte sequence which may be zero-length,
 		/// and a messageBuffer to write the output into. 
 		/// </summary>
-		(int, Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
+		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 
 		/// <summary>
 		/// Takes a byte sequence containing a Noise handshake message,
 		/// and a payloadBuffer to write the message's plaintext payload into.
 		/// </summary>
-		(int, Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
-
-		/// <summary>
-		/// Returns h. This function should only be called at the end of
-		/// a handshake, i.e. after the Split() function has been called.
-		/// </summary>
-		byte[] GetHandshakeHash();
+		(int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
 	}
 
 	internal sealed class HandshakeState<CipherType, DhType, HashType> : HandshakeState
@@ -106,7 +101,7 @@ namespace Noise
 			this.dh = dh;
 		}
 
-		public (int, Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
+		public (int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
@@ -128,6 +123,7 @@ namespace Noise
 			}
 
 			int bytesWritten = state.EncryptAndHash(payload, messageBuffer);
+			byte[] handshakeHash = null;
 			Transport transport = null;
 
 			if (messagePatterns.Count == 0)
@@ -140,19 +136,15 @@ namespace Noise
 					c2 = null;
 				}
 
+				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return (message.Length - messageBuffer.Length + bytesWritten, transport);
+			return (message.Length - messageBuffer.Length + bytesWritten, handshakeHash, transport);
 		}
 
 		private Span<byte> WriteE(Span<byte> buffer)
 		{
-			if (e != null)
-			{
-				throw new CryptographicException("Ephemeral key can be initialized only once.");
-			}
-
 			e = dh.GenerateKeyPair();
 			e.PublicKey.CopyTo(buffer);
 			state.MixHash(e.PublicKey);
@@ -200,7 +192,7 @@ namespace Noise
 			MixKey(s, rs);
 		}
 
-		public (int, Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
+		public (int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
@@ -221,6 +213,7 @@ namespace Noise
 			}
 
 			int bytesRead = state.DecryptAndHash(message, payloadBuffer);
+			byte[] handshakeHash = null;
 			Transport transport = null;
 
 			if (messagePatterns.Count == 0)
@@ -233,19 +226,15 @@ namespace Noise
 					c2 = null;
 				}
 
+				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
-			return (bytesRead, transport);
+			return (bytesRead, handshakeHash, transport);
 		}
 
 		private ReadOnlySpan<byte> ReadE(ReadOnlySpan<byte> buffer)
 		{
-			if (re != null)
-			{
-				throw new CryptographicException("Remote ephemeral key can be initialized only once.");
-			}
-
 			re = buffer.Slice(0, dh.DhLen).ToArray();
 			state.MixHash(re);
 
@@ -297,11 +286,6 @@ namespace Noise
 			MixKey(s, rs);
 		}
 
-		public byte[] GetHandshakeHash()
-		{
-			return state.GetHandshakeHash();
-		}
-
 		private void MixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
 		{
 			Span<byte> sharedKey = stackalloc byte[dh.DhLen];
@@ -321,10 +305,7 @@ namespace Noise
 			string hash = GetFunctionName<HashType>();
 			string protocolName = $"Noise_{handshakePatternName}_{dh}_{cipher}_{hash}";
 
-			if (protocolName.Length > Protocol.MaxProtocolNameLength)
-			{
-				throw new ArgumentException("The Noise protocol name is too long.");
-			}
+			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
 
 			return Encoding.ASCII.GetBytes(protocolName);
 		}

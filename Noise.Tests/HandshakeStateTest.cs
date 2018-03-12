@@ -58,6 +58,9 @@ namespace Noise.Tests
 				Transport initTransport = null;
 				Transport respTransport = null;
 
+				byte[] initHandshakeHash = null;
+				byte[] respHandshakeHash = null;
+
 				foreach (var message in vector["messages"])
 				{
 					var payload = GetBytes(message, "payload");
@@ -71,10 +74,10 @@ namespace Noise.Tests
 
 					if (initTransport == null && respTransport == null)
 					{
-						(initMessageSize, initTransport) = init.WriteMessage(payload, initBuffer);
+						(initMessageSize, initHandshakeHash, initTransport) = init.WriteMessage(payload, initBuffer);
 						initMessage = initBuffer.AsSpan().Slice(0, initMessageSize);
 
-						(respMessageSize, respTransport) = resp.ReadMessage(initMessage, respBuffer);
+						(respMessageSize, respHandshakeHash, respTransport) = resp.ReadMessage(initMessage, respBuffer);
 						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
 					}
 					else
@@ -98,8 +101,8 @@ namespace Noise.Tests
 					}
 				}
 
-				Assert.Equal(handshakeHash, init.GetHandshakeHash());
-				Assert.Equal(handshakeHash, resp.GetHandshakeHash());
+				Assert.Equal(handshakeHash, initHandshakeHash);
+				Assert.Equal(handshakeHash, respHandshakeHash);
 
 				init.Dispose();
 				resp.Dispose();
