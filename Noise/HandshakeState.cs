@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace Noise
 {
@@ -31,21 +29,12 @@ namespace Noise
 		where DhType : Dh, new()
 		where HashType : Hash, new()
 	{
-		private static readonly Dictionary<Type, string> functionNames = new Dictionary<Type, string>
-		{
-			{typeof(Aes256Gcm), "AESGCM"},
-			{typeof(ChaCha20Poly1305), "ChaChaPoly"},
-			{typeof(Curve25519), "25519"},
-			{typeof(Sha256), "SHA256"},
-			{typeof(Sha512), "SHA512"},
-			{typeof(Blake2b), "BLAKE2b"}
-		};
-
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
 		private readonly Queue<MessagePattern> messagePatterns;
 		private readonly bool isOneWay;
+		private readonly bool isPsk;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
@@ -53,22 +42,22 @@ namespace Noise
 		private bool disposed;
 
 		public HandshakeState(
-			HandshakePattern handshakePattern,
+			Protocol protocol,
 			bool initiator,
-			PatternModifiers modifiers,
 			ReadOnlySpan<byte> prologue,
 			KeyPair s,
 			ReadOnlySpan<byte> rs,
 			IEnumerable<byte[]> psks)
 		{
-			var protocolName = GetProtocolName(handshakePattern, modifiers);
+			var handshakePattern = protocol.HandshakePattern;
 
-			state = new SymmetricState<CipherType, DhType, HashType>(protocolName);
+			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
 			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
 			isOneWay = messagePatterns.Count == 1;
+			isPsk = protocol.Modifiers != PatternModifiers.None;
 
 			this.s = s;
 			this.rs = rs.ToArray();
@@ -289,42 +278,6 @@ namespace Noise
 			Span<byte> sharedKey = stackalloc byte[dh.DhLen];
 			dh.Dh(keyPair, publicKey, sharedKey);
 			state.MixKey(sharedKey);
-		}
-
-		private byte[] GetProtocolName(HandshakePattern handshakePattern, PatternModifiers modifiers)
-		{
-			var protocolName = new StringBuilder("Noise");
-
-			protocolName.Append('_');
-			protocolName.Append(handshakePattern.Name);
-
-			if (modifiers != PatternModifiers.None)
-			{
-				var separator = String.Empty;
-
-				foreach (PatternModifiers modifier in Enum.GetValues(typeof(PatternModifiers)))
-				{
-					if (modifier != PatternModifiers.None)
-					{
-						protocolName.Append(separator);
-						protocolName.Append(modifier.ToString().ToLowerInvariant());
-						separator = "+";
-					}
-				}
-			}
-
-			protocolName.Append('_');
-			protocolName.Append(functionNames[typeof(DhType)]);
-
-			protocolName.Append('_');
-			protocolName.Append(functionNames[typeof(CipherType)]);
-
-			protocolName.Append('_');
-			protocolName.Append(functionNames[typeof(HashType)]);
-
-			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
-
-			return Encoding.ASCII.GetBytes(protocolName.ToString());
 		}
 
 		public void Dispose()

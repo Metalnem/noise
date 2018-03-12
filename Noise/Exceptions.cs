@@ -19,5 +19,13 @@ namespace Noise
 				throw new ObjectDisposedException(name);
 			}
 		}
+
+		public static void ThrowIfNotDefined(Type enumType, object value, string name)
+		{
+			if (!Enum.IsDefined(enumType, value))
+			{
+				throw new ArgumentException($"Value {value} is not part of the {enumType.Name} enum.", name);
+			}
+		}
 	}
 }
