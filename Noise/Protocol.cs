@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Noise
 {
@@ -31,7 +32,7 @@ namespace Noise
 			ReadOnlySpan<byte> prologue = default,
 			KeyPair s = default,
 			ReadOnlySpan<byte> rs = default,
-			ReadOnlySpan<byte[]> psks = default)
+			IEnumerable<byte[]> psks = default)
 		{
 			if (cipher == CipherFunction.AesGcm && hash == HashFunction.Sha256)
 			{
@@ -74,7 +75,7 @@ namespace Noise
 			ReadOnlySpan<byte> prologue = default,
 			KeyPair s = default,
 			ReadOnlySpan<byte> rs = default,
-			ReadOnlySpan<byte[]> psks = default)
+			IEnumerable<byte[]> psks = default)
 		{
 			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
 
