@@ -20,6 +20,11 @@ namespace Noise
 		/// </summary>
 		internal const int MaxProtocolNameLength = 255;
 
+		public Protocol(HandshakePattern handshakePattern, PatternModifiers modifiers = PatternModifiers.None)
+			: this(handshakePattern, CipherFunction.ChaChaPoly, DhFunction.Curve25519, HashFunction.Sha256, modifiers)
+		{
+		}
+
 		public Protocol(
 			HandshakePattern handshakePattern,
 			CipherFunction cipher,
