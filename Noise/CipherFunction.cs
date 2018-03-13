@@ -1,3 +1,5 @@
+using System;
+
 namespace Noise
 {
 	/// <summary>
@@ -16,11 +18,25 @@ namespace Noise
 		/// </summary>
 		public static readonly CipherFunction ChaChaPoly = new CipherFunction("ChaChaPoly");
 
-		private CipherFunction(string name)
-		{
-			Name = name;
-		}
+		private readonly string name;
 
-		internal string Name { get; }
+		private CipherFunction(string name) => this.name = name;
+		public override string ToString() => name;
+
+		internal static CipherFunction Parse(ReadOnlySpan<char> cipher)
+		{
+			if (cipher.SequenceEqual(AesGcm.name.AsReadOnlySpan()))
+			{
+				return AesGcm;
+			}
+			else if (cipher.SequenceEqual(ChaChaPoly.name.AsReadOnlySpan()))
+			{
+				return ChaChaPoly;
+			}
+			else
+			{
+				throw new ArgumentException("Unknown cipher function.", nameof(cipher));
+			}
+		}
 	}
 }

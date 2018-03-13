@@ -128,36 +128,22 @@ namespace Noise
 				return false;
 			}
 
-			PatternModifiers modifiers = PatternModifiers.None;
-			DhFunction dh;
-			CipherFunction cipher;
-			HashFunction hash;
-
-			switch (parts[2])
+			try
 			{
-				case "25519": dh = DhFunction.Curve25519; break;
-				default: return false;
-			}
+				DhFunction dh = DhFunction.Parse(parts[2].AsReadOnlySpan());
+				CipherFunction cipher = CipherFunction.Parse(parts[3].AsReadOnlySpan());
+				HashFunction hash = HashFunction.Parse(parts[4].AsReadOnlySpan());
+				PatternModifiers modifiers = PatternModifiers.None;
 
-			switch (parts[3])
+				var protocol = new Protocol(pattern, cipher, dh, hash, modifiers);
+				handshakeState = protocol.Create(initiator, prologue, s, rs, psks);
+
+				return true;
+			}
+			catch
 			{
-				case "AESGCM": cipher = CipherFunction.AesGcm; break;
-				case "ChaChaPoly": cipher = CipherFunction.ChaChaPoly; break;
-				default: return false;
+				return false;
 			}
-
-			switch (parts[4])
-			{
-				case "SHA256": hash = HashFunction.Sha256; break;
-				case "SHA512": hash = HashFunction.Sha512; break;
-				case "BLAKE2b": hash = HashFunction.Blake2b; break;
-				default: return false;
-			}
-
-			var protocol = new Protocol(pattern, cipher, dh, hash, modifiers);
-			handshakeState = protocol.Create(initiator, prologue, s, rs, psks);
-
-			return true;
 		}
 
 		private byte[] GetName()
@@ -183,13 +169,13 @@ namespace Noise
 			}
 
 			protocolName.Append('_');
-			protocolName.Append(Dh.Name);
+			protocolName.Append(Dh);
 
 			protocolName.Append('_');
-			protocolName.Append(Cipher.Name);
+			protocolName.Append(Cipher);
 
 			protocolName.Append('_');
-			protocolName.Append(Hash.Name);
+			protocolName.Append(Hash);
 
 			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
 

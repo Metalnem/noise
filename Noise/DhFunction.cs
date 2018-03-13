@@ -1,3 +1,5 @@
+using System;
+
 namespace Noise
 {
 	/// <summary>
@@ -11,11 +13,21 @@ namespace Noise
 		/// </summary>
 		public static readonly DhFunction Curve25519 = new DhFunction("25519");
 
-		private DhFunction(string name)
-		{
-			Name = name;
-		}
+		private readonly string name;
 
-		internal string Name { get; }
+		private DhFunction(string name) => this.name = name;
+		public override string ToString() => name;
+
+		internal static DhFunction Parse(ReadOnlySpan<char> dh)
+		{
+			if (dh.SequenceEqual(Curve25519.name.AsReadOnlySpan()))
+			{
+				return Curve25519;
+			}
+			else
+			{
+				throw new ArgumentException("Unknown DH function.", nameof(dh));
+			}
+		}
 	}
 }
