@@ -59,9 +59,9 @@ namespace Noise
 		/// </summary>
 		public HandshakeState Create(
 			bool initiator,
-			ReadOnlySpan<byte> prologue = default,
+			byte[] prologue = default,
 			KeyPair s = default,
-			ReadOnlySpan<byte> rs = default,
+			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
 		{
 			if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Sha256)
@@ -102,9 +102,9 @@ namespace Noise
 			string protocolName,
 			bool initiator,
 			out HandshakeState handshakeState,
-			ReadOnlySpan<byte> prologue = default,
+			byte[] prologue = default,
 			KeyPair s = default,
-			ReadOnlySpan<byte> rs = default,
+			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
 		{
 			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
