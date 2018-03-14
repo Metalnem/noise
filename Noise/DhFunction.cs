@@ -18,15 +18,12 @@ namespace Noise
 		private DhFunction(string name) => this.name = name;
 		public override string ToString() => name;
 
-		internal static DhFunction Parse(ReadOnlySpan<char> dh)
+		internal static DhFunction Parse(ReadOnlySpan<char> s)
 		{
-			if (dh.SequenceEqual(Curve25519.name.AsReadOnlySpan()))
+			switch (s)
 			{
-				return Curve25519;
-			}
-			else
-			{
-				throw new ArgumentException("Unknown DH function.", nameof(dh));
+				case var _ when s.SequenceEqual(Curve25519.name.AsReadOnlySpan()): return Curve25519;
+				default: throw new ArgumentException("Unknown DH function.", nameof(s));
 			}
 		}
 	}

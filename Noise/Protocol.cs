@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Noise
@@ -19,6 +20,10 @@ namespace Noise
 		/// Maximum size of the protocol name in bytes.
 		/// </summary>
 		internal const int MaxProtocolNameLength = 255;
+
+		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetFields()
+			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
+			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));
 
 		public Protocol(HandshakePattern handshakePattern, PatternModifiers modifiers = PatternModifiers.None)
 			: this(handshakePattern, CipherFunction.ChaChaPoly, DhFunction.Curve25519, HashFunction.Sha256, modifiers)
@@ -123,7 +128,7 @@ namespace Noise
 				return false;
 			}
 
-			if (!HandshakePattern.TryGetValue(parts[1], out var pattern))
+			if (!patterns.TryGetValue(parts[1], out var pattern))
 			{
 				return false;
 			}
@@ -177,7 +182,7 @@ namespace Noise
 			protocolName.Append('_');
 			protocolName.Append(Hash);
 
-			Debug.Assert(protocolName.Length <= Protocol.MaxProtocolNameLength);
+			Debug.Assert(protocolName.Length <= MaxProtocolNameLength);
 
 			return Encoding.ASCII.GetBytes(protocolName.ToString());
 		}

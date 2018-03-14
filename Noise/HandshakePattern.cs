@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Noise
 {
@@ -227,10 +226,6 @@ namespace Noise
 			new MessagePattern(Token.E, Token.EE, Token.SE, Token.S, Token.ES)
 		);
 
-		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetFields()
-			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
-			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));
-
 		internal HandshakePattern(string name, PreMessagePattern initiator, PreMessagePattern responder, params MessagePattern[] patterns)
 		{
 			Debug.Assert(!String.IsNullOrEmpty(name));
@@ -249,13 +244,5 @@ namespace Noise
 		internal PreMessagePattern Initiator { get; }
 		internal PreMessagePattern Responder { get; }
 		internal IEnumerable<MessagePattern> Patterns { get; }
-
-		/// <summary>
-		/// Gets the pattern with the given name.
-		/// </summary>
-		internal static bool TryGetValue(string name, out HandshakePattern pattern)
-		{
-			return patterns.TryGetValue(name, out pattern);
-		}
 	}
 }

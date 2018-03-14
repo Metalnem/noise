@@ -13,7 +13,7 @@ namespace Noise
 	{
 		/// <summary>
 		/// Takes a payload byte sequence which may be zero-length,
-		/// and a messageBuffer to write the output into. 
+		/// and a messageBuffer to write the output into.
 		/// </summary>
 		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 

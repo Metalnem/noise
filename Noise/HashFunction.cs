@@ -27,23 +27,14 @@ namespace Noise
 		private HashFunction(string name) => this.name = name;
 		public override string ToString() => name;
 
-		internal static HashFunction Parse(ReadOnlySpan<char> hash)
+		internal static HashFunction Parse(ReadOnlySpan<char> s)
 		{
-			if (hash.SequenceEqual(Sha256.name.AsReadOnlySpan()))
+			switch (s)
 			{
-				return Sha256;
-			}
-			else if (hash.SequenceEqual(Sha512.name.AsReadOnlySpan()))
-			{
-				return Sha512;
-			}
-			else if (hash.SequenceEqual(Blake2b.name.AsReadOnlySpan()))
-			{
-				return Blake2b;
-			}
-			else
-			{
-				throw new ArgumentException("Unknown hash function.", nameof(hash));
+				case var _ when s.SequenceEqual(Sha256.name.AsReadOnlySpan()): return Sha256;
+				case var _ when s.SequenceEqual(Sha512.name.AsReadOnlySpan()): return Sha512;
+				case var _ when s.SequenceEqual(Blake2b.name.AsReadOnlySpan()): return Blake2b;
+				default: throw new ArgumentException("Unknown hash function.", nameof(s));
 			}
 		}
 	}

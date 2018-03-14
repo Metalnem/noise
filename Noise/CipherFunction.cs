@@ -23,19 +23,13 @@ namespace Noise
 		private CipherFunction(string name) => this.name = name;
 		public override string ToString() => name;
 
-		internal static CipherFunction Parse(ReadOnlySpan<char> cipher)
+		internal static CipherFunction Parse(ReadOnlySpan<char> s)
 		{
-			if (cipher.SequenceEqual(AesGcm.name.AsReadOnlySpan()))
+			switch (s)
 			{
-				return AesGcm;
-			}
-			else if (cipher.SequenceEqual(ChaChaPoly.name.AsReadOnlySpan()))
-			{
-				return ChaChaPoly;
-			}
-			else
-			{
-				throw new ArgumentException("Unknown cipher function.", nameof(cipher));
+				case var _ when s.SequenceEqual(AesGcm.name.AsReadOnlySpan()): return AesGcm;
+				case var _ when s.SequenceEqual(ChaChaPoly.name.AsReadOnlySpan()): return ChaChaPoly;
+				default: throw new ArgumentException("Unknown cipher function.", nameof(s));
 			}
 		}
 	}
