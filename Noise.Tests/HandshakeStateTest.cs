@@ -21,6 +21,12 @@ namespace Noise.Tests
 			foreach (var vector in json["vectors"])
 			{
 				var protocolName = GetString(vector, "protocol_name");
+
+				if (protocolName.Contains("psk") || protocolName.Contains("448") || protocolName.Contains("BLAKE2s"))
+				{
+					continue;
+				}
+
 				var initPrologue = GetBytes(vector, "init_prologue");
 				var initPsks = GetPsks(vector, "init_psks");
 				var initStatic = GetBytes(vector, "init_static");
@@ -36,15 +42,10 @@ namespace Noise.Tests
 				var initStaticPair = GetKeyPair(initStatic);
 				var respStaticPair = GetKeyPair(respStatic);
 
-				if (!Protocol.Create(protocolName, true, out var init, initPrologue, initStaticPair, initRemoteStatic, initPsks))
-				{
-					continue;
-				}
+				var protocol = Protocol.Parse(protocolName.AsReadOnlySpan());
 
-				if (!Protocol.Create(protocolName, false, out var resp, respPrologue, respStaticPair, respRemoteStatic, respPsks))
-				{
-					continue;
-				}
+				var init = protocol.Create(true, initPrologue, initStaticPair, initRemoteStatic, initPsks);
+				var resp = protocol.Create(false, respPrologue, respStaticPair, respRemoteStatic, respPsks);
 
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);

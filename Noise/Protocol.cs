@@ -17,9 +17,14 @@ namespace Noise
 		public const int MaxMessageLength = 65535;
 
 		/// <summary>
+		/// Minimum size of the protocol name in bytes.
+		/// </summary>
+		private static readonly int MinProtocolNameLength = "Noise_N_448_AESGCM_SHA256".Length;
+
+		/// <summary>
 		/// Maximum size of the protocol name in bytes.
 		/// </summary>
-		internal const int MaxProtocolNameLength = 255;
+		private const int MaxProtocolNameLength = 255;
 
 		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetFields()
 			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
@@ -99,55 +104,81 @@ namespace Noise
 			}
 		}
 
-		/// <summary>
-		/// Instantiates a Noise protocol with a concrete set of
-		/// cipher functions, DH functions, and hash functions.
-		/// </summary>
-		internal static bool Create(
-			string protocolName,
-			bool initiator,
-			out HandshakeState handshakeState,
-			byte[] prologue = default,
-			KeyPair s = default,
-			byte[] rs = default,
-			IEnumerable<byte[]> psks = default)
+		public static Protocol Parse(ReadOnlySpan<char> s)
 		{
-			Exceptions.ThrowIfNull(protocolName, nameof(protocolName));
-
-			handshakeState = null;
-
-			if (protocolName.Length > MaxProtocolNameLength)
+			if (s.Length < MinProtocolNameLength || s.Length > MaxProtocolNameLength)
 			{
-				return false;
+				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
 
-			string[] parts = protocolName.Split('_');
+			var splitter = new StringSplitter(s, '_');
+			var noise = splitter.Next();
 
-			if (parts.Length != 5 || parts[0] != "Noise")
+			if (!noise.SequenceEqual("Noise".AsReadOnlySpan()))
 			{
-				return false;
+				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
 
-			if (!patterns.TryGetValue(parts[1], out var pattern))
+			var next = splitter.Next();
+			var pattern = next.Length > 1 && Char.IsUpper(next[1]) ? next.Slice(0, 2) : next.Slice(0, 1);
+
+			var handshakePattern = ParseHandshakePattern(pattern);
+			var modifiers = ParseModifiers(next.Slice(pattern.Length));
+
+			var dh = DhFunction.Parse(splitter.Next());
+			var cipher = CipherFunction.Parse(splitter.Next());
+			var hash = HashFunction.Parse(splitter.Next());
+
+			if (!splitter.Next().IsEmpty)
 			{
-				return false;
+				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
 
-			try
+			return new Protocol(handshakePattern, cipher, dh, hash, modifiers);
+		}
+
+		private static HandshakePattern ParseHandshakePattern(ReadOnlySpan<char> s)
+		{
+			foreach (var pattern in patterns)
 			{
-				DhFunction dh = DhFunction.Parse(parts[2].AsReadOnlySpan());
-				CipherFunction cipher = CipherFunction.Parse(parts[3].AsReadOnlySpan());
-				HashFunction hash = HashFunction.Parse(parts[4].AsReadOnlySpan());
-				PatternModifiers modifiers = PatternModifiers.None;
-
-				var protocol = new Protocol(pattern, cipher, dh, hash, modifiers);
-				handshakeState = protocol.Create(initiator, prologue, s, rs, psks);
-
-				return true;
+				if (pattern.Key.AsReadOnlySpan().SequenceEqual(s))
+				{
+					return pattern.Value;
+				}
 			}
-			catch
+
+			throw new ArgumentException("Invalid Noise handshake pattern name.", nameof(s));
+		}
+
+		private static PatternModifiers ParseModifiers(ReadOnlySpan<char> s)
+		{
+			var splitter = new StringSplitter(s, '+');
+			var modifiers = PatternModifiers.None;
+
+			for (var next = splitter.Next(); !next.IsEmpty; next = splitter.Next())
 			{
-				return false;
+				var modifier = ParseModifier(next);
+
+				if (modifier <= modifiers)
+				{
+					throw new ArgumentException("PSK pattern modifiers are required to be sorted alphabetically.");
+				}
+
+				modifiers |= modifier;
+			}
+
+			return modifiers;
+		}
+
+		private static PatternModifiers ParseModifier(ReadOnlySpan<char> s)
+		{
+			switch (s)
+			{
+				case var _ when s.SequenceEqual("psk0".AsReadOnlySpan()): return PatternModifiers.Psk0;
+				case var _ when s.SequenceEqual("psk1".AsReadOnlySpan()): return PatternModifiers.Psk1;
+				case var _ when s.SequenceEqual("psk2".AsReadOnlySpan()): return PatternModifiers.Psk2;
+				case var _ when s.SequenceEqual("psk3".AsReadOnlySpan()): return PatternModifiers.Psk3;
+				default: throw new ArgumentException("Unknown pattern modifier.", nameof(s));
 			}
 		}
 
@@ -185,6 +216,38 @@ namespace Noise
 			Debug.Assert(protocolName.Length <= MaxProtocolNameLength);
 
 			return Encoding.ASCII.GetBytes(protocolName.ToString());
+		}
+
+		private ref struct StringSplitter
+		{
+			private ReadOnlySpan<char> s;
+			private char separator;
+
+			public StringSplitter(ReadOnlySpan<char> s, char separator)
+			{
+				this.s = s;
+				this.separator = separator;
+			}
+
+			public ReadOnlySpan<char> Next()
+			{
+				int index = s.IndexOf(separator);
+
+				if (index > 0)
+				{
+					var next = s.Slice(0, index);
+					s = s.Slice(index + 1);
+
+					return next;
+				}
+				else
+				{
+					var next = s;
+					s = ReadOnlySpan<char>.Empty;
+
+					return next;
+				}
+			}
 		}
 	}
 }
