@@ -16,6 +16,11 @@ namespace Noise
 		private readonly string name;
 
 		private DhFunction(string name) => this.name = name;
+
+		/// <summary>
+		/// Returns a string that represents the current object.
+		/// </summary>
+		/// <returns>The name of the current DH function.</returns>
 		public override string ToString() => name;
 
 		internal static DhFunction Parse(ReadOnlySpan<char> s)

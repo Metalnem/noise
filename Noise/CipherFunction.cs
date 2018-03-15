@@ -21,6 +21,11 @@ namespace Noise
 		private readonly string name;
 
 		private CipherFunction(string name) => this.name = name;
+
+		/// <summary>
+		/// Returns a string that represents the current object.
+		/// </summary>
+		/// <returns>The name of the current cipher function.</returns>
 		public override string ToString() => name;
 
 		internal static CipherFunction Parse(ReadOnlySpan<char> s)

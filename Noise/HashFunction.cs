@@ -25,6 +25,11 @@ namespace Noise
 		private readonly string name;
 
 		private HashFunction(string name) => this.name = name;
+
+		/// <summary>
+		/// Returns a string that represents the current object.
+		/// </summary>
+		/// <returns>The name of the current hash function.</returns>
 		public override string ToString() => name;
 
 		internal static HashFunction Parse(ReadOnlySpan<char> s)
