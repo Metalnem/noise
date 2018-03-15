@@ -10,9 +10,20 @@ namespace Noise.Tests
 	public class HandshakeStateTest
 	{
 		[Fact]
-		public void TestProtocol()
+		public void TestCacophony()
 		{
-			var s = File.ReadAllText("Cacophony.txt");
+			Test("Cacophony.txt");
+		}
+
+		[Fact]
+		public void TestMultipsk()
+		{
+			Test("Multipsk.txt");
+		}
+
+		private void Test(string file)
+		{
+			var s = File.ReadAllText(file);
 			var json = JObject.Parse(s);
 
 			var initBuffer = new byte[Protocol.MaxMessageLength];
@@ -22,7 +33,7 @@ namespace Noise.Tests
 			{
 				var protocolName = GetString(vector, "protocol_name");
 
-				if (protocolName.Contains("psk") || protocolName.Contains("448") || protocolName.Contains("BLAKE2s"))
+				if (protocolName.Contains("448") || protocolName.Contains("BLAKE2s"))
 				{
 					continue;
 				}
@@ -102,8 +113,11 @@ namespace Noise.Tests
 					}
 				}
 
-				Assert.Equal(handshakeHash, initHandshakeHash);
-				Assert.Equal(handshakeHash, respHandshakeHash);
+				if(handshakeHash.Length > 0)
+				{
+					Assert.Equal(handshakeHash, initHandshakeHash);
+					Assert.Equal(handshakeHash, respHandshakeHash);
+				}
 
 				init.Dispose();
 				resp.Dispose();

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Noise
 {
@@ -32,6 +34,7 @@ namespace Noise
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
+		private readonly Queue<byte[]> psks;
 		private readonly Queue<MessagePattern> messagePatterns;
 		private readonly bool isOneWay;
 		private readonly bool isPsk;
@@ -50,12 +53,29 @@ namespace Noise
 			IEnumerable<byte[]> psks)
 		{
 			var handshakePattern = protocol.HandshakePattern;
+			var modifiers = protocol.Modifiers;
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
-			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns);
+			this.psks = new Queue<byte[]>(psks ?? Enumerable.Empty<byte[]>());
+
+			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns.Select((pattern, position) =>
+			{
+				if (position == 0 && modifiers.HasFlag(PatternModifiers.Psk0))
+				{
+					pattern = pattern.PrependPsk();
+				}
+
+				if (((int)modifiers & ((int)PatternModifiers.Psk1 << position)) != 0)
+				{
+					return pattern.AppendPsk();
+				}
+
+				return pattern;
+			}));
+
 			isOneWay = messagePatterns.Count == 1;
 			isPsk = protocol.Modifiers != PatternModifiers.None;
 
@@ -101,10 +121,11 @@ namespace Noise
 				{
 					case Token.E: messageBuffer = WriteE(messageBuffer); break;
 					case Token.S: messageBuffer = WriteS(messageBuffer); break;
-					case Token.EE: WriteEE(); break;
-					case Token.ES: WriteES(); break;
-					case Token.SE: WriteSE(); break;
-					case Token.SS: WriteSS(); break;
+					case Token.EE: MixKey(e, re); break;
+					case Token.ES: ProcessES(); break;
+					case Token.SE: ProcessSE(); break;
+					case Token.SS: MixKey(s, rs); break;
+					case Token.PSK: state.MixKeyAndHash(psks.Dequeue()); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -123,6 +144,8 @@ namespace Noise
 					c2 = null;
 				}
 
+				Debug.Assert(psks.Count == 0);
+
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
@@ -136,6 +159,11 @@ namespace Noise
 			e.PublicKey.CopyTo(buffer);
 			state.MixHash(e.PublicKey);
 
+			if (isPsk)
+			{
+				state.MixKey(e.PublicKey);
+			}
+
 			return buffer.Slice(e.PublicKey.Length);
 		}
 
@@ -143,40 +171,6 @@ namespace Noise
 		{
 			var bytesWritten = state.EncryptAndHash(s.PublicKey, buffer);
 			return buffer.Slice(bytesWritten);
-		}
-
-		private void WriteEE()
-		{
-			MixKey(e, re);
-		}
-
-		private void WriteES()
-		{
-			if (initiator)
-			{
-				MixKey(e, rs);
-			}
-			else
-			{
-				MixKey(s, re);
-			}
-		}
-
-		private void WriteSE()
-		{
-			if (initiator)
-			{
-				MixKey(s, re);
-			}
-			else
-			{
-				MixKey(e, rs);
-			}
-		}
-
-		private void WriteSS()
-		{
-			MixKey(s, rs);
 		}
 
 		public (int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
@@ -191,10 +185,11 @@ namespace Noise
 				{
 					case Token.E: message = ReadE(message); break;
 					case Token.S: message = ReadS(message); break;
-					case Token.EE: ReadEE(); break;
-					case Token.ES: ReadES(); break;
-					case Token.SE: ReadSE(); break;
-					case Token.SS: ReadSS(); break;
+					case Token.EE: MixKey(e, re); break;
+					case Token.ES: ProcessES(); break;
+					case Token.SE: ProcessSE(); break;
+					case Token.SS: MixKey(s, rs); break;
+					case Token.PSK: state.MixKeyAndHash(psks.Dequeue()); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -213,6 +208,8 @@ namespace Noise
 					c2 = null;
 				}
 
+				Debug.Assert(psks.Count == 0);
+
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
@@ -224,6 +221,11 @@ namespace Noise
 		{
 			re = buffer.Slice(0, dh.DhLen).ToArray();
 			state.MixHash(re);
+
+			if (isPsk)
+			{
+				state.MixKey(re);
+			}
 
 			return buffer.Slice(re.Length);
 		}
@@ -239,12 +241,7 @@ namespace Noise
 			return message.Slice(length);
 		}
 
-		private void ReadEE()
-		{
-			MixKey(e, re);
-		}
-
-		private void ReadES()
+		private void ProcessES()
 		{
 			if (initiator)
 			{
@@ -256,7 +253,7 @@ namespace Noise
 			}
 		}
 
-		private void ReadSE()
+		private void ProcessSE()
 		{
 			if (initiator)
 			{
@@ -266,11 +263,6 @@ namespace Noise
 			{
 				MixKey(e, rs);
 			}
-		}
-
-		private void ReadSS()
-		{
-			MixKey(s, rs);
 		}
 
 		private void MixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
@@ -287,6 +279,12 @@ namespace Noise
 				state.Dispose();
 				e?.Dispose();
 				s?.Dispose();
+
+				foreach (var psk in psks)
+				{
+					Array.Clear(psk, 0, psk.Length);
+				}
+
 				disposed = true;
 			}
 		}
