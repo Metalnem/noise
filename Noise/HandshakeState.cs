@@ -125,7 +125,7 @@ namespace Noise
 					case Token.ES: ProcessES(); break;
 					case Token.SE: ProcessSE(); break;
 					case Token.SS: MixKey(s, rs); break;
-					case Token.PSK: state.MixKeyAndHash(psks.Dequeue()); break;
+					case Token.PSK: ProcessPSK(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -189,7 +189,7 @@ namespace Noise
 					case Token.ES: ProcessES(); break;
 					case Token.SE: ProcessSE(); break;
 					case Token.SS: MixKey(s, rs); break;
-					case Token.PSK: state.MixKeyAndHash(psks.Dequeue()); break;
+					case Token.PSK: ProcessPSK(); break;
 					default: throw new NotImplementedException();
 				}
 			}
@@ -263,6 +263,13 @@ namespace Noise
 			{
 				MixKey(e, rs);
 			}
+		}
+
+		private void ProcessPSK()
+		{
+			var psk = psks.Dequeue();
+			state.MixKeyAndHash(psk);
+			Array.Clear(psk, 0, psk.Length);
 		}
 
 		private void MixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
