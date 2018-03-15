@@ -121,10 +121,10 @@ namespace Noise
 				{
 					case Token.E: messageBuffer = WriteE(messageBuffer); break;
 					case Token.S: messageBuffer = WriteS(messageBuffer); break;
-					case Token.EE: MixKey(e, re); break;
+					case Token.EE: DhAndMixKey(e, re); break;
 					case Token.ES: ProcessES(); break;
 					case Token.SE: ProcessSE(); break;
-					case Token.SS: MixKey(s, rs); break;
+					case Token.SS: DhAndMixKey(s, rs); break;
 					case Token.PSK: ProcessPSK(); break;
 					default: throw new NotImplementedException();
 				}
@@ -185,10 +185,10 @@ namespace Noise
 				{
 					case Token.E: message = ReadE(message); break;
 					case Token.S: message = ReadS(message); break;
-					case Token.EE: MixKey(e, re); break;
+					case Token.EE: DhAndMixKey(e, re); break;
 					case Token.ES: ProcessES(); break;
 					case Token.SE: ProcessSE(); break;
-					case Token.SS: MixKey(s, rs); break;
+					case Token.SS: DhAndMixKey(s, rs); break;
 					case Token.PSK: ProcessPSK(); break;
 					default: throw new NotImplementedException();
 				}
@@ -245,11 +245,11 @@ namespace Noise
 		{
 			if (initiator)
 			{
-				MixKey(e, rs);
+				DhAndMixKey(e, rs);
 			}
 			else
 			{
-				MixKey(s, re);
+				DhAndMixKey(s, re);
 			}
 		}
 
@@ -257,11 +257,11 @@ namespace Noise
 		{
 			if (initiator)
 			{
-				MixKey(s, re);
+				DhAndMixKey(s, re);
 			}
 			else
 			{
-				MixKey(e, rs);
+				DhAndMixKey(e, rs);
 			}
 		}
 
@@ -272,7 +272,7 @@ namespace Noise
 			Array.Clear(psk, 0, psk.Length);
 		}
 
-		private void MixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
+		private void DhAndMixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
 		{
 			Span<byte> sharedKey = stackalloc byte[dh.DhLen];
 			dh.Dh(keyPair, publicKey, sharedKey);
