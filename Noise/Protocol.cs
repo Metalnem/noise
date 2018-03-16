@@ -7,12 +7,12 @@ using System.Text;
 namespace Noise
 {
 	/// <summary>
-	/// A set of functions for instantiating a Noise protocol.
+	/// A concrete Noise protocol (e.g. Noise_XX_25519_AESGCM_SHA256 or Noise_IK_25519_ChaChaPoly_BLAKE2b).
 	/// </summary>
 	public sealed class Protocol
 	{
 		/// <summary>
-		/// Maximum size of Noise messages in bytes.
+		/// Maximum size of the Noise protocol message in bytes.
 		/// </summary>
 		public const int MaxMessageLength = 65535;
 
@@ -30,26 +30,50 @@ namespace Noise
 			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
 			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Protocol"/>
+		/// class using ChaChaPoly, 25519, and SHA256 functions.
+		/// </summary>
+		/// <param name="handshakePattern">The handshake pattern (e.q. NX or IK).</param>
+		/// <param name="modifiers">The combination of pattern modifiers (e.q. empty, psk0, or psk1+psk2).</param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if the <paramref name="handshakePattern"/> is null.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Thrown if <paramref name="modifiers"/> does not represent a valid combination of pattern modifiers.
+		/// </exception>
 		public Protocol(HandshakePattern handshakePattern, PatternModifiers modifiers = PatternModifiers.None)
-			: this(handshakePattern, CipherFunction.ChaChaPoly, DhFunction.Curve25519, HashFunction.Sha256, modifiers)
+			: this(handshakePattern, CipherFunction.ChaChaPoly, HashFunction.Sha256, modifiers)
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Protocol"/> class.
+		/// </summary>
+		/// <param name="handshakePattern">The handshake pattern (e.q. NX or IK).</param>
+		/// <param name="cipher">The cipher function (AESGCM or ChaChaPoly).</param>
+		/// <param name="hash">The hash function (SHA256, SHA512, or BLAKE2b).</param>
+		/// <param name="modifiers">The combination of pattern modifiers (e.q. empty, psk0, or psk1+psk2).</param>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if the either <paramref name="handshakePattern"/>,
+		/// <paramref name="cipher"/>, or <paramref name="hash"/> is null.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Thrown if <paramref name="modifiers"/> does not represent a valid combination of pattern modifiers.
+		/// </exception>
 		public Protocol(
 			HandshakePattern handshakePattern,
 			CipherFunction cipher,
-			DhFunction dh,
 			HashFunction hash,
 			PatternModifiers modifiers = PatternModifiers.None)
 		{
 			Exceptions.ThrowIfNull(handshakePattern, nameof(handshakePattern));
 			Exceptions.ThrowIfNull(cipher, nameof(cipher));
-			Exceptions.ThrowIfNull(dh, nameof(dh));
 			Exceptions.ThrowIfNull(hash, nameof(hash));
 
 			HandshakePattern = handshakePattern;
 			Cipher = cipher;
-			Dh = dh;
+			Dh = DhFunction.Curve25519;
 			Hash = hash;
 			Modifiers = modifiers;
 
@@ -63,11 +87,7 @@ namespace Noise
 		internal PatternModifiers Modifiers { get; }
 		internal byte[] Name { get; }
 
-		/// <summary>
-		/// Instantiates a Noise protocol with a concrete set of
-		/// cipher functions, DH functions, and hash functions.
-		/// </summary>
-		public HandshakeState Create(
+		public HandshakeState Start(
 			bool initiator,
 			byte[] prologue = default,
 			KeyPair s = default,
@@ -100,10 +120,21 @@ namespace Noise
 			}
 			else
 			{
-				throw new ArgumentException("Cipher suite not supported.");
+				throw new InvalidOperationException();
 			}
 		}
 
+		/// <summary>
+		/// Converts the Noise protocol name to its <see cref="Protocol"/> equivalent.
+		/// </summary>
+		/// <param name="s">The Noise protocol name (e.q. Noise_KNpsk2_25519_ChaChaPoly_SHA512).</param>
+		/// <returns>
+		/// An object that is equivalent to the Noise
+		/// protocol name contained in <paramref name="s"/>.
+		/// </returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if <paramref name="s"/> is not a valid Noise protocol name.
+		/// </exception>
 		public static Protocol Parse(ReadOnlySpan<char> s)
 		{
 			if (s.Length < MinProtocolNameLength || s.Length > MaxProtocolNameLength)
@@ -126,6 +157,8 @@ namespace Noise
 			var modifiers = ParseModifiers(next.Slice(pattern.Length));
 
 			var dh = DhFunction.Parse(splitter.Next());
+			Debug.Assert(dh == DhFunction.Curve25519);
+
 			var cipher = CipherFunction.Parse(splitter.Next());
 			var hash = HashFunction.Parse(splitter.Next());
 
@@ -134,7 +167,7 @@ namespace Noise
 				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
 
-			return new Protocol(handshakePattern, cipher, dh, hash, modifiers);
+			return new Protocol(handshakePattern, cipher, hash, modifiers);
 		}
 
 		private static HandshakePattern ParseHandshakePattern(ReadOnlySpan<char> s)

@@ -55,8 +55,8 @@ namespace Noise.Tests
 
 				var protocol = Protocol.Parse(protocolName.AsReadOnlySpan());
 
-				var init = protocol.Create(true, initPrologue, initStaticPair, initRemoteStatic, initPsks);
-				var resp = protocol.Create(false, respPrologue, respStaticPair, respRemoteStatic, respPsks);
+				var init = protocol.Start(true, initPrologue, initStaticPair, initRemoteStatic, initPsks);
+				var resp = protocol.Start(false, respPrologue, respStaticPair, respRemoteStatic, respPsks);
 
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
@@ -113,7 +113,7 @@ namespace Noise.Tests
 					}
 				}
 
-				if(handshakeHash.Length > 0)
+				if (handshakeHash.Length > 0)
 				{
 					Assert.Equal(handshakeHash, initHandshakeHash);
 					Assert.Equal(handshakeHash, respHandshakeHash);
