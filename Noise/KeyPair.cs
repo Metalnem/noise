@@ -20,7 +20,7 @@ namespace Noise
 		/// Thrown if the <paramref name="privateKey"/> or the <paramref name="publicKey"/> is null.
 		/// </exception>
 		/// <exception cref="ArgumentException">
-		/// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> were invalid.
+		/// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> are invalid.
 		/// </exception>
 		public KeyPair(byte[] privateKey, byte[] publicKey)
 		{
@@ -29,12 +29,12 @@ namespace Noise
 
 			if (privateKey.Length != 32 && privateKey.Length != 56)
 			{
-				throw new ArgumentException($"Private key must have length of either 32 bytes or 56 bytes.", nameof(privateKey));
+				throw new ArgumentException("Private key must have length of either 32 bytes or 56 bytes.", nameof(privateKey));
 			}
 
 			if (publicKey.Length != 32 && publicKey.Length != 56)
 			{
-				throw new ArgumentException($"Public key must have length of either 32 bytes or 56 bytes.", nameof(publicKey));
+				throw new ArgumentException("Public key must have length of either 32 bytes or 56 bytes.", nameof(publicKey));
 			}
 
 			this.privateKey = privateKey;
