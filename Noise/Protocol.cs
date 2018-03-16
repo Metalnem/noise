@@ -87,7 +87,29 @@ namespace Noise
 		internal PatternModifiers Modifiers { get; }
 		internal byte[] Name { get; }
 
-		public HandshakeState Start(
+		/// <summary>
+		/// Creates an initial <see cref="HandshakeState"/>.
+		/// </summary>
+		/// <param name="initiator">A boolean indicating the initiator or responder role.</param>
+		/// <param name="prologue">
+		/// A byte sequence which may be zero-length, or which may contain
+		/// context information that both parties want to confirm is identical.
+		/// </param>
+		/// <param name="s">The local static key pair (optional).</param>
+		/// <param name="rs">The remote party's static public key (optional).</param>
+		/// <param name="psks">The collection of zero or more 32-byte pre-shared secret keys.</param>
+		/// <returns>The initial handshake state.</returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if any of the following conditions is satisfied:
+		/// <para>- <paramref name="s"/> is not a valid Curve25519 key pair.</para>
+		/// <para>- <paramref name="rs"/> is not a valid Curve25519 public key.</para>
+		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
+		/// to be initialized with local and/or remote static key,
+		/// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
+		/// <para>- One or more pre-shared keys are not 32-bytes in length.</para>
+		/// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
+		/// </exception>
+		public HandshakeState Create(
 			bool initiator,
 			byte[] prologue = default,
 			KeyPair s = default,
