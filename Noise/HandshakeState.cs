@@ -103,28 +103,50 @@ namespace Noise
 			var modifiers = protocol.Modifiers;
 			var position = 0;
 
-			foreach (var pattern in patterns)
+			using (var enumerator = psks.GetEnumerator())
 			{
-				var modified = pattern;
-
-				if (position == 0 && modifiers.HasFlag(PatternModifiers.Psk0))
+				foreach (var pattern in patterns)
 				{
-					modified = modified.PrependPsk();
+					var modified = pattern;
+
+					if (position == 0 && modifiers.HasFlag(PatternModifiers.Psk0))
+					{
+						modified = modified.PrependPsk();
+						ProcessPreSharedKey(enumerator);
+					}
+
+					if (((int)modifiers & ((int)PatternModifiers.Psk1 << position)) != 0)
+					{
+						modified = modified.AppendPsk();
+						ProcessPreSharedKey(enumerator);
+					}
+
+					messagePatterns.Enqueue(modified);
+					++position;
 				}
 
-				if (((int)modifiers & ((int)PatternModifiers.Psk1 << position)) != 0)
+				if (enumerator.MoveNext())
 				{
-					modified = modified.AppendPsk();
+					throw new ArgumentException("Number of pre-shared keys was greater than the number of PSK modifiers.");
 				}
-
-				messagePatterns.Enqueue(modified);
-				++position;
 			}
+		}
 
-			foreach (var psk in psks)
+		private void ProcessPreSharedKey(IEnumerator<byte[]> enumerator)
+		{
+			if (!enumerator.MoveNext())
 			{
-				this.psks.Enqueue(psk);
+				throw new ArgumentException("Number of pre-shared keys was less than the number of PSK modifiers.");
 			}
+
+			var psk = enumerator.Current;
+
+			if (psk.Length != Aead.KeySize)
+			{
+				throw new ArgumentException($"Pre-shared keys must be {Aead.KeySize} bytes in length.");
+			}
+
+			psks.Enqueue(psk.AsSpan().ToArray());
 		}
 
 		/// <summary>
