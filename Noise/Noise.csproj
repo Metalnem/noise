@@ -2,8 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-	<LangVersion>7.2</LangVersion>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>7.2</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Noise.NET</PackageId>
+    <Title>Noise.NET</Title>
+    <PackageVersion>0.5.0</PackageVersion>
+    <Authors>Nemanja Mijailovic</Authors>
+    <PackageProjectUrl>https://github.com/Metalnem/noise</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Metalnem/noise</RepositoryUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Metalnem/noise/master/LICENSE</PackageLicenseUrl>
+    <Description>.NET Standard 2.0 implementation of the Noise Protocol Framework</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright © 2018, Nemanja Mijailovic</Copyright>
+    <PackageTags>crypto cryptography security encryption noise noise-protocol noise-protocol-framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
