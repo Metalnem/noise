@@ -101,8 +101,8 @@ namespace Noise
 		/// <returns>The initial handshake state.</returns>
 		/// <exception cref="ArgumentException">
 		/// Thrown if any of the following conditions is satisfied:
-		/// <para>- <paramref name="s"/> is not a valid Curve25519 private key.</para>
-		/// <para>- <paramref name="rs"/> is not a valid Curve25519 public key.</para>
+		/// <para>- <paramref name="s"/> is not a valid DH private key.</para>
+		/// <para>- <paramref name="rs"/> is not a valid DH public key.</para>
 		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
 		/// to be initialized with local and/or remote static key,
 		/// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
@@ -116,6 +116,11 @@ namespace Noise
 			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
 		{
+			if (psks == null)
+			{
+				psks = Enumerable.Empty<byte[]>();
+			}
+
 			if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Sha256)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(this, initiator, prologue, s, rs, psks);

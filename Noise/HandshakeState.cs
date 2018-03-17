@@ -34,14 +34,14 @@ namespace Noise
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
-		private readonly Queue<byte[]> psks;
-		private readonly Queue<MessagePattern> messagePatterns;
-		private readonly bool isOneWay;
-		private readonly bool isPsk;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
 		private byte[] rs;
+		private readonly bool isOneWay;
+		private readonly bool isPsk;
+		private readonly Queue<MessagePattern> messagePatterns = new Queue<MessagePattern>();
+		private readonly Queue<byte[]> psks = new Queue<byte[]>();
 		private bool disposed;
 
 		public HandshakeState(
@@ -52,36 +52,34 @@ namespace Noise
 			ReadOnlySpan<byte> rs,
 			IEnumerable<byte[]> psks)
 		{
-			var handshakePattern = protocol.HandshakePattern;
-			var modifiers = protocol.Modifiers;
+			Debug.Assert(psks != null);
+
+			if (!s.IsEmpty && s.Length != dh.DhLen)
+			{
+				throw new ArgumentException("Invalid local static DH private key.", nameof(s));
+			}
+
+			if (!rs.IsEmpty && rs.Length != dh.DhLen)
+			{
+				throw new ArgumentException("Invalid remote static DH public key.", nameof(rs));
+			}
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
-			this.psks = new Queue<byte[]>(psks ?? Enumerable.Empty<byte[]>());
+			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
+			this.rs = rs.IsEmpty ? null : rs.ToArray();
 
-			messagePatterns = new Queue<MessagePattern>(handshakePattern.Patterns.Select((pattern, position) =>
-			{
-				if (position == 0 && modifiers.HasFlag(PatternModifiers.Psk0))
-				{
-					pattern = pattern.PrependPsk();
-				}
-
-				if (((int)modifiers & ((int)PatternModifiers.Psk1 << position)) != 0)
-				{
-					return pattern.AppendPsk();
-				}
-
-				return pattern;
-			}));
+			ProcessPreMessages(protocol.HandshakePattern);
+			ProcessPreSharedKeys(protocol, psks);
 
 			isOneWay = messagePatterns.Count == 1;
 			isPsk = protocol.Modifiers != PatternModifiers.None;
+		}
 
-			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
-			this.rs = rs.ToArray();
-
+		private void ProcessPreMessages(HandshakePattern handshakePattern)
+		{
 			foreach (var preMessage in handshakePattern.Initiator.Tokens)
 			{
 				if (preMessage == Token.S)
@@ -96,6 +94,36 @@ namespace Noise
 				{
 					state.MixHash(initiator ? rs : this.s.PublicKey);
 				}
+			}
+		}
+
+		private void ProcessPreSharedKeys(Protocol protocol, IEnumerable<byte[]> psks)
+		{
+			var patterns = protocol.HandshakePattern.Patterns;
+			var modifiers = protocol.Modifiers;
+			var position = 0;
+
+			foreach (var pattern in patterns)
+			{
+				var modified = pattern;
+
+				if (position == 0 && modifiers.HasFlag(PatternModifiers.Psk0))
+				{
+					modified = modified.PrependPsk();
+				}
+
+				if (((int)modifiers & ((int)PatternModifiers.Psk1 << position)) != 0)
+				{
+					modified = modified.AppendPsk();
+				}
+
+				messagePatterns.Enqueue(modified);
+				++position;
+			}
+
+			foreach (var psk in psks)
+			{
+				this.psks.Enqueue(psk);
 			}
 		}
 
