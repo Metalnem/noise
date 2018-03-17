@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -49,11 +50,8 @@ namespace Noise.Tests
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
 
-				var initDh = new FixedKeyDh(initEphemeral);
-				var respDh = new FixedKeyDh(respEphemeral);
-
-				setDh.Invoke(init, new object[] { initDh });
-				setDh.Invoke(resp, new object[] { respDh });
+				setDh.Invoke(init, new object[] { new FixedKeyDh(initEphemeral) });
+				setDh.Invoke(resp, new object[] { new FixedKeyDh(respEphemeral) });
 
 				Transport initTransport = null;
 				Transport respTransport = null;
@@ -110,8 +108,8 @@ namespace Noise.Tests
 				init.Dispose();
 				resp.Dispose();
 
-				initTransport?.Dispose();
-				respTransport?.Dispose();
+				initTransport.Dispose();
+				respTransport.Dispose();
 			}
 		}
 
@@ -127,21 +125,7 @@ namespace Noise.Tests
 
 		private static List<byte[]> GetPsks(JToken token, string property)
 		{
-			var psks = token[property];
-
-			if (psks == null)
-			{
-				return null;
-			}
-
-			var result = new List<byte[]>();
-
-			foreach (var psk in psks)
-			{
-				result.Add(Hex.Decode((string)psk));
-			}
-
-			return result;
+			return token[property]?.Select(psk => Hex.Decode((string)psk)).ToList();
 		}
 
 		private static void Swap<T>(ref T x, ref T y)
