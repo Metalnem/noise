@@ -11,6 +11,7 @@
     <PackageProjectUrl>https://github.com/Metalnem/noise</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Metalnem/noise</RepositoryUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Metalnem/noise/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Metalnem/noise/master/dotnet/PackageIcon.png</PackageIconUrl>
     <Description>.NET Standard 2.0 implementation of the Noise Protocol Framework</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Copyright>Copyright © 2018, Nemanja Mijailovic</Copyright>
