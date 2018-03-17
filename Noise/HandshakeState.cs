@@ -13,15 +13,36 @@ namespace Noise
 	public interface HandshakeState : IDisposable
 	{
 		/// <summary>
-		/// Takes a payload byte sequence which may be zero-length,
-		/// and a messageBuffer to write the output into.
+		///
 		/// </summary>
+		/// <param name="payload">The payload to encrypt.</param>
+		/// <param name="messageBuffer">The buffer for the encrypted message.</param>
+		/// <returns></returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Throw if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
+		/// </exception>
 		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 
 		/// <summary>
-		/// Takes a byte sequence containing a Noise handshake message,
-		/// and a payloadBuffer to write the message's plaintext payload into.
+		///
 		/// </summary>
+		/// <param name="message">The message to decrypt.</param>
+		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
+		/// <returns></returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Throw if the message was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// bytes in length, or if the output buffer did not have enough space to hold the plaintext.
+		/// </exception>
+		/// <exception cref="System.Security.Cryptography.CryptographicException">
+		/// Throw if the decryption of the message has failed.
+		/// </exception>
 		(int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
 	}
 
