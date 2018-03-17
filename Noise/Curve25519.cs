@@ -22,6 +22,18 @@ namespace Noise
 			return new KeyPair(privateKey, publicKey);
 		}
 
+		public KeyPair GenerateKeyPair(ReadOnlySpan<byte> privateKey)
+		{
+			Debug.Assert(privateKey.Length == DhLen);
+
+			var privateKeyCopy = privateKey.ToArray();
+			var publicKey = new byte[DhLen];
+
+			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKeyCopy);
+
+			return new KeyPair(privateKeyCopy, publicKey);
+		}
+
 		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
 		{
 			Debug.Assert(keyPair.PrivateKey != null && keyPair.PrivateKey.Length == DhLen);

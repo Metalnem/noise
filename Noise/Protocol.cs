@@ -95,13 +95,13 @@ namespace Noise
 		/// A byte sequence which may be zero-length, or which may contain
 		/// context information that both parties want to confirm is identical.
 		/// </param>
-		/// <param name="s">The local static key pair (optional).</param>
+		/// <param name="s">The local static private key (optional).</param>
 		/// <param name="rs">The remote party's static public key (optional).</param>
 		/// <param name="psks">The collection of zero or more 32-byte pre-shared secret keys.</param>
 		/// <returns>The initial handshake state.</returns>
 		/// <exception cref="ArgumentException">
 		/// Thrown if any of the following conditions is satisfied:
-		/// <para>- <paramref name="s"/> is not a valid Curve25519 key pair.</para>
+		/// <para>- <paramref name="s"/> is not a valid Curve25519 private key.</para>
 		/// <para>- <paramref name="rs"/> is not a valid Curve25519 public key.</para>
 		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
 		/// to be initialized with local and/or remote static key,
@@ -112,7 +112,7 @@ namespace Noise
 		public HandshakeState Create(
 			bool initiator,
 			byte[] prologue = default,
-			KeyPair s = default,
+			byte[] s = default,
 			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
 		{

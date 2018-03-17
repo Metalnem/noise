@@ -9,25 +9,16 @@ namespace Noise.Tests
 {
 	public class HandshakeStateTest
 	{
-		[Fact]
-		public void TestCacophony()
-		{
-			Test("Cacophony.txt");
-		}
+		private static byte[] initBuffer = new byte[Protocol.MaxMessageLength];
+		private static byte[] respBuffer = new byte[Protocol.MaxMessageLength];
 
-		[Fact]
-		public void TestMultipsk()
-		{
-			Test("Multipsk.txt");
-		}
+		[Fact] public void TestCacophony() => Test("Cacophony.txt");
+		[Fact] public void TestMultipsk() => Test("Multipsk.txt");
 
 		private void Test(string file)
 		{
 			var s = File.ReadAllText(file);
 			var json = JObject.Parse(s);
-
-			var initBuffer = new byte[Protocol.MaxMessageLength];
-			var respBuffer = new byte[Protocol.MaxMessageLength];
 
 			foreach (var vector in json["vectors"])
 			{
@@ -50,13 +41,10 @@ namespace Noise.Tests
 				var respRemoteStatic = GetBytes(vector, "resp_remote_static");
 				var handshakeHash = GetBytes(vector, "handshake_hash");
 
-				var initStaticPair = GetKeyPair(initStatic);
-				var respStaticPair = GetKeyPair(respStatic);
-
 				var protocol = Protocol.Parse(protocolName.AsReadOnlySpan());
 
-				var init = protocol.Create(true, initPrologue, initStaticPair, initRemoteStatic, initPsks);
-				var resp = protocol.Create(false, respPrologue, respStaticPair, respRemoteStatic, respPsks);
+				var init = protocol.Create(true, initPrologue, initStatic, initRemoteStatic, initPsks);
+				var resp = protocol.Create(false, respPrologue, respStatic, respRemoteStatic, respPsks);
 
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
@@ -154,19 +142,6 @@ namespace Noise.Tests
 			}
 
 			return result;
-		}
-
-		private static KeyPair GetKeyPair(byte[] privateKey)
-		{
-			if (privateKey == null || privateKey.Length == 0)
-			{
-				return null;
-			}
-
-			var publicKey = new byte[privateKey.Length];
-			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKey);
-
-			return new KeyPair(privateKey, publicKey);
 		}
 
 		private static void Swap<T>(ref T x, ref T y)

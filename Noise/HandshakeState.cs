@@ -48,7 +48,7 @@ namespace Noise
 			Protocol protocol,
 			bool initiator,
 			ReadOnlySpan<byte> prologue,
-			KeyPair s,
+			ReadOnlySpan<byte> s,
 			ReadOnlySpan<byte> rs,
 			IEnumerable<byte[]> psks)
 		{
@@ -79,14 +79,14 @@ namespace Noise
 			isOneWay = messagePatterns.Count == 1;
 			isPsk = protocol.Modifiers != PatternModifiers.None;
 
-			this.s = s;
+			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
 			this.rs = rs.ToArray();
 
 			foreach (var preMessage in handshakePattern.Initiator.Tokens)
 			{
 				if (preMessage == Token.S)
 				{
-					state.MixHash(initiator ? s.PublicKey : rs);
+					state.MixHash(initiator ? this.s.PublicKey : rs);
 				}
 			}
 
@@ -94,7 +94,7 @@ namespace Noise
 			{
 				if (preMessage == Token.S)
 				{
-					state.MixHash(initiator ? rs : s.PublicKey);
+					state.MixHash(initiator ? rs : this.s.PublicKey);
 				}
 			}
 		}
