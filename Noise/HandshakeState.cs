@@ -76,12 +76,22 @@ namespace Noise
 
 			if (!s.IsEmpty && s.Length != dh.DhLen)
 			{
-				throw new ArgumentException("Invalid local static DH private key.", nameof(s));
+				throw new ArgumentException("Invalid local static private key.", nameof(s));
 			}
 
 			if (!rs.IsEmpty && rs.Length != dh.DhLen)
 			{
-				throw new ArgumentException("Invalid remote static DH public key.", nameof(rs));
+				throw new ArgumentException("Invalid remote static public key.", nameof(rs));
+			}
+
+			if (rs.IsEmpty && protocol.HandshakePattern.RemoteStaticRequired(initiator))
+			{
+				throw new ArgumentException("Remote static public key required.", nameof(rs));
+			}
+
+			if (!rs.IsEmpty && !protocol.HandshakePattern.RemoteStaticRequired(initiator))
+			{
+				throw new ArgumentException("Remote static public provided, but not required.", nameof(rs));
 			}
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Noise
 {
@@ -244,5 +245,11 @@ namespace Noise
 		internal PreMessagePattern Initiator { get; }
 		internal PreMessagePattern Responder { get; }
 		internal IEnumerable<MessagePattern> Patterns { get; }
+
+		internal bool RemoteStaticRequired(bool initiator)
+		{
+			var pattern = initiator ? Responder : Initiator;
+			return pattern.Tokens.Contains(Token.S);
+		}
 	}
 }
