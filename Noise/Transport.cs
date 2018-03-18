@@ -129,7 +129,7 @@ namespace Noise
 
 			if (message.Length - Aead.TagSize > payloadBuffer.Length)
 			{
-				throw new ArgumentException("Message buffer does not have enough space to hold the plaintext.");
+				throw new ArgumentException("Payload buffer does not have enough space to hold the plaintext.");
 			}
 
 			var cipher = initiator ? c2 : c1;

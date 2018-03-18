@@ -237,6 +237,16 @@ namespace Noise
 			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
 			var ciphertextSize = payload.Length + overhead;
 
+			if (ciphertextSize > Protocol.MaxMessageLength)
+			{
+				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
+			}
+
+			if (ciphertextSize > messageBuffer.Length)
+			{
+				throw new ArgumentException("Message buffer does not have enough space to hold the ciphertext.");
+			}
+
 			if (!turnToWrite)
 			{
 				throw new InvalidOperationException("Unexpected call to WriteMessage (should be ReadMessage).");
@@ -311,6 +321,21 @@ namespace Noise
 
 			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
 			var plaintextSize = message.Length - overhead;
+
+			if (message.Length > Protocol.MaxMessageLength)
+			{
+				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
+			}
+
+			if (message.Length < overhead)
+			{
+				throw new ArgumentException($"Noise message must be greater than {overhead} bytes in length.");
+			}
+
+			if (plaintextSize > payloadBuffer.Length)
+			{
+				throw new ArgumentException("Payload buffer does not have enough space to hold the plaintext.");
+			}
 
 			if (turnToWrite)
 			{
