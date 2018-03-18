@@ -254,7 +254,6 @@ namespace Noise
 					case Token.SE: ProcessSE(); break;
 					case Token.SS: DhAndMixKey(s, rs); break;
 					case Token.PSK: ProcessPSK(); break;
-					default: throw new NotImplementedException();
 				}
 			}
 
@@ -264,21 +263,7 @@ namespace Noise
 
 			if (messagePatterns.Count == 0)
 			{
-				var (c1, c2) = state.Split();
-
-				if (isOneWay)
-				{
-					c2.Dispose();
-					c2 = null;
-				}
-
-				Debug.Assert(psks.Count == 0);
-
-				handshakeHash = state.GetHandshakeHash();
-				transport = new Transport<CipherType>(initiator, c1, c2);
-
-				Clear();
-				done = true;
+				(handshakeHash, transport) = Split();
 			}
 
 			turnToWrite = false;
@@ -336,7 +321,6 @@ namespace Noise
 					case Token.SE: ProcessSE(); break;
 					case Token.SS: DhAndMixKey(s, rs); break;
 					case Token.PSK: ProcessPSK(); break;
-					default: throw new NotImplementedException();
 				}
 			}
 
@@ -346,21 +330,7 @@ namespace Noise
 
 			if (messagePatterns.Count == 0)
 			{
-				var (c1, c2) = state.Split();
-
-				if (isOneWay)
-				{
-					c2.Dispose();
-					c2 = null;
-				}
-
-				Debug.Assert(psks.Count == 0);
-
-				handshakeHash = state.GetHandshakeHash();
-				transport = new Transport<CipherType>(initiator, c1, c2);
-
-				Clear();
-				done = true;
+				(handshakeHash, transport) = Split();
 			}
 
 			turnToWrite = true;
@@ -424,6 +394,27 @@ namespace Noise
 			var psk = psks.Dequeue();
 			state.MixKeyAndHash(psk);
 			Array.Clear(psk, 0, psk.Length);
+		}
+
+		private (byte[], Transport) Split()
+		{
+			var (c1, c2) = state.Split();
+
+			if (isOneWay)
+			{
+				c2.Dispose();
+				c2 = null;
+			}
+
+			Debug.Assert(psks.Count == 0);
+
+			var handshakeHash = state.GetHandshakeHash();
+			var transport = new Transport<CipherType>(initiator, c1, c2);
+
+			Clear();
+			done = true;
+
+			return (handshakeHash, transport);
 		}
 
 		private void DhAndMixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
