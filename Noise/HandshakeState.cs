@@ -264,6 +264,7 @@ namespace Noise
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 
+				Clear();
 				done = true;
 			}
 
@@ -345,6 +346,7 @@ namespace Noise
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
 
+				Clear();
 				done = true;
 			}
 
@@ -421,19 +423,23 @@ namespace Noise
 			state.MixKey(sharedKey);
 		}
 
+		private void Clear()
+		{
+			state.Dispose();
+			e?.Dispose();
+			s?.Dispose();
+
+			foreach (var psk in psks)
+			{
+				Array.Clear(psk, 0, psk.Length);
+			}
+		}
+
 		public void Dispose()
 		{
 			if (!disposed)
 			{
-				state.Dispose();
-				e?.Dispose();
-				s?.Dispose();
-
-				foreach (var psk in psks)
-				{
-					Array.Clear(psk, 0, psk.Length);
-				}
-
+				Clear();
 				disposed = true;
 			}
 		}

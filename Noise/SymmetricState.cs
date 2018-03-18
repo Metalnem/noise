@@ -103,10 +103,7 @@ namespace Noise
 		/// </summary>
 		public byte[] GetHandshakeHash()
 		{
-			byte[] handshakeHash = new byte[h.Length];
-			Array.Copy(h, handshakeHash, h.Length);
-
-			return handshakeHash;
+			return h;
 		}
 
 		/// <summary>
@@ -169,7 +166,6 @@ namespace Noise
 				hkdf.Dispose();
 				state.Dispose();
 				Array.Clear(ck, 0, ck.Length);
-				Array.Clear(h, 0, h.Length);
 				disposed = true;
 			}
 		}

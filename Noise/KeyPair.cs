@@ -75,7 +75,6 @@ namespace Noise
 			if (!disposed)
 			{
 				Array.Clear(privateKey, 0, privateKey.Length);
-				Array.Clear(publicKey, 0, publicKey.Length);
 				disposed = true;
 			}
 		}
