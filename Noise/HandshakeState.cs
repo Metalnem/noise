@@ -21,6 +21,9 @@ namespace Noise
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Throw if the call to <see cref="ReadMessage"/> was expected.
+		/// </exception>
 		/// <exception cref="ArgumentException">
 		/// Throw if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
@@ -35,6 +38,9 @@ namespace Noise
 		/// <returns></returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Throw if the call to <see cref="WriteMessage"/> was expected.
 		/// </exception>
 		/// <exception cref="ArgumentException">
 		/// Throw if the message was greater than <see cref="Protocol.MaxMessageLength"/>
@@ -54,6 +60,7 @@ namespace Noise
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
+		private bool turnToWrite;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
@@ -108,6 +115,7 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.initiator = initiator;
+			this.turnToWrite = initiator;
 			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
 			this.rs = rs.IsEmpty ? null : rs.ToArray();
 
@@ -202,6 +210,11 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
+			if (!turnToWrite)
+			{
+				throw new InvalidOperationException("Unexpected call to WriteMessage (should be ReadMessage).");
+			}
+
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
 
@@ -240,6 +253,7 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
+			turnToWrite = false;
 			return (message.Length - messageBuffer.Length + bytesWritten, handshakeHash, transport);
 		}
 
@@ -270,6 +284,11 @@ namespace Noise
 		public (int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+
+			if (turnToWrite)
+			{
+				throw new InvalidOperationException("Unexpected call to ReadMessage (should be WriteMessage).");
+			}
 
 			var next = messagePatterns.Dequeue();
 
@@ -308,6 +327,7 @@ namespace Noise
 				transport = new Transport<CipherType>(initiator, c1, c2);
 			}
 
+			turnToWrite = true;
 			return (bytesRead, handshakeHash, transport);
 		}
 
