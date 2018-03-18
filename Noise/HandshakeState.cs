@@ -5,8 +5,9 @@ using System.Diagnostics;
 namespace Noise
 {
 	/// <summary>
-	/// A HandshakeState object contains a SymmetricState plus
-	/// the local and remote keys (any of which may be empty),
+	/// A <see href="https://noiseprotocol.org/noise.html#the-handshakestate-object">HandshakeState</see>
+	/// object contains a <see href="https://noiseprotocol.org/noise.html#the-symmetricstate-object">SymmetricState</see>
+	/// plus the local and remote keys (any of which may be empty),
 	/// a boolean indicating the initiator or responder role, and
 	/// the remaining portion of the handshake pattern.
 	/// </summary>
@@ -19,7 +20,13 @@ namespace Noise
 		/// </summary>
 		/// <param name="payload">The payload to encrypt.</param>
 		/// <param name="messageBuffer">The buffer for the encrypted message.</param>
-		/// <returns></returns>
+		/// <returns>
+		/// The tuple containing the ciphertext size in bytes,
+		/// the handshake hash, and the <see cref="Transport"/>
+		/// object for encrypting transport messages. If the
+		/// handshake is still in progress, the handshake hash
+		/// and the transport will both be null.
+		/// </returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
@@ -40,7 +47,13 @@ namespace Noise
 		/// </summary>
 		/// <param name="message">The message to decrypt.</param>
 		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
-		/// <returns></returns>
+		/// <returns>
+		/// The tuple containing the plaintext size in bytes,
+		/// the handshake hash, and the <see cref="Transport"/>
+		/// object for encrypting transport messages. If the
+		/// handshake is still in progress, the handshake hash
+		/// and the transport will both be null.
+		/// </returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
