@@ -246,10 +246,34 @@ namespace Noise
 		internal PreMessagePattern Responder { get; }
 		internal IEnumerable<MessagePattern> Patterns { get; }
 
+		internal bool LocalStaticRequired(bool initiator)
+		{
+			var preMessage = initiator ? Initiator : Responder;
+
+			if (preMessage.Tokens.Contains(Token.S))
+			{
+				return true;
+			}
+
+			bool turnToWrite = initiator;
+
+			foreach (var pattern in Patterns)
+			{
+				if (turnToWrite && pattern.Tokens.Contains(Token.S))
+				{
+					return true;
+				}
+
+				turnToWrite = !turnToWrite;
+			}
+
+			return false;
+		}
+
 		internal bool RemoteStaticRequired(bool initiator)
 		{
-			var pattern = initiator ? Responder : Initiator;
-			return pattern.Tokens.Contains(Token.S);
+			var preMessage = initiator ? Responder : Initiator;
+			return preMessage.Tokens.Contains(Token.S);
 		}
 	}
 }

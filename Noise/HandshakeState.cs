@@ -84,14 +84,24 @@ namespace Noise
 				throw new ArgumentException("Invalid remote static public key.", nameof(rs));
 			}
 
+			if (s.IsEmpty && protocol.HandshakePattern.LocalStaticRequired(initiator))
+			{
+				throw new ArgumentException("Local static private key required, but not provided.", nameof(s));
+			}
+
+			if (!s.IsEmpty && !protocol.HandshakePattern.LocalStaticRequired(initiator))
+			{
+				throw new ArgumentException("Local static private key provided, but not required.", nameof(s));
+			}
+
 			if (rs.IsEmpty && protocol.HandshakePattern.RemoteStaticRequired(initiator))
 			{
-				throw new ArgumentException("Remote static public key required.", nameof(rs));
+				throw new ArgumentException("Remote static public key required, but not provided.", nameof(rs));
 			}
 
 			if (!rs.IsEmpty && !protocol.HandshakePattern.RemoteStaticRequired(initiator))
 			{
-				throw new ArgumentException("Remote static public provided, but not required.", nameof(rs));
+				throw new ArgumentException("Remote static public key provided, but not required.", nameof(rs));
 			}
 
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
