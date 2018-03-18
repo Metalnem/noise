@@ -17,6 +17,8 @@ namespace Noise
 		/// Performs the next step of the handshake,
 		/// encrypts the <paramref name="payload"/>,
 		/// and writes the result into <paramref name="messageBuffer"/>.
+		/// The result is undefined if the <paramref name="payload"/>
+		/// and <paramref name="messageBuffer"/> overlap.
 		/// </summary>
 		/// <param name="payload">The payload to encrypt.</param>
 		/// <param name="messageBuffer">The buffer for the encrypted message.</param>
@@ -44,6 +46,8 @@ namespace Noise
 		/// Performs the next step of the handshake,
 		/// decrypts the <paramref name="message"/>,
 		/// and writes the result into <paramref name="payloadBuffer"/>.
+		/// The result is undefined if the <paramref name="message"/>
+		/// and <paramref name="payloadBuffer"/> overlap.
 		/// </summary>
 		/// <param name="message">The message to decrypt.</param>
 		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
