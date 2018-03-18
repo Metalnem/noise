@@ -84,7 +84,6 @@ namespace Noise
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
 		private bool turnToWrite;
-		private bool done;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
@@ -234,6 +233,11 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
+			if (messagePatterns.Count == 0)
+			{
+				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
+			}
+
 			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
 			var ciphertextSize = payload.Length + overhead;
 
@@ -250,11 +254,6 @@ namespace Noise
 			if (!turnToWrite)
 			{
 				throw new InvalidOperationException("Unexpected call to WriteMessage (should be ReadMessage).");
-			}
-
-			if (done)
-			{
-				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
 			}
 
 			var next = messagePatterns.Dequeue();
@@ -319,6 +318,11 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
+			if (messagePatterns.Count == 0)
+			{
+				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
+			}
+
 			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
 			var plaintextSize = message.Length - overhead;
 
@@ -340,11 +344,6 @@ namespace Noise
 			if (turnToWrite)
 			{
 				throw new InvalidOperationException("Unexpected call to ReadMessage (should be WriteMessage).");
-			}
-
-			if (done)
-			{
-				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
 			}
 
 			var next = messagePatterns.Dequeue();
@@ -454,7 +453,6 @@ namespace Noise
 			var transport = new Transport<CipherType>(initiator, c1, c2);
 
 			Clear();
-			done = true;
 
 			return (handshakeHash, transport);
 		}
