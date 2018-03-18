@@ -194,7 +194,19 @@ namespace Noise
 				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
 
-			return new Protocol(handshakePattern, cipher, hash, modifiers);
+			var protocol = new Protocol(handshakePattern, cipher, hash, modifiers);
+			ValidateProtocolName(s, protocol);
+
+			return protocol;
+		}
+
+		[Conditional("DEBUG")]
+		private static void ValidateProtocolName(ReadOnlySpan<char> s, Protocol protocol)
+		{
+			var actual = Encoding.ASCII.GetString(protocol.Name);
+			var expected = new string(s.ToArray());
+
+			Debug.Assert(actual == expected);
 		}
 
 		private static HandshakePattern ParseHandshakePattern(ReadOnlySpan<char> s)

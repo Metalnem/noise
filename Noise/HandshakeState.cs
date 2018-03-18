@@ -225,6 +225,8 @@ namespace Noise
 
 		private Span<byte> WriteE(Span<byte> buffer)
 		{
+			Debug.Assert(e == null);
+
 			e = dh.GenerateKeyPair();
 			e.PublicKey.CopyTo(buffer);
 			state.MixHash(e.PublicKey);
@@ -239,6 +241,8 @@ namespace Noise
 
 		private Span<byte> WriteS(Span<byte> buffer)
 		{
+			Debug.Assert(s != null);
+
 			var bytesWritten = state.EncryptAndHash(s.PublicKey, buffer);
 			return buffer.Slice(bytesWritten);
 		}
@@ -289,6 +293,8 @@ namespace Noise
 
 		private ReadOnlySpan<byte> ReadE(ReadOnlySpan<byte> buffer)
 		{
+			Debug.Assert(re == null);
+
 			re = buffer.Slice(0, dh.DhLen).ToArray();
 			state.MixHash(re);
 
@@ -302,6 +308,8 @@ namespace Noise
 
 		private ReadOnlySpan<byte> ReadS(ReadOnlySpan<byte> message)
 		{
+			Debug.Assert(rs == null);
+
 			var length = state.HasKey() ? dh.DhLen + Aead.TagSize : dh.DhLen;
 			var temp = message.Slice(0, length);
 
@@ -344,6 +352,9 @@ namespace Noise
 
 		private void DhAndMixKey(KeyPair keyPair, ReadOnlySpan<byte> publicKey)
 		{
+			Debug.Assert(keyPair != null);
+			Debug.Assert(!publicKey.IsEmpty);
+
 			Span<byte> sharedKey = stackalloc byte[dh.DhLen];
 			dh.Dh(keyPair, publicKey, sharedKey);
 			state.MixKey(sharedKey);
