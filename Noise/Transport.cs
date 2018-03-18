@@ -19,10 +19,10 @@ namespace Noise
 		bool IsOneWay { get; }
 
 		/// <summary>
-		/// Encrypts the <paramref name="payload"/> and writes the result into <paramref name="message"/>.
+		/// Encrypts the <paramref name="payload"/> and writes the result into <paramref name="messageBuffer"/>.
 		/// </summary>
 		/// <param name="payload">The payload to encrypt.</param>
-		/// <param name="message">The buffer for the encrypted message.</param>
+		/// <param name="messageBuffer">The buffer for the encrypted message.</param>
 		/// <returns>The ciphertext size in bytes.</returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
@@ -34,13 +34,13 @@ namespace Noise
 		/// Thrown if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
 		/// </exception>
-		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message);
+		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 
 		/// <summary>
-		/// Decrypts the <paramref name="message"/> and writes the result into <paramref name="payload"/>.
+		/// Decrypts the <paramref name="message"/> and writes the result into <paramref name="payloadBuffer"/>.
 		/// </summary>
 		/// <param name="message">The message to decrypt.</param>
-		/// <param name="payload">The buffer for the decrypted payload.</param>
+		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
 		/// <returns>The plaintext size in bytes.</returns>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
@@ -55,7 +55,7 @@ namespace Noise
 		/// <exception cref="System.Security.Cryptography.CryptographicException">
 		/// Thrown if the decryption of the message has failed.
 		/// </exception>
-		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload);
+		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
 	}
 
 	internal sealed class Transport<CipherType> : Transport where CipherType : Cipher, new()
@@ -83,7 +83,7 @@ namespace Noise
 			}
 		}
 
-		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> message)
+		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
@@ -97,7 +97,7 @@ namespace Noise
 				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
 			}
 
-			if (payload.Length + Aead.TagSize > message.Length)
+			if (payload.Length + Aead.TagSize > messageBuffer.Length)
 			{
 				throw new ArgumentException("Message buffer does not have enough space to hold the ciphertext.");
 			}
@@ -105,10 +105,10 @@ namespace Noise
 			var cipher = initiator ? c1 : c2;
 			Debug.Assert(cipher.HasKey());
 
-			return cipher.EncryptWithAd(null, payload, message);
+			return cipher.EncryptWithAd(null, payload, messageBuffer);
 		}
 
-		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payload)
+		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
@@ -127,7 +127,7 @@ namespace Noise
 				throw new ArgumentException($"Noise message must be greater than {Aead.TagSize} bytes in length.");
 			}
 
-			if (message.Length - Aead.TagSize > payload.Length)
+			if (message.Length - Aead.TagSize > payloadBuffer.Length)
 			{
 				throw new ArgumentException("Message buffer does not have enough space to hold the plaintext.");
 			}
@@ -135,7 +135,7 @@ namespace Noise
 			var cipher = initiator ? c2 : c1;
 			Debug.Assert(cipher.HasKey());
 
-			return cipher.DecryptWithAd(null, message, payload);
+			return cipher.DecryptWithAd(null, message, payloadBuffer);
 		}
 
 		public void Dispose()

@@ -13,7 +13,9 @@ namespace Noise
 	public interface HandshakeState : IDisposable
 	{
 		/// <summary>
-		///
+		/// Performs the next step of the handshake,
+		/// encrypts the <paramref name="payload"/>,
+		/// and writes the result into <paramref name="messageBuffer"/>.
 		/// </summary>
 		/// <param name="payload">The payload to encrypt.</param>
 		/// <param name="messageBuffer">The buffer for the encrypted message.</param>
@@ -32,7 +34,9 @@ namespace Noise
 		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 
 		/// <summary>
-		///
+		/// Performs the next step of the handshake,
+		/// decrypts the <paramref name="message"/>,
+		/// and writes the result into <paramref name="payloadBuffer"/>.
 		/// </summary>
 		/// <param name="message">The message to decrypt.</param>
 		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
