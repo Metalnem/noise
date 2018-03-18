@@ -46,5 +46,33 @@ namespace Noise
 		{
 			return new MessagePattern(Enumerable.Append(Tokens, Token.PSK));
 		}
+
+		/// <summary>
+		/// Calculate the message overhead in bytes (i.e. the
+		/// total size of all transmitted keys and AEAD tags).
+		/// </summary>
+		public int Overhead(int dhLen, bool hasKey, bool isPsk)
+		{
+			int overhead = 0;
+
+			foreach (var token in Tokens)
+			{
+				if (token == Token.E)
+				{
+					overhead += dhLen;
+					hasKey |= isPsk;
+				}
+				else if (token == Token.S)
+				{
+					overhead += hasKey ? dhLen + Aead.TagSize : dhLen;
+				}
+				else
+				{
+					hasKey = true;
+				}
+			}
+
+			return hasKey ? overhead + Aead.TagSize : overhead;
+		}
 	}
 }

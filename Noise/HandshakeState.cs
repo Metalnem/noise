@@ -234,6 +234,9 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
+			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
+			var ciphertextSize = payload.Length + overhead;
+
 			if (!turnToWrite)
 			{
 				throw new InvalidOperationException("Unexpected call to WriteMessage (should be ReadMessage).");
@@ -245,7 +248,7 @@ namespace Noise
 			}
 
 			var next = messagePatterns.Dequeue();
-			var message = messageBuffer;
+			var messageBufferLength = messageBuffer.Length;
 
 			foreach (var token in next.Tokens)
 			{
@@ -262,6 +265,10 @@ namespace Noise
 			}
 
 			int bytesWritten = state.EncryptAndHash(payload, messageBuffer);
+			int size = messageBufferLength - messageBuffer.Length + bytesWritten;
+
+			Debug.Assert(ciphertextSize == size);
+
 			byte[] handshakeHash = null;
 			Transport transport = null;
 
@@ -271,7 +278,7 @@ namespace Noise
 			}
 
 			turnToWrite = false;
-			return (message.Length - messageBuffer.Length + bytesWritten, handshakeHash, transport);
+			return (ciphertextSize, handshakeHash, transport);
 		}
 
 		private Span<byte> WriteE(Span<byte> buffer)
@@ -302,6 +309,9 @@ namespace Noise
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 
+			var overhead = messagePatterns.Peek().Overhead(dh.DhLen, state.HasKey(), isPsk);
+			var plaintextSize = message.Length - overhead;
+
 			if (turnToWrite)
 			{
 				throw new InvalidOperationException("Unexpected call to ReadMessage (should be WriteMessage).");
@@ -313,6 +323,7 @@ namespace Noise
 			}
 
 			var next = messagePatterns.Dequeue();
+			var messageLength = message.Length;
 
 			foreach (var token in next.Tokens)
 			{
@@ -329,6 +340,8 @@ namespace Noise
 			}
 
 			int bytesRead = state.DecryptAndHash(message, payloadBuffer);
+			Debug.Assert(bytesRead == plaintextSize);
+
 			byte[] handshakeHash = null;
 			Transport transport = null;
 
@@ -338,7 +351,7 @@ namespace Noise
 			}
 
 			turnToWrite = true;
-			return (bytesRead, handshakeHash, transport);
+			return (plaintextSize, handshakeHash, transport);
 		}
 
 		private ReadOnlySpan<byte> ReadE(ReadOnlySpan<byte> buffer)
