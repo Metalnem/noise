@@ -22,10 +22,11 @@ namespace Noise
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
-		/// Throw if the call to <see cref="ReadMessage"/> was expected.
+		/// Thrown if the call to <see cref="ReadMessage"/> was expected
+		/// or the handshake has already been completed.
 		/// </exception>
 		/// <exception cref="ArgumentException">
-		/// Throw if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// Thrown if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
 		/// </exception>
 		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
@@ -40,14 +41,15 @@ namespace Noise
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
-		/// Throw if the call to <see cref="WriteMessage"/> was expected.
+		/// Thrown if the call to <see cref="WriteMessage"/> was expected
+		/// or the handshake has already been completed.
 		/// </exception>
 		/// <exception cref="ArgumentException">
-		/// Throw if the message was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// Thrown if the message was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the plaintext.
 		/// </exception>
 		/// <exception cref="System.Security.Cryptography.CryptographicException">
-		/// Throw if the decryption of the message has failed.
+		/// Thrown if the decryption of the message has failed.
 		/// </exception>
 		(int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
 	}
@@ -61,6 +63,7 @@ namespace Noise
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly bool initiator;
 		private bool turnToWrite;
+		private bool done;
 		private KeyPair e;
 		private KeyPair s;
 		private byte[] re;
@@ -215,6 +218,11 @@ namespace Noise
 				throw new InvalidOperationException("Unexpected call to WriteMessage (should be ReadMessage).");
 			}
 
+			if (done)
+			{
+				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
+			}
+
 			var next = messagePatterns.Dequeue();
 			var message = messageBuffer;
 
@@ -251,6 +259,8 @@ namespace Noise
 
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
+
+				done = true;
 			}
 
 			turnToWrite = false;
@@ -290,6 +300,11 @@ namespace Noise
 				throw new InvalidOperationException("Unexpected call to ReadMessage (should be WriteMessage).");
 			}
 
+			if (done)
+			{
+				throw new InvalidOperationException("Cannot call WriteMessage after the handshake has already been completed.");
+			}
+
 			var next = messagePatterns.Dequeue();
 
 			foreach (var token in next.Tokens)
@@ -325,6 +340,8 @@ namespace Noise
 
 				handshakeHash = state.GetHandshakeHash();
 				transport = new Transport<CipherType>(initiator, c1, c2);
+
+				done = true;
 			}
 
 			turnToWrite = true;
