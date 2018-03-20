@@ -49,11 +49,11 @@ var responder = protocol.Create(
 4. Send and receive messages.
 
 ```csharp
-(written, hash, transport) = state.WriteMessage(message, buffer);
-(read, hash, transport) = state.ReadMessage(message, buffer);
+(written, hash, transport) = state.WriteMessage(message, outputBuffer);
+(read, hash, transport) = state.ReadMessage(received, inputBuffer);
 
-written = transport.WriteMessage(message, buffer);
-read = transport.ReadMessage(message, buffer);
+written = transport.WriteMessage(message, outputBuffer);
+read = transport.ReadMessage(received, inputBuffer);
 ```
 
 ## Installation
