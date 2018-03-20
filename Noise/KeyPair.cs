@@ -5,8 +5,9 @@ namespace Noise
 	/// <summary>
 	/// A Diffie-Hellman private/public key pair.
 	/// </summary>
-	internal sealed class KeyPair : IDisposable
+	public sealed class KeyPair : IDisposable
 	{
+		private static readonly Curve25519 dh = new Curve25519();
 		private readonly byte[] privateKey;
 		private readonly byte[] publicKey;
 		private bool disposed;
@@ -22,23 +23,32 @@ namespace Noise
 		/// <exception cref="ArgumentException">
 		/// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> are invalid.
 		/// </exception>
-		public KeyPair(byte[] privateKey, byte[] publicKey)
+		internal KeyPair(byte[] privateKey, byte[] publicKey)
 		{
 			Exceptions.ThrowIfNull(privateKey, nameof(privateKey));
 			Exceptions.ThrowIfNull(publicKey, nameof(publicKey));
 
-			if (privateKey.Length != 32 && privateKey.Length != 56)
+			if (privateKey.Length != 32)
 			{
-				throw new ArgumentException("Private key must have length of either 32 bytes or 56 bytes.", nameof(privateKey));
+				throw new ArgumentException("Private key must have length of 32 bytes.", nameof(privateKey));
 			}
 
-			if (publicKey.Length != 32 && publicKey.Length != 56)
+			if (publicKey.Length != 32)
 			{
-				throw new ArgumentException("Public key must have length of either 32 bytes or 56 bytes.", nameof(publicKey));
+				throw new ArgumentException("Public key must have length of 32 bytes.", nameof(publicKey));
 			}
 
 			this.privateKey = privateKey;
 			this.publicKey = publicKey;
+		}
+
+		/// <summary>
+		/// Generates a new Diffie-Hellman key pair.
+		/// </summary>
+		/// <returns>A randomly generated private key and its corresponding public key.</returns>
+		public static KeyPair Generate()
+		{
+			return dh.GenerateKeyPair();
 		}
 
 		/// <summary>Gets the private key.</summary>
