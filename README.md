@@ -7,3 +7,9 @@
 
 .NET Standard 2.0 implementation of the [Noise Protocol Framework](https://noiseprotocol.org/)
 (revision 33 of the [spec](https://noiseprotocol.org/noise.html)).
+
+## Installation
+
+```
+> dotnet add package Noise.NET --version 0.9.0-rc
+```
