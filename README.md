@@ -1,4 +1,4 @@
-# Noise.NET
+![](Noise.png)
 
 [![Latest Version](NugetBadge.svg)](https://www.nuget.org/packages/Noise.NET)
 [![Build Status](https://travis-ci.org/Metalnem/noise.svg?branch=master)](https://travis-ci.org/Metalnem/noise)
