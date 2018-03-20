@@ -30,8 +30,8 @@ var protocol = new Protocol(
 3. Start the handshake by instantiating the protocol with the necessary parameters.
 
 ```csharp
-// Pre-shared symmetric key.
-var psk = new byte[32];
+// s is communicated out-of-band
+// psk is a pre-shared symmetric key
 
 var initiator = protocol.Create(
   initiator: true,
