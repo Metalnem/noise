@@ -71,5 +71,5 @@ for the complete example.
 ## Installation
 
 ```
-> dotnet add package Noise.NET --version 0.9.0-rc
+> dotnet add package Noise.NET --version 0.9.1-rc
 ```
