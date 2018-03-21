@@ -40,7 +40,10 @@ namespace Noise
 		/// Thrown if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
 		/// </exception>
-		(int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
+		(int BytesWritten, byte[] HandshakeHash, Transport Transport) WriteMessage(
+			ReadOnlySpan<byte> payload,
+			Span<byte> messageBuffer
+		);
 
 		/// <summary>
 		/// Performs the next step of the handshake,
@@ -72,7 +75,10 @@ namespace Noise
 		/// <exception cref="System.Security.Cryptography.CryptographicException">
 		/// Thrown if the decryption of the message has failed.
 		/// </exception>
-		(int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
+		(int BytesRead, byte[] HandshakeHash, Transport Transport) ReadMessage(
+			ReadOnlySpan<byte> message,
+			Span<byte> payloadBuffer
+		);
 	}
 
 	internal sealed class HandshakeState<CipherType, DhType, HashType> : HandshakeState

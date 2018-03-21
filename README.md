@@ -31,7 +31,7 @@ var protocol = new Protocol(
 
 ```csharp
 // s is communicated out-of-band
-// psk is a pre-shared symmetric key
+// psk is a 32-byte pre-shared symmetric key
 
 var initiator = protocol.Create(
   initiator: true,
