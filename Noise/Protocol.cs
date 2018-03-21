@@ -106,7 +106,7 @@ namespace Noise
 		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
 		/// to be initialized with local and/or remote static key,
 		/// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
-		/// <para>- One or more pre-shared keys are not 32-bytes in length.</para>
+		/// <para>- One or more pre-shared keys are not 32 bytes in length.</para>
 		/// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
 		/// </exception>
 		public HandshakeState Create(

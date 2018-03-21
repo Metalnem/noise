@@ -55,7 +55,7 @@ namespace Noise
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
-		public ReadOnlySpan<byte> PrivateKey
+		public byte[] PrivateKey
 		{
 			get
 			{
@@ -68,7 +68,7 @@ namespace Noise
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
-		public ReadOnlySpan<byte> PublicKey
+		public byte[] PublicKey
 		{
 			get
 			{
