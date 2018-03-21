@@ -6,7 +6,16 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/metalnem/noise/master/LICENSE)
 
 .NET Standard 2.0 implementation of the [Noise Protocol Framework](https://noiseprotocol.org/)
-(revision 33 of the [spec](https://noiseprotocol.org/noise.html)).
+(revision 33 of the [spec](https://noiseprotocol.org/noise.html)). It features:
+
+- AESGCM and ChaChaPoly ciphers
+- Curve25519 Diffie-Hellman function
+- SHA256, SHA512, and BLAKE2b hash functions
+- Support for multiple pre-shared symmetric keys
+- All known [one-way] and [interactive] patterns from the specification
+
+[one-way]: https://noiseprotocol.org/noise.html#one-way-patterns
+[interactive]: https://noiseprotocol.org/noise.html#interactive-patterns
 
 ## Usage
 
