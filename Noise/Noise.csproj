@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>Noise.NET</PackageId>
     <Title>Noise.NET</Title>
-    <PackageVersion>0.9.0-rc</PackageVersion>
+    <PackageVersion>0.9.1-rc</PackageVersion>
     <Authors>Nemanja Mijailovic</Authors>
     <PackageProjectUrl>https://github.com/Metalnem/noise</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Metalnem/noise</RepositoryUrl>
