@@ -165,7 +165,7 @@ namespace Noise
 				hash.Dispose();
 				hkdf.Dispose();
 				state.Dispose();
-				Array.Clear(ck, 0, ck.Length);
+				Utilities.ZeroMemory(ck);
 				disposed = true;
 			}
 		}

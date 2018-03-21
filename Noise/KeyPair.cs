@@ -84,7 +84,7 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				Array.Clear(privateKey, 0, privateKey.Length);
+				Utilities.ZeroMemory(privateKey);
 				disposed = true;
 			}
 		}

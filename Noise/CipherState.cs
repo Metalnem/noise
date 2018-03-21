@@ -107,11 +107,7 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				if (k != null)
-				{
-					Array.Clear(k, 0, k.Length);
-				}
-
+				Utilities.ZeroMemory(k);
 				disposed = true;
 			}
 		}

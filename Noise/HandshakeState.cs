@@ -440,7 +440,7 @@ namespace Noise
 		{
 			var psk = psks.Dequeue();
 			state.MixKeyAndHash(psk);
-			Array.Clear(psk, 0, psk.Length);
+			Utilities.ZeroMemory(psk);
 		}
 
 		private (byte[], Transport) Split()
@@ -481,7 +481,7 @@ namespace Noise
 
 			foreach (var psk in psks)
 			{
-				Array.Clear(psk, 0, psk.Length);
+				Utilities.ZeroMemory(psk);
 			}
 		}
 
