@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Noise.Tests
 {
-	public class HandshakeStateTest
+	public class NoiseTest
 	{
 		private static byte[] initBuffer = new byte[Protocol.MaxMessageLength];
 		private static byte[] respBuffer = new byte[Protocol.MaxMessageLength];
