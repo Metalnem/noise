@@ -13,8 +13,8 @@ namespace Noise.Tests
 		private static byte[] initBuffer = new byte[Protocol.MaxMessageLength];
 		private static byte[] respBuffer = new byte[Protocol.MaxMessageLength];
 
-		[Fact] public void TestCacophony() => Test("Cacophony.txt");
-		[Fact] public void TestMultipsk() => Test("Multipsk.txt");
+		[Fact] public void TestCacophony() => Test("Vectors/cacophony.txt");
+		[Fact] public void TestMultipsk() => Test("Vectors/snow-multipsk.txt");
 
 		private void Test(string file)
 		{
