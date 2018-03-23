@@ -25,7 +25,7 @@ namespace Noise.Tests
 			{
 				var protocolName = GetString(vector, "protocol_name");
 
-				if (protocolName.Contains("448") || protocolName.Contains("BLAKE2s"))
+				if (protocolName.Contains("448"))
 				{
 					continue;
 				}

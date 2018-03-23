@@ -10,7 +10,7 @@
 
 - AESGCM and ChaChaPoly ciphers
 - Curve25519 Diffie-Hellman function
-- SHA256, SHA512, and BLAKE2b hash functions
+- SHA256, SHA512, BLAKE2s, and BLAKE2b hash functions
 - Support for multiple pre-shared symmetric keys
 - All known [one-way] and [interactive] patterns from the specification
 
@@ -31,7 +31,7 @@ using Noise;
 var protocol = new Protocol(
   HandshakePattern.IK,
   CipherFunction.ChaChaPoly,
-  HashFunction.Blake2b,
+  HashFunction.Blake2s,
   PatternModifiers.Psk2
 );
 ```

@@ -52,7 +52,7 @@ namespace Noise
 		/// </summary>
 		/// <param name="handshakePattern">The handshake pattern (e.q. NX or IK).</param>
 		/// <param name="cipher">The cipher function (AESGCM or ChaChaPoly).</param>
-		/// <param name="hash">The hash function (SHA256, SHA512, or BLAKE2b).</param>
+		/// <param name="hash">The hash function (SHA256, SHA512, BLAKE2s, or BLAKE2b).</param>
 		/// <param name="modifiers">The combination of pattern modifiers (e.q. empty, psk0, or psk1+psk2).</param>
 		/// <exception cref="ArgumentNullException">
 		/// Thrown if the either <paramref name="handshakePattern"/>,
@@ -129,6 +129,10 @@ namespace Noise
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(this, initiator, prologue, s, rs, psks);
 			}
+			else if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Blake2s)
+			{
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2s>(this, initiator, prologue, s, rs, psks);
+			}
 			else if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Blake2b)
 			{
 				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(this, initiator, prologue, s, rs, psks);
@@ -140,6 +144,10 @@ namespace Noise
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Sha512)
 			{
 				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(this, initiator, prologue, s, rs, psks);
+			}
+			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Blake2s)
+			{
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2s>(this, initiator, prologue, s, rs, psks);
 			}
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Blake2b)
 			{

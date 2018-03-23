@@ -7,17 +7,13 @@
         "0667a7c87e5bc10a9c46d06ec85d4b6f2f814f0e2deba0fca3ea9f24f1ffc1b3",
         "953d6c0b54410bad9c8a6286f46b1922eb10c242a2116f6d8dbe3383247301f6"
       ],
-      "init_static": "20decc5e0c6434d0f4126b5fa24eece142bbfd3b259e4e76af13399d80ed0b56",
       "init_ephemeral": "a0a41f1d34125018c0dc975affa64a5d7972987e94b3aff60ededb146c916c76",
-      "init_remote_static": "01eb796b2ee5d00fa40e9feff448bb9397f2109058b9cb5b1e4497ce7c6b8e44",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "0667a7c87e5bc10a9c46d06ec85d4b6f2f814f0e2deba0fca3ea9f24f1ffc1b3",
         "953d6c0b54410bad9c8a6286f46b1922eb10c242a2116f6d8dbe3383247301f6"
       ],
-      "resp_static": "00d94984faf2ed88afe4a6f526d5b4bef2fcaca95edae4cf65ec5a31ddfb4546",
       "resp_ephemeral": "281e5aa8f2869033595ed71d5356558b7945476d282c9616091292b8f4165274",
-      "resp_remote_static": "76de6fea532494f6060fd60fb2ac19626d731eafae205f1a8a0911b26f0c9670",
       "messages": [
         {
           "payload": "cff4cad201f15a8ef1b2a0c806fda2b355550905d3229be7418daf90e051cce3",
@@ -111,17 +107,13 @@
         "33347611a4af23a3b73ec2eb50df349a303de5633308202e4ca3fbc550bc8735",
         "0504ab22da2ef64d2651cafd0d2565923aacc5cd04a6c40d664fd0c48f192504"
       ],
-      "init_static": "30159c831c800768c212cc710e9d1b36b092e1d566f19fb6d77a74d35b18f178",
       "init_ephemeral": "886a8e43588de727d8541b428235985a815a0ae5ce2c0c6660cb44c9b9911879",
-      "init_remote_static": "6b9fcb9052939f185ea21384751908947bf59162ddca8b504891ae8400c60826",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "33347611a4af23a3b73ec2eb50df349a303de5633308202e4ca3fbc550bc8735",
         "0504ab22da2ef64d2651cafd0d2565923aacc5cd04a6c40d664fd0c48f192504"
       ],
-      "resp_static": "40f60ebf2c4a747548b4c85ee9534f0b583a6209239bb0b5163d8ae41ed5df7f",
       "resp_ephemeral": "f8df5ff3d5dcb9bb2f5b329790199c49968848e40d550af5f3fca2d07f34ec5e",
-      "resp_remote_static": "0b00cb77f712cb3266db73426b382511f853378a2ea54f3e12adde60620a9250",
       "messages": [
         {
           "payload": "1af57812c7836ee935c68f44780a2a04ef055327f558e4cd289dcf1ba5af327d",
@@ -216,9 +208,7 @@
         "dc1e056d5a4691eaaa6099104853b73aac22457c6c58f7df82df6a07b12fc94b",
         "66cecab294390394ccf86ba4fe5fe7f4d62791c7fd5368d0a6361cc7b6ca3de7"
       ],
-      "init_static": "1854b225ad7f505dcef71520501af3ed79e49cecf8bd9533b0bfdded0f99b468",
       "init_ephemeral": "7070bbbe04395ecaf4ef42f419becce8513e5090ef3b5c2d2060e73f86210f6d",
-      "init_remote_static": "8ac59488958c381ab3fe26194c3c6fa8ee2cafea613c1c901e117f033f979e37",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "4a6365017606d1f1a58930096c410fffdff8e4841401d13953d59160870ebc62",
@@ -227,7 +217,6 @@
       ],
       "resp_static": "d0cee0dca60b66cac1382429a7e8138d57359c54cf064ee201e71a2fa0a6f07c",
       "resp_ephemeral": "5060612fe62b564be4240d7a54b3fb6e8472d8ca55f6dcc0e7be3fe12265d047",
-      "resp_remote_static": "ffa1b174e0382ec3f0c84f6a09e8dcd22a9f13e2a626761ddf5fd00f9401f31f",
       "messages": [
         {
           "payload": "7c4f0d8ddd29b8f3bb97f4caab369ab671de6cf4cd3fdeb10a0b2a691f49c2f1",
@@ -331,9 +320,7 @@
         "52bbee8de7471059e6849e9a59c76abd1068994b7908aca763cdc9a9699ccee3",
         "42c74467a1d9fcd04b0a6f3fab3684c6dfc7f28d3e657dfa1bcf28e2d56da1d3"
       ],
-      "init_static": "a0326e5b3d3439837d51b6c3dddc50c359cb4fd114a25fc62e0b8efdfd412841",
       "init_ephemeral": "c03b8d6fd60ea64b86ffbf09ce2246e33573dc4d2ac847156f80b2c1e6e7f05d",
-      "init_remote_static": "6f31ec129363d4c9684c9eeb0ae1dcb3c88dd16da8ac6a2f14c473587ff2d155",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "91dd21c323bfb44c52b6908e483330b1b0b1f90e0799d23dbb3af8dd35b97221",
@@ -342,7 +329,6 @@
       ],
       "resp_static": "680c0fb6a4c5b1a081c02bae0ce696a2f12ebbbbea7c2695c732b921b9d00872",
       "resp_ephemeral": "a011b33c7bb889b7b15da5d521cac3fd6f18ca947638ac1e21324970b91e947f",
-      "resp_remote_static": "03da2ec416ef256f7749980f8a7af24669a993151ae814c483b6d85eaa69397c",
       "messages": [
         {
           "payload": "7a6753c76e2915a60b46f6224f3be3dfc8ef8b7f03adcb330b32b19e5a81c9ff",
@@ -447,15 +433,12 @@
       ],
       "init_static": "a062bef2273fc835d5fdbc790194d9b88d320b0dd55cb876e21bd120a935cc76",
       "init_ephemeral": "f82d089d25edfd32990b1951a96548f88b586c3d4d21aa0bf632289d783a335b",
-      "init_remote_static": "4f9b6760c36eec8d6b68dacc6ad877c42c53eba6098c58f1dea64db163840160",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "e6bc3a20f8f1321b0994c755d5c3e4b819d62aa857d2a702b50b98144cd7a05e",
         "5ee566570ff9526ce9054bd002fd537ac63479157fc44f72a688ae9a9e2006ad"
       ],
-      "resp_static": "20d6f03d5f95bcd9cf3fa6ebb73550e3412c64d7da9d8d4b777e43f1a0a2b76f",
       "resp_ephemeral": "3061c9c91ca1e0a3f6e44161fcfd40622c194a006079b682a23f7061fe43e04a",
-      "resp_remote_static": "4ee01878993ff027ada1387fb658b59e43f54e3318f54a65faf83f40e732c92a",
       "messages": [
         {
           "payload": "943ea6fafd982dc7de9c1c2bdc80e2a2b968ce96ccf5b78e5c2d1bc4e3cd5289",
@@ -570,15 +553,12 @@
       ],
       "init_static": "78696e3f52c2249e278c3d7074348807c1aa4dea92fb544dac7f50cb74865e60",
       "init_ephemeral": "20f489208e0ea676957e310243c89d026b6f49215de54f669515b9fce8624450",
-      "init_remote_static": "29e48663e7764512153abf642675446d03526553e19ca686c546ea28b5cbda6b",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "9fcb61936afe440a4e817cc216d37f94b1819196f5d4129c66d0917082f591bb",
         "838c6d456e6f0c9f1f28b5d7ffd4a29e015db3c6db7343e6e2cd1cf950b5bfe5"
       ],
-      "resp_static": "e02c8053ffaf8d4a3c15a4de7cdf07b7d523a28fce0935ad0c93232864d2236d",
       "resp_ephemeral": "08432d178f3d4421dbb96cec4f803153f80f55f38b97b59f3cb33f5dd41a9746",
-      "resp_remote_static": "162842d5808d03f891f2a21e9916a5102b6996fcfda1e58181dc7954de382a3d",
       "messages": [
         {
           "payload": "d39644adddb474f272de9af407aa764881ca1b7ee88554fdc5e3753f9a1dbeba",
@@ -701,7 +681,6 @@
       ],
       "resp_static": "b0fca6296c235e303d3ab40c0e7165cfad074aedcc98eec84ccdd7927ad8f071",
       "resp_ephemeral": "28d16cb26babe4cfb60cdb623290504b15ba5464a224e011bc29ffee65930566",
-      "resp_remote_static": "5b3fba76a145fc5be421cfb95266bbaf67efd4b53aa479cf85da2fa7d6cf3054",
       "messages": [
         {
           "payload": "5c88c0bb9aed029e68e192916c00b64cfbfaf5c458baf4f91a14e294cf57d813",
@@ -830,7 +809,6 @@
       ],
       "resp_static": "a0e97e4230e37bb11a1c929dc08a2514305ca207b332b1d354bb2b4a1e309a61",
       "resp_ephemeral": "289cf29448b00bdcb77ccdd023eaf9f1fe6baa5e1263637e7603871a45746d75",
-      "resp_remote_static": "7e7422d065dc6cac71d2ba5a1f034a16d1ceb3ecd808c336885cd97a2d75ae1a",
       "messages": [
         {
           "payload": "6d019add6191db44799d1a878b49ebbc95cad6ff22b82d9867735271e3b17532",
@@ -951,13 +929,11 @@
       ],
       "init_static": "70be8a7311c1e1ab90c1350719b3132daca68866e1befdd04ea8b4c3e53d6c51",
       "init_ephemeral": "8077daa3e770d577fc8ca524712983216582491fd1631cd513edc1093375b274",
-      "init_remote_static": "a3e0c3e6775563087e61179adddd7347d75cf6fba62387baae4bed0d53362668",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "43eb7cc56d378b79595eb54a45d3cdf9cdd89d0a406af942ce7b24394f4fdc23",
         "79ee7fbbd13becfe589e739f6558497c959e0fb0504f7dc2488202d1540ee26f"
       ],
-      "resp_static": "58ed15916bf7c94957db14fd5754e771958287240d3330bdefddbc56740e1c49",
       "resp_ephemeral": "a05fb7f9c73f7f270aaac13b3b4feb1dccdb19fa6f5843120c96002d4bc3a561",
       "resp_remote_static": "3a1cd06f310f86f93cc8c0f19c045d6bbc1e36bed492b116fe7f954fe4440c47",
       "messages": [
@@ -1061,13 +1037,11 @@
       ],
       "init_static": "d8acef089684abb3b5b3f995bad87400f85d57aa0cb25379fb9e46f6147e5148",
       "init_ephemeral": "c88891366d52d4acf641c3319586e2bb76bf9f5ddbadb6b2c65e5d0403ca487c",
-      "init_remote_static": "cabae7ebed147cf0a2f8c8fc019fb80fb3da4fea8fa127f4db9fbd92b8a45351",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "80713b75c929781d47202b0da45cb9774a18e858318258a6d1c6f258cc14020d",
         "abe10320a49f48780b56af05df6866722d5c147b85193f19ccf7616b8736ccae"
       ],
-      "resp_static": "20c0ca8ddc4a1f135a6e0d628f049ead6069fc4f9f304af9854a6c51709de762",
       "resp_ephemeral": "0811f948895f44c4b395eeb9a99de93b52027ba472ef3a3928993de2109c356f",
       "resp_remote_static": "10fe84ba51cee6b77e15555f0bfbbea67d8f2bb278d4de7f0be2a5c32ee61966",
       "messages": [
@@ -1403,15 +1377,12 @@
       ],
       "init_static": "e06fa419eb6700db30bd18e57732abbcb146193080b3441436848b2ffbceb17f",
       "init_ephemeral": "e07a3793bd17bad070706491bbfd7029d7baa984e6d58cab35a002779322ff62",
-      "init_remote_static": "5c3be6fe904941fbe163e5e2bfced2738dcf14120f8bec982859561b04355c0b",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "567e5826456a6ff80e1fcdb9b81d6b44ae32f7950951233831f8f8418200706e",
         "50f04efe4de7f3695dfef7441feecd660927997cff03cd7210f2604213321d44"
       ],
-      "resp_static": "1809f73ead13fbf62e8173f10cd672de603556a18c66ac1c1b414a3af3e52f72",
       "resp_ephemeral": "a887e230dc227021851fa310f1a1d37d2a56f6aedf047d14ab2d9277ba11d975",
-      "resp_remote_static": "dbe8c5ac32f78b6057d274ad340e8ea4805ba3b607ec72c9fab4be98860b6616",
       "messages": [
         {
           "payload": "06534b640c1d64b417a08e4e7017a85bb2cdfaf8b5cb2c3e7817c5d19a4c2ecc",
@@ -1510,15 +1481,12 @@
       ],
       "init_static": "b02b11bf931c0ff11879078e0e64d0b0c432a38d9d72b85d3b35ed2d32aebf5c",
       "init_ephemeral": "60962c70f4695b403a89cc79fe753923a0e337f50103e11ea468ad8cdc4f235b",
-      "init_remote_static": "bf1d950dd1e0b8731fed43f67ea7c335e5cd00098030e02d3b28f71672635843",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "7ba671e00423510285d8daa08ed632e02390d9ef1928f45e0d2262c51a63d0f3",
         "6a0aac9d44d91a0dcf88c4cc549c512ba076cb252f9c98192a48b8203aaf8837"
       ],
-      "resp_static": "104d4de112dc0729b927334cf519809609b8cfbc767acf8e6a41e181cb4a4479",
       "resp_ephemeral": "98223cff54d3d592235158844e0ee99477326184e4fe44ca396531a08a528a4e",
-      "resp_remote_static": "f74bab7f99b438ab725ebb746c23482610f2acdaee1e57e5c401374896a42704",
       "messages": [
         {
           "payload": "6edfa4e697e8ee41963e908ee4542140041cebf1bd48d76f7748af504a1df1ae",
@@ -1625,7 +1593,6 @@
       ],
       "resp_static": "20dd2da30fd8a5f2bca0aa905d13131bf1ac24809c6b1051944f5d61b2f92d67",
       "resp_ephemeral": "782d272751022f9fb08987afb242283c8556e7d03dc2ce9d6d342641005c4867",
-      "resp_remote_static": "7138f6064675dfa55188a76791413733234f49e96500ec7b094fe3e50adedc54",
       "messages": [
         {
           "payload": "db9ef1711244c5f7482845c69f4fed74d763507ca46f7d1dee215220f693b3d3",
@@ -1738,7 +1705,6 @@
       ],
       "resp_static": "504432bdcbe577021bfceb28edaf7838d2e8c604f852c8cddd616df8fcc99672",
       "resp_ephemeral": "209436e900aecbecc34a64c6caed97fa9781ac0db294e2e8f3c61fe5f85c4d7b",
-      "resp_remote_static": "c8314eff54b06b00761a251e94f9702af9dc0b31a9256fb30edb5225ed0ff943",
       "messages": [
         {
           "payload": "99f80fb309923174eaa0853f3d64c16ea60a8d0b42891bdcccec53d544a24c62",
@@ -1843,7 +1809,6 @@
       ],
       "init_static": "4872d7f2626f2f4f61813b41555fa6df453df911354e3bb06df8f4d16d40036c",
       "init_ephemeral": "88f04ab52e68bea3d8cb3432fdb0fb18cddfc67b4d856878919c019cc4fa275e",
-      "init_remote_static": "45678a23ec129d6b1ad19fd9510b78aed598668353cc250d9db253f3bd8e9418",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "0b553b3a3bb47c3c1c2ff02846560697a319b924dd237a95eb07337a13a228c3",
@@ -1851,7 +1816,6 @@
       ],
       "resp_static": "d8c58bde8615f7eeae41fb0e942a4e9761f4436c622de70f4484a5248584b844",
       "resp_ephemeral": "f8b50b5adca86b8d5c9177db590cba598844a3160ca08a1bc4c382950ad29d7c",
-      "resp_remote_static": "4380694c94245a380284a0bd3a03ef904a587f8bfdcfe0e670132fa61a52e478",
       "messages": [
         {
           "payload": "079b56e6bf92e7eaa827791cc501bdd4ae12ee379ca647bc21c890d8aa4c1dff",
@@ -1953,7 +1917,6 @@
       ],
       "init_static": "e09e53b8f62cb0f895fc961d1d32e424efa1ed01a277bc0363011e718867796b",
       "init_ephemeral": "00a735c3e1ba5e061ff91da9e09a026406cd9ac9360a6ac65d3040a4bd193752",
-      "init_remote_static": "eaf2f0cee85dc919536be9df5844d5732d5b64c008f0b5875e95f6732cfe3d05",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "da0fe62c152891df3c2b412d623346fbece7ac09265be856320073120822c1b5",
@@ -1961,7 +1924,6 @@
       ],
       "resp_static": "6895b189c19d614bc97f417ddaff713f9b9312f70dac31fac763d2648834f45e",
       "resp_ephemeral": "48327539c787080d0f2fd8fd791165120f42d910692eaa5675a641fc05e47350",
-      "resp_remote_static": "eb70273193d5376ab452943a46406dac5ba9a5c916965ad24400687d6ba2c13e",
       "messages": [
         {
           "payload": "716c7531805610b67bfcb40b7e46529d60ed477d9ef38a6dbcd42b92e1fb6760",
@@ -2063,7 +2025,6 @@
       ],
       "init_static": "98f7b72253c4f4c9ba79090cd897fe7b07416cb15060c68a04bf5ea4ec269361",
       "init_ephemeral": "6812f0b648779c7b873fc13c79025ef2c397d62f6066c0ef17f298ed1790735b",
-      "init_remote_static": "52101793a7814a28b77cffb29b08c5d54f0a89ea18c0d9cf6146ac0e4a0b2128",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "641ce29383089b15a2b8988fff25f2e4f5d2cf4402601f7a1cc0185c7faa33c4",
@@ -2071,7 +2032,6 @@
       ],
       "resp_static": "909cc383901a416085503706be22eaa41e3ac38c93298012e85eae70da365964",
       "resp_ephemeral": "002a862e5a4363b05c17563b64523f950f7757e464d5442b1b644788f5eabc4e",
-      "resp_remote_static": "951828bb966aa8768230664b2e1eade4ad80167def0699a8737ecf1f030a2446",
       "messages": [
         {
           "payload": "915095a252286827680c55b05067c6187233b0ddb5eb8925110d1e638748cc8c",
@@ -2189,7 +2149,6 @@
       ],
       "init_static": "68f89d704020df1fa898e0544c5e879230106328fe0d54e87c5602d6ec708040",
       "init_ephemeral": "d05b2c1ca81272e4275a791ca9d40a4d5b3de2c3034e6016de048a151629cb4b",
-      "init_remote_static": "847ce996d826a5b0773ceb1c2462212b127e8d06221b0c4c2030380482ed2a43",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "56a6653fb44bdfb742633cb07903b41fcede0f6f0986923ef05b6fc1bfc17b38",
@@ -2197,7 +2156,6 @@
       ],
       "resp_static": "a88d63acbd5cd551deb6eca2bab33404ea02c9413150b3bbc2b7397e69677855",
       "resp_ephemeral": "08015ac272db6b712188b5cfe78756c1ad99c80df2719ef041968fbab816327a",
-      "resp_remote_static": "2e608c84b624b2981c3c2fa394e1b69f08cf3582c84587cb909e9faf6c68b518",
       "messages": [
         {
           "payload": "2bf49a67daeb437bdc26b37684405b7066cf879af85fec1df18696835e49105c",
@@ -2315,7 +2273,6 @@
       ],
       "init_static": "0801dd8e95b7853941912855aee2a20d7d627632779b69c981f634e526392048",
       "init_ephemeral": "b8dbb2fd56f431c746031176f18c4bece5ae2a95ce94fa072b1680570bb9d878",
-      "init_remote_static": "77d07c395a56f1698b438a8516d03cbae11cbc51a1ae11c5904a47013c806370",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "963864c46c28fe7fcae06c1d88079e4b52c5daed4dff93c0adff00e4e01621f4",
@@ -2323,7 +2280,6 @@
       ],
       "resp_static": "00ec52aa4f6e0d90a6ffc344248e43df8162d6a6185f8c990109cac59a72255a",
       "resp_ephemeral": "f06dc05d198b58cb89b9feaec28918a80d832b85aea2e58dfe55cdc5d14ec85f",
-      "resp_remote_static": "e79c127ae0185da3aa413d60e4c43d1ef70a49a77c99641f4bd269ab4adb2072",
       "messages": [
         {
           "payload": "4b3a77020fff989ec85d0e9930dac83d24bb3c8e779d8a8cd1e9d3a6a326c945",
@@ -2441,7 +2397,6 @@
       ],
       "init_static": "40f0d0eb4fefae8cf178122842362d672636ab4cf03dbef99c2fcf9efc72df5d",
       "init_ephemeral": "38b2d9c4a0441d9ea7f6262d4289420b8a051ef722cc4cb8635744dfc05f4676",
-      "init_remote_static": "ceae434a39bff1acd96c0496a7a01d9dea2b4f5d7c0398285d4b3fd3ae6dac08",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "05757e87e3183c23452d5060e9c7295051813b4d0ae2671b4327947c4a27bfae",
@@ -2449,7 +2404,6 @@
       ],
       "resp_static": "e8ff59afc3ee0c0d86d30cbba4dcfa2f2a27bb5b4130a5aa85c47642210c1851",
       "resp_ephemeral": "f0017f94bba3a8365dbcea44ab8a68c9e614b978b367e1380576212fabc8c46c",
-      "resp_remote_static": "7053afc2530684a14125b6c896f815ae0f6849bc061c8851b8cb0af2cdbf250d",
       "messages": [
         {
           "payload": "6720def74a67e4cfaa46075f13a354dd4dc0cd05b59af9fef6b27d8a008f78b4",
@@ -2567,7 +2521,6 @@
       ],
       "init_static": "90a4cc481caf7d5041d7e1937ed6b6a9c46cdaf3450062c19ad08a4cae8ff160",
       "init_ephemeral": "c0dab4453eb8032d3b4dee1f3df6617f6d882aac38e77e721875226c3b923842",
-      "init_remote_static": "fa36aef9c722b687ecac98481ac5d85ca4f28d77eb0dfd5a6b705ae5c409ac58",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "020b7614531bc6a1175f9d38d995d69b41edc9549ec865da1d0e59dacfc55515",
@@ -2575,7 +2528,6 @@
       ],
       "resp_static": "788f9de382b01cf515835bf900af55eca15032e94a4f68405200c296a3583b7e",
       "resp_ephemeral": "30f68ae6f256ee44b29ed41b9c91efe6605a003e06d1f319a6ce8f6117c37d5b",
-      "resp_remote_static": "d88b3ca1c23930402f555b24fd803a3004abae1aed1062cfa79b9a63f1604f63",
       "messages": [
         {
           "payload": "babca3d307b5f1a4a11231719e0f5748b49c7c746719a8ff3b7ec5f9451c60a0",
@@ -2693,7 +2645,6 @@
       ],
       "init_static": "28486eb6a407481dc276bf87bd0a60e07d3b62c7caae4e74d56135ee4ffb7058",
       "init_ephemeral": "60dd4c14f04a4ada2ab95464ccebd60e85bda8819aae902244b2de42dff73965",
-      "init_remote_static": "eed59859b3a175e134bcd167c133742db6a8eea6a9f88d9f04ed6e406b7ec909",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "ac06bead83cb21d63243bdf7f4498e9e92755fe9e61fb739a4e6552be93f680e",
@@ -2701,7 +2652,6 @@
       ],
       "resp_static": "78c6ecbbdcf91034e6974dacb2907f1cfa2d3e5ed3c6b4a0500173bad1a6de7f",
       "resp_ephemeral": "908824f37ec69a21060af7db028f710a9e465294c261dd33928b347bfef96b50",
-      "resp_remote_static": "a66d5b511cc9bc960440c8153e4a441a1c6deb42067f721cdfdf589340b35e49",
       "messages": [
         {
           "payload": "f56ec72e688b6b862547912b7c8169c0d413fbfdec9332401a63325cdbb54d38",
@@ -2821,7 +2771,6 @@
       ],
       "init_static": "9804ba58b3edc77c4157a00a92748bcd0f4b38233827ecf8bcd54d73de332475",
       "init_ephemeral": "88a6cd9c36b61084a1d49a7a0fdc73c06081e45680277ab03125dc3f35ba057b",
-      "init_remote_static": "4f5a880ca3a4363ed2d1e409e2276c9d95eee43b080a12d23256712a01d9120d",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "1f4c5c9b0816b64d1057b352de4ec78d8c11214e0abac7213d74048f87ec1cdb",
@@ -2831,7 +2780,6 @@
       ],
       "resp_static": "d81fd2b4fe6f8a2e216cdc4a27f9a7751339f287ef83e9974e2f59d6e253ae4f",
       "resp_ephemeral": "78d74b665a81e428d7661f1bfab0f5f6b2deb6f36ffdb0718e92b56ea4817d61",
-      "resp_remote_static": "78887ed763e113ec9e5ee4f56898eaac0be68c9f3014b4e402b0a8a0368bd900",
       "messages": [
         {
           "payload": "38515f0220a9b5116ca16e2090ebd544618435091698b60722c67fd181ea043a",
@@ -2963,7 +2911,6 @@
       ],
       "init_static": "e803f10136971b409b31a5d49cea1d305ad0e727b85ea53ecb8487b8cec37470",
       "init_ephemeral": "60d5eb257e152ef19ad78f340008761c1dad82a6b80799063bfe55fb3e0cf563",
-      "init_remote_static": "0998b5c9702d96f57c89b1a24e11fc7cc9623b8579be1ad5a93bbac31701af4b",
       "resp_prologue": "5468657265206973206e6f20726967687420616e642077726f6e672e2054686572652773206f6e6c792066756e20616e6420626f72696e672e",
       "resp_psks": [
         "3aa1870d02b87491c5ff9b97150d804e1cdd6a18969b0a25c6bdb82658f4fbce",
@@ -2973,7 +2920,6 @@
       ],
       "resp_static": "70cbcccf6bb945ecd8b39e0915febfa977362f64c6f25ec18977bd0e616f5e5a",
       "resp_ephemeral": "788b89f7fc5964285798295072fe5d3cf79fbe5968b4fb3bd4e4bc1266612f50",
-      "resp_remote_static": "388b7112321d230d3021a681ce50f59ee678a5d079328337174fc598489a1634",
       "messages": [
         {
           "payload": "e65fe6fcbe54626c1482e241339a860b7e2da9e79e32eada3100e3cc05461aa4",

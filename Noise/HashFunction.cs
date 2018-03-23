@@ -18,6 +18,11 @@ namespace Noise
 		public static readonly HashFunction Sha512 = new HashFunction("SHA512");
 
 		/// <summary>
+		/// BLAKE2s from <see href="https://tools.ietf.org/html/rfc7693">RFC 7693</see>.
+		/// </summary>
+		public static readonly HashFunction Blake2s = new HashFunction("BLAKE2s");
+
+		/// <summary>
 		/// BLAKE2b from <see href="https://tools.ietf.org/html/rfc7693">RFC 7693</see>.
 		/// </summary>
 		public static readonly HashFunction Blake2b = new HashFunction("BLAKE2b");
@@ -38,6 +43,7 @@ namespace Noise
 			{
 				case var _ when s.SequenceEqual(Sha256.name.AsReadOnlySpan()): return Sha256;
 				case var _ when s.SequenceEqual(Sha512.name.AsReadOnlySpan()): return Sha512;
+				case var _ when s.SequenceEqual(Blake2s.name.AsReadOnlySpan()): return Blake2s;
 				case var _ when s.SequenceEqual(Blake2b.name.AsReadOnlySpan()): return Blake2b;
 				default: throw new ArgumentException("Unknown hash function.", nameof(s));
 			}
