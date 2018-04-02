@@ -36,7 +36,7 @@ namespace Noise
 		/// </summary>
 		public MessagePattern PrependPsk()
 		{
-			return new MessagePattern(Enumerable.Prepend(Tokens, Token.PSK));
+			return new MessagePattern(Prepend(Tokens, Token.PSK));
 		}
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace Noise
 		/// </summary>
 		public MessagePattern AppendPsk()
 		{
-			return new MessagePattern(Enumerable.Append(Tokens, Token.PSK));
+			return new MessagePattern(Append(Tokens, Token.PSK));
 		}
 
 		/// <summary>
@@ -73,6 +73,26 @@ namespace Noise
 			}
 
 			return hasKey ? overhead + Aead.TagSize : overhead;
+		}
+
+		private static IEnumerable<T> Prepend<T>(IEnumerable<T> source, T element)
+		{
+			yield return element;
+
+			foreach (var item in source)
+			{
+				yield return item;
+			}
+		}
+
+		private static IEnumerable<T> Append<T>(IEnumerable<T> source, T element)
+		{
+			foreach (var item in source)
+			{
+				yield return item;
+			}
+
+			yield return element;
 		}
 	}
 }

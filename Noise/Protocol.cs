@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Noise
@@ -26,7 +27,7 @@ namespace Noise
 		/// </summary>
 		private const int MaxProtocolNameLength = 255;
 
-		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetFields()
+		private static readonly Dictionary<string, HandshakePattern> patterns = typeof(HandshakePattern).GetTypeInfo().DeclaredFields
 			.Where(field => field.IsPublic && field.IsStatic && field.FieldType == typeof(HandshakePattern))
 			.ToDictionary(field => field.Name, field => (HandshakePattern)field.GetValue(null));
 
