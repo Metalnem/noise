@@ -56,6 +56,20 @@ namespace Noise
 		/// Thrown if the decryption of the message has failed.
 		/// </exception>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
+
+		/// <summary>
+		/// Updates the symmetric key used to encrypt transport messages from
+		/// initiator to responder using a one-way function, so that a compromise
+		/// of keys will not decrypt older messages.
+		/// </summary>
+		void RekeyInitiatorToResponder();
+
+		/// <summary>
+		/// Updates the symmetric key used to encrypt transport messages from
+		/// responder to initiator using a one-way function, so that a compromise
+		/// of keys will not decrypt older messages.
+		/// </summary>
+		void RekeyResponderToInitiator();
 	}
 
 	internal sealed class Transport<CipherType> : Transport where CipherType : Cipher, new()
@@ -137,6 +151,9 @@ namespace Noise
 
 			return cipher.DecryptWithAd(null, message, payloadBuffer);
 		}
+
+		public void RekeyInitiatorToResponder() => c1.Rekey();
+		public void RekeyResponderToInitiator() => c2.Rekey();
 
 		public void Dispose()
 		{

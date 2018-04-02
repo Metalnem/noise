@@ -99,8 +99,11 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
+			Span<byte> key = stackalloc byte[Aead.KeySize + Aead.TagSize];
+			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, key);
+
 			k = k ?? new byte[Aead.KeySize];
-			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, k);
+			key.Slice(Aead.KeySize).CopyTo(k);
 		}
 
 		public void Dispose()
