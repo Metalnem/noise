@@ -99,6 +99,8 @@ namespace Noise
 		/// </summary>
 		public void Rekey()
 		{
+			Debug.Assert(HasKey());
+
 			Span<byte> key = stackalloc byte[Aead.KeySize + Aead.TagSize];
 			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, key);
 
