@@ -62,6 +62,9 @@ namespace Noise
 		/// initiator to responder using a one-way function, so that a compromise
 		/// of keys will not decrypt older messages.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
 		void RekeyInitiatorToResponder();
 
 		/// <summary>
@@ -69,6 +72,12 @@ namespace Noise
 		/// responder to initiator using a one-way function, so that a compromise
 		/// of keys will not decrypt older messages.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if the current instance is a one-way stream.
+		/// </exception>
 		void RekeyResponderToInitiator();
 	}
 
@@ -152,8 +161,24 @@ namespace Noise
 			return cipher.DecryptWithAd(null, message, payloadBuffer);
 		}
 
-		public void RekeyInitiatorToResponder() => c1.Rekey();
-		public void RekeyResponderToInitiator() => c2.Rekey();
+		public void RekeyInitiatorToResponder()
+		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+
+			c1.Rekey();
+		}
+
+		public void RekeyResponderToInitiator()
+		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+
+			if (IsOneWay)
+			{
+				throw new InvalidOperationException("Cannot rekey responder to initiator in a one-way stream.");
+			}
+
+			c2.Rekey();
+		}
 
 		public void Dispose()
 		{
