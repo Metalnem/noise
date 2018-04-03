@@ -14,9 +14,9 @@ namespace Noise
 	{
 		/// <summary>
 		/// N():
-		///   ← s
-		///   ...
-		///   → e, es
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es</para>
 		/// </summary>
 		public static readonly HandshakePattern N = new HandshakePattern(
 			nameof(N),
@@ -27,10 +27,10 @@ namespace Noise
 
 		/// <summary>
 		/// K():
-		///   → s
-		///   ← s
-		///   ...
-		///   → e, es, ss
+		/// <para>- → s</para>
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es, ss</para>
 		/// </summary>
 		public static readonly HandshakePattern K = new HandshakePattern(
 			nameof(K),
@@ -41,9 +41,9 @@ namespace Noise
 
 		/// <summary>
 		/// X():
-		///   ← s
-		///   ...
-		///   → e, es, s, ss
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es, s, ss</para>
 		/// </summary>
 		public static readonly HandshakePattern X = new HandshakePattern(
 			nameof(X),
@@ -54,8 +54,8 @@ namespace Noise
 
 		/// <summary>
 		/// NN():
-		///   → e
-		///   ← e, ee
+		/// <para>- → e</para>
+		/// <para>- ← e, ee</para>
 		/// </summary>
 		public static readonly HandshakePattern NN = new HandshakePattern(
 			nameof(NN),
@@ -67,10 +67,10 @@ namespace Noise
 
 		/// <summary>
 		/// NK():
-		///   ← s
-		///   ...
-		///   → e, es
-		///   ← e, ee
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es</para>
+		/// <para>- ← e, ee</para>
 		/// </summary>
 		public static readonly HandshakePattern NK = new HandshakePattern(
 			nameof(NK),
@@ -82,8 +82,8 @@ namespace Noise
 
 		/// <summary>
 		/// NX():
-		///   → e
-		///   ← e, ee, s, es
+		/// <para>- → e</para>
+		/// <para>- ← e, ee, s, es</para>
 		/// </summary>
 		public static readonly HandshakePattern NX = new HandshakePattern(
 			nameof(NX),
@@ -95,9 +95,9 @@ namespace Noise
 
 		/// <summary>
 		/// XN():
-		///   → e
-		///   ← e, ee
-		///   → s, se
+		/// <para>- → e</para>
+		/// <para>- ← e, ee</para>
+		/// <para>- → s, se</para>
 		/// </summary>
 		public static readonly HandshakePattern XN = new HandshakePattern(
 			nameof(XN),
@@ -110,11 +110,11 @@ namespace Noise
 
 		/// <summary>
 		/// XK():
-		///   ← s
-		///   ...
-		///   → e, es
-		///   ← e, ee
-		///   → s, se
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es</para>
+		/// <para>- ← e, ee</para>
+		/// <para>- → s, se</para>
 		/// </summary>
 		public static readonly HandshakePattern XK = new HandshakePattern(
 			nameof(XK),
@@ -127,9 +127,9 @@ namespace Noise
 
 		/// <summary>
 		/// XX():
-		///   → e
-		///   ← e, ee, s, es
-		///   → s, se
+		/// <para>- → e</para>
+		/// <para>- ← e, ee, s, es</para>
+		/// <para>- → s, se</para>
 		/// </summary>
 		public static readonly HandshakePattern XX = new HandshakePattern(
 			nameof(XX),
@@ -142,10 +142,10 @@ namespace Noise
 
 		/// <summary>
 		/// KN():
-		///   → s
-		///   ...
-		///   → e
-		///   ← e, ee, se
+		/// <para>- → s</para>
+		/// <para>- ...</para>
+		/// <para>- → e</para>
+		/// <para>- ← e, ee, se</para>
 		/// </summary>
 		public static readonly HandshakePattern KN = new HandshakePattern(
 			nameof(KN),
@@ -157,11 +157,11 @@ namespace Noise
 
 		/// <summary>
 		/// KK():
-		///   → s
-		///   ← s
-		///   ...
-		///   → e, es, ss
-		///   ← e, ee, se
+		/// <para>- → s</para>
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es, ss</para>
+		/// <para>- ← e, ee, se</para>
 		/// </summary>
 		public static readonly HandshakePattern KK = new HandshakePattern(
 			nameof(KK),
@@ -173,10 +173,10 @@ namespace Noise
 
 		/// <summary>
 		/// KX():
-		///   → s
-		///   ...
-		///   → e
-		///   ← e, ee, se, s, es
+		/// <para>- → s</para>
+		/// <para>- ...</para>
+		/// <para>- → e</para>
+		/// <para>- ← e, ee, se, s, es</para>
 		/// </summary>
 		public static readonly HandshakePattern KX = new HandshakePattern(
 			nameof(KX),
@@ -188,8 +188,8 @@ namespace Noise
 
 		/// <summary>
 		/// IN():
-		///   → e, s
-		///   ← e, ee, se
+		/// <para>- → e, s</para>
+		/// <para>- ← e, ee, se</para>
 		/// </summary>
 		public static readonly HandshakePattern IN = new HandshakePattern(
 			nameof(IN),
@@ -201,10 +201,10 @@ namespace Noise
 
 		/// <summary>
 		/// IK():
-		///   ← s
-		///   ...
-		///   → e, es, s, ss
-		///   ← e, ee, se
+		/// <para>- ← s</para>
+		/// <para>- ...</para>
+		/// <para>- → e, es, s, ss</para>
+		/// <para>- ← e, ee, se</para>
 		/// </summary>
 		public static readonly HandshakePattern IK = new HandshakePattern(
 			nameof(IK),
@@ -216,8 +216,8 @@ namespace Noise
 
 		/// <summary>
 		/// IX():
-		///   → e, s
-		///   ← e, ee, se, s, es
+		/// <para>- → e, s</para>
+		/// <para>- ← e, ee, se, s, es</para>
 		/// </summary>
 		public static readonly HandshakePattern IX = new HandshakePattern(
 			nameof(IX),
