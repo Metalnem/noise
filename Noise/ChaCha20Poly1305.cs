@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -18,7 +19,7 @@ namespace Noise
 			Debug.Assert(ciphertext.Length >= plaintext.Length + Aead.TagSize);
 
 			Span<byte> nonce = stackalloc byte[Aead.NonceSize];
-			EncodeNonce(n, nonce);
+			BinaryPrimitives.WriteUInt64LittleEndian(nonce.Slice(4), n);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_encrypt(
 				ref MemoryMarshal.GetReference(ciphertext),
@@ -48,7 +49,7 @@ namespace Noise
 			Debug.Assert(plaintext.Length >= ciphertext.Length - Aead.TagSize);
 
 			Span<byte> nonce = stackalloc byte[Aead.NonceSize];
-			EncodeNonce(n, nonce);
+			BinaryPrimitives.WriteUInt64LittleEndian(nonce.Slice(4), n);
 
 			int result = Libsodium.crypto_aead_chacha20poly1305_ietf_decrypt(
 				ref MemoryMarshal.GetReference(plaintext),
@@ -69,15 +70,6 @@ namespace Noise
 
 			Debug.Assert(length == ciphertext.Length - Aead.TagSize);
 			return (int)length;
-		}
-
-		private static void EncodeNonce(ulong n, Span<byte> nonce)
-		{
-			for (int i = 0; i < 8; ++i)
-			{
-				nonce[4 + i] = (byte)(n & 0xff);
-				n = n >> 8;
-			}
 		}
 	}
 }
