@@ -6,6 +6,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Noise
 {
@@ -98,7 +99,7 @@ namespace Noise
 			buffer.AsSpan().Slice(position).Fill(0);
 			Compress(buffer);
 
-			h.AsReadOnlySpan().AsBytes().CopyTo(hash);
+			MemoryMarshal.AsBytes(h.AsSpan()).CopyTo(hash);
 			Reset();
 		}
 
@@ -128,7 +129,7 @@ namespace Noise
 
 			if (BitConverter.IsLittleEndian)
 			{
-				block.CopyTo(m.AsSpan().AsBytes());
+				block.CopyTo(MemoryMarshal.AsBytes(m.AsSpan()));
 			}
 			else
 			{

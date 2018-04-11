@@ -41,10 +41,10 @@ namespace Noise
 		{
 			switch (s)
 			{
-				case var _ when s.SequenceEqual(Sha256.name.AsReadOnlySpan()): return Sha256;
-				case var _ when s.SequenceEqual(Sha512.name.AsReadOnlySpan()): return Sha512;
-				case var _ when s.SequenceEqual(Blake2s.name.AsReadOnlySpan()): return Blake2s;
-				case var _ when s.SequenceEqual(Blake2b.name.AsReadOnlySpan()): return Blake2b;
+				case var _ when s.SequenceEqual(Sha256.name.AsSpan()): return Sha256;
+				case var _ when s.SequenceEqual(Sha512.name.AsSpan()): return Sha512;
+				case var _ when s.SequenceEqual(Blake2s.name.AsSpan()): return Blake2s;
+				case var _ when s.SequenceEqual(Blake2b.name.AsSpan()): return Blake2b;
 				default: throw new ArgumentException("Unknown hash function.", nameof(s));
 			}
 		}

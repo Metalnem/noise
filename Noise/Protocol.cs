@@ -181,7 +181,7 @@ namespace Noise
 			var splitter = new StringSplitter(s, '_');
 			var noise = splitter.Next();
 
-			if (!noise.SequenceEqual("Noise".AsReadOnlySpan()))
+			if (!noise.SequenceEqual("Noise".AsSpan()))
 			{
 				throw new ArgumentException("Invalid Noise protocol name.", nameof(s));
 			}
@@ -222,7 +222,7 @@ namespace Noise
 		{
 			foreach (var pattern in patterns)
 			{
-				if (pattern.Key.AsReadOnlySpan().SequenceEqual(s))
+				if (pattern.Key.AsSpan().SequenceEqual(s))
 				{
 					return pattern.Value;
 				}
@@ -255,10 +255,10 @@ namespace Noise
 		{
 			switch (s)
 			{
-				case var _ when s.SequenceEqual("psk0".AsReadOnlySpan()): return PatternModifiers.Psk0;
-				case var _ when s.SequenceEqual("psk1".AsReadOnlySpan()): return PatternModifiers.Psk1;
-				case var _ when s.SequenceEqual("psk2".AsReadOnlySpan()): return PatternModifiers.Psk2;
-				case var _ when s.SequenceEqual("psk3".AsReadOnlySpan()): return PatternModifiers.Psk3;
+				case var _ when s.SequenceEqual("psk0".AsSpan()): return PatternModifiers.Psk0;
+				case var _ when s.SequenceEqual("psk1".AsSpan()): return PatternModifiers.Psk1;
+				case var _ when s.SequenceEqual("psk2".AsSpan()): return PatternModifiers.Psk2;
+				case var _ when s.SequenceEqual("psk3".AsSpan()): return PatternModifiers.Psk3;
 				default: throw new ArgumentException("Unknown pattern modifier.", nameof(s));
 			}
 		}

@@ -32,8 +32,8 @@ namespace Noise
 		{
 			switch (s)
 			{
-				case var _ when s.SequenceEqual(AesGcm.name.AsReadOnlySpan()): return AesGcm;
-				case var _ when s.SequenceEqual(ChaChaPoly.name.AsReadOnlySpan()): return ChaChaPoly;
+				case var _ when s.SequenceEqual(AesGcm.name.AsSpan()): return AesGcm;
+				case var _ when s.SequenceEqual(ChaChaPoly.name.AsSpan()): return ChaChaPoly;
 				default: throw new ArgumentException("Unknown cipher function.", nameof(s));
 			}
 		}

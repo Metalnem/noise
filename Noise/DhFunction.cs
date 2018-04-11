@@ -27,7 +27,7 @@ namespace Noise
 		{
 			switch (s)
 			{
-				case var _ when s.SequenceEqual(Curve25519.name.AsReadOnlySpan()): return Curve25519;
+				case var _ when s.SequenceEqual(Curve25519.name.AsSpan()): return Curve25519;
 				default: throw new ArgumentException("Unknown DH function.", nameof(s));
 			}
 		}

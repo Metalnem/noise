@@ -42,7 +42,7 @@ namespace Noise.Tests
 				var respRemoteStatic = GetBytes(vector, "resp_remote_static");
 				var handshakeHash = GetBytes(vector, "handshake_hash");
 
-				var protocol = Protocol.Parse(protocolName.AsReadOnlySpan());
+				var protocol = Protocol.Parse(protocolName.AsSpan());
 
 				var init = protocol.Create(true, initPrologue, initStatic, initRemoteStatic, initPsks);
 				var resp = protocol.Create(false, respPrologue, respStatic, respRemoteStatic, respPsks);

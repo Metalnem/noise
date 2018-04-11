@@ -64,7 +64,7 @@ namespace Noise.Tests
 		[Fact(Skip = "Takes too long to complete.")]
 		public void TestSplits()
 		{
-			var data = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray().AsReadOnlySpan();
+			var data = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray().AsSpan();
 
 			using (var hasher = new Blake2s())
 			{
