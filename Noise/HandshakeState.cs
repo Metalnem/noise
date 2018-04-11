@@ -339,7 +339,7 @@ namespace Noise
 
 			if (message.Length < overhead)
 			{
-				throw new ArgumentException($"Noise message must be greater than {overhead} bytes in length.");
+				throw new ArgumentException($"Noise message must be greater than or equal to {overhead} bytes in length.");
 			}
 
 			if (plaintextSize > payloadBuffer.Length)

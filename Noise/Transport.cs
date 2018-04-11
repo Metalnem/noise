@@ -147,7 +147,7 @@ namespace Noise
 
 			if (message.Length < Aead.TagSize)
 			{
-				throw new ArgumentException($"Noise message must be greater than {Aead.TagSize} bytes in length.");
+				throw new ArgumentException($"Noise message must be greater than or equal to {Aead.TagSize} bytes in length.");
 			}
 
 			if (message.Length - Aead.TagSize > payloadBuffer.Length)
