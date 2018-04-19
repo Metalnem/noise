@@ -23,6 +23,14 @@ namespace Noise
 		bool HasKey { get; }
 
 		/// <summary>
+		/// The remote party's static public key.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		ReadOnlySpan<byte> RemoteStaticPublicKey { get; }
+
+		/// <summary>
 		/// Performs the next step of the handshake,
 		/// encrypts the <paramref name="payload"/>,
 		/// and writes the result into <paramref name="messageBuffer"/>.
@@ -248,14 +256,23 @@ namespace Noise
 		{
 			get
 			{
-				Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+				ThrowIfDisposed();
 				return state.HasKey();
+			}
+		}
+
+		public ReadOnlySpan<byte> RemoteStaticPublicKey
+		{
+			get
+			{
+				ThrowIfDisposed();
+				return rs;
 			}
 		}
 
 		public (int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+			ThrowIfDisposed();
 
 			if (messagePatterns.Count == 0)
 			{
@@ -340,7 +357,7 @@ namespace Noise
 
 		public (int, byte[], Transport) ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+			ThrowIfDisposed();
 
 			if (messagePatterns.Count == 0)
 			{
@@ -501,6 +518,11 @@ namespace Noise
 			{
 				Utilities.ZeroMemory(psk);
 			}
+		}
+
+		private void ThrowIfDisposed()
+		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
 		}
 
 		public void Dispose()
