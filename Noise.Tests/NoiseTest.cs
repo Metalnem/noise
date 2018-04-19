@@ -73,18 +73,18 @@ namespace Noise.Tests
 					if (initTransport == null && respTransport == null)
 					{
 						(initMessageSize, initHandshakeHash, initTransport) = init.WriteMessage(payload, initBuffer);
-						initMessage = initBuffer.AsSpan().Slice(0, initMessageSize);
+						initMessage = initBuffer.AsSpan(0, initMessageSize);
 
 						(respMessageSize, respHandshakeHash, respTransport) = resp.ReadMessage(initMessage, respBuffer);
-						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
+						respMessage = respBuffer.AsSpan(0, respMessageSize);
 					}
 					else
 					{
 						initMessageSize = initTransport.WriteMessage(payload, initBuffer);
-						initMessage = initBuffer.AsSpan().Slice(0, initMessageSize);
+						initMessage = initBuffer.AsSpan(0, initMessageSize);
 
 						respMessageSize = respTransport.ReadMessage(initMessage, respBuffer);
-						respMessage = respBuffer.AsSpan().Slice(0, respMessageSize);
+						respMessage = respBuffer.AsSpan(0, respMessageSize);
 					}
 
 					Assert.Equal(ciphertext, initMessage.ToArray());

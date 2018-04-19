@@ -96,7 +96,7 @@ namespace Noise
 			t0 += (uint)position;
 			f = UInt32.MaxValue;
 
-			buffer.AsSpan().Slice(position).Fill(0);
+			buffer.AsSpan(position).Fill(0);
 			Compress(buffer);
 
 			MemoryMarshal.AsBytes(h.AsSpan()).CopyTo(hash);

@@ -125,7 +125,7 @@ namespace Noise.Examples
 
 		private static byte[] Slice(byte[] array, int length)
 		{
-			return array.AsSpan().Slice(0, length).ToArray();
+			return array.AsSpan(0, length).ToArray();
 		}
 
 		// Chanel simulates the network between the client and the server.
