@@ -4,10 +4,6 @@
     <ProjectReference Include="..\Noise\Noise.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26406-04" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>

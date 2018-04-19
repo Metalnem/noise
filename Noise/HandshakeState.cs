@@ -14,15 +14,6 @@ namespace Noise
 	public interface HandshakeState : IDisposable
 	{
 		/// <summary>
-		/// Gets a value indicating whether the symmetric encryption key is non-empty.
-		/// </summary>
-		/// <returns>True if the symmetric encryption key is non-empty, false otherwise.</returns>
-		/// <exception cref="ObjectDisposedException">
-		/// Thrown if the current instance has already been disposed.
-		/// </exception>
-		bool HasKey { get; }
-
-		/// <summary>
 		/// The remote party's static public key.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">
@@ -250,15 +241,6 @@ namespace Noise
 		internal void SetDh(Dh dh)
 		{
 			this.dh = dh;
-		}
-
-		public bool HasKey
-		{
-			get
-			{
-				ThrowIfDisposed();
-				return state.HasKey();
-			}
 		}
 
 		public ReadOnlySpan<byte> RemoteStaticPublicKey
