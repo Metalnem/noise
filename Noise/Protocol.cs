@@ -181,6 +181,30 @@ namespace Noise
 		}
 
 		/// <summary>
+		/// Creates an initial <see cref="HandshakeState"/>.
+		/// </summary>
+		/// <param name="config">
+		/// A set of parameters used to instantiate an
+		/// initial <see cref="HandshakeState"/>.
+		/// </param>
+		/// <returns>The initial handshake state.</returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown if any of the following conditions is satisfied:
+		/// <para>- <paramref name="config"/> does not contain a valid DH private key.</para>
+		/// <para>- <paramref name="config"/> does not contain a valid DH public key.</para>
+		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
+		/// to be initialized with local and/or remote static key,
+		/// but <see cref="ProtocolConfig.LocalStatic"/> and/or
+		/// <see cref="ProtocolConfig.RemoteStatic"/> is null.</para>
+		/// <para>- One or more pre-shared keys are not 32 bytes in length.</para>
+		/// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
+		/// </exception>
+		public HandshakeState Create(ProtocolConfig config)
+		{
+			return Create(config.Initiator, config.Prologue, config.LocalStatic, config.RemoteStatic, config.PreSharedKeys);
+		}
+
+		/// <summary>
 		/// Converts the Noise protocol name to its <see cref="Protocol"/> equivalent.
 		/// </summary>
 		/// <param name="s">The Noise protocol name (e.q. Noise_KNpsk2_25519_ChaChaPoly_SHA512).</param>
