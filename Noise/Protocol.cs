@@ -188,6 +188,9 @@ namespace Noise
 		/// initial <see cref="HandshakeState"/>.
 		/// </param>
 		/// <returns>The initial handshake state.</returns>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if the <paramref name="config"/> is null.
+		/// </exception>
 		/// <exception cref="ArgumentException">
 		/// Thrown if any of the following conditions is satisfied:
 		/// <para>- <paramref name="config"/> does not contain a valid DH private key.</para>
@@ -201,6 +204,8 @@ namespace Noise
 		/// </exception>
 		public HandshakeState Create(ProtocolConfig config)
 		{
+			Exceptions.ThrowIfNull(config, nameof(config));
+
 			return Create(config.Initiator, config.Prologue, config.LocalStatic, config.RemoteStatic, config.PreSharedKeys);
 		}
 
