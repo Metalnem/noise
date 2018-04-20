@@ -6,7 +6,7 @@ namespace Noise
 	/// A pre-message pattern is one of the following
 	/// sequences of tokens: "e", "s", "e, s", or empty.
 	/// </summary>
-	internal sealed class PreMessagePattern
+	public sealed class PreMessagePattern
 	{
 		/// <summary>
 		/// The "e" pre-message pattern.

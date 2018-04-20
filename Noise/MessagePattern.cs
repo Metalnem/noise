@@ -8,9 +8,9 @@ namespace Noise
 	/// A message pattern is some sequence of tokens from
 	/// the set ("e", "s", "ee", "es", "se", "ss", "psk").
 	/// </summary>
-	internal sealed class MessagePattern
+	public sealed class MessagePattern
 	{
-		public MessagePattern(params Token[] tokens)
+		internal MessagePattern(params Token[] tokens)
 		{
 			Debug.Assert(tokens != null);
 			Debug.Assert(tokens.Length > 0);
@@ -18,7 +18,7 @@ namespace Noise
 			Tokens = tokens;
 		}
 
-		public MessagePattern(IEnumerable<Token> tokens)
+		internal MessagePattern(IEnumerable<Token> tokens)
 		{
 			Debug.Assert(tokens != null);
 			Debug.Assert(tokens.Any());
@@ -34,7 +34,7 @@ namespace Noise
 		/// <summary>
 		/// Prepends the PSK token to the pattern.
 		/// </summary>
-		public MessagePattern PrependPsk()
+		internal MessagePattern PrependPsk()
 		{
 			return new MessagePattern(Prepend(Tokens, Token.PSK));
 		}
@@ -42,7 +42,7 @@ namespace Noise
 		/// <summary>
 		/// Appends the PSK token to the pattern.
 		/// </summary>
-		public MessagePattern AppendPsk()
+		internal MessagePattern AppendPsk()
 		{
 			return new MessagePattern(Append(Tokens, Token.PSK));
 		}
@@ -51,7 +51,7 @@ namespace Noise
 		/// Calculate the message overhead in bytes (i.e. the
 		/// total size of all transmitted keys and AEAD tags).
 		/// </summary>
-		public int Overhead(int dhLen, bool hasKey, bool isPsk)
+		internal int Overhead(int dhLen, bool hasKey, bool isPsk)
 		{
 			int overhead = 0;
 

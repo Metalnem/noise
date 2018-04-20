@@ -241,10 +241,25 @@ namespace Noise
 			Patterns = patterns;
 		}
 
-		internal string Name { get; }
-		internal PreMessagePattern Initiator { get; }
-		internal PreMessagePattern Responder { get; }
-		internal IEnumerable<MessagePattern> Patterns { get; }
+		/// <summary>
+		/// Gets the name of the handshake pattern.
+		/// </summary>
+		public string Name { get; }
+
+		/// <summary>
+		/// Gets the pre-message pattern for the initiator.
+		/// </summary>
+		public PreMessagePattern Initiator { get; }
+
+		/// <summary>
+		/// Gets the pre-message pattern for the responder.
+		/// </summary>
+		public PreMessagePattern Responder { get; }
+
+		/// <summary>
+		/// Gets the sequence of message patterns for the handshake messages.
+		/// </summary>
+		public IEnumerable<MessagePattern> Patterns { get; }
 
 		internal bool LocalStaticRequired(bool initiator)
 		{

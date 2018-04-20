@@ -51,7 +51,9 @@ namespace Noise
 			return dh.GenerateKeyPair();
 		}
 
-		/// <summary>Gets the private key.</summary>
+		/// <summary>
+		/// Gets the private key.
+		/// </summary>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
@@ -64,7 +66,9 @@ namespace Noise
 			}
 		}
 
-		/// <summary>Gets the public key.</summary>
+		/// <summary>
+		/// Gets the public key.
+		/// </summary>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>

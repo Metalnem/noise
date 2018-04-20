@@ -81,11 +81,31 @@ namespace Noise
 			Name = GetName();
 		}
 
-		internal HandshakePattern HandshakePattern { get; }
-		internal CipherFunction Cipher { get; }
-		internal DhFunction Dh { get; }
-		internal HashFunction Hash { get; }
-		internal PatternModifiers Modifiers { get; }
+		/// <summary>
+		/// Gets the handshake pattern.
+		/// </summary>
+		public HandshakePattern HandshakePattern { get; }
+
+		/// <summary>
+		/// Gets the cipher function.
+		/// </summary>
+		public CipherFunction Cipher { get; }
+
+		/// <summary
+		/// >Gets the Diffie-Hellman function.
+		/// </summary>
+		public DhFunction Dh { get; }
+
+		/// <summary>
+		/// Gets the hash function.
+		/// </summary>
+		public HashFunction Hash { get; }
+
+		/// <summary>
+		/// Gets the combination of pattern modifiers.
+		/// </summary>
+		public PatternModifiers Modifiers { get; }
+
 		internal byte[] Name { get; }
 
 		/// <summary>

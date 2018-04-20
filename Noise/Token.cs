@@ -3,7 +3,7 @@ namespace Noise
 	/// <summary>
 	/// The smallest unit of the Noise handshake language.
 	/// </summary>
-	internal enum Token
+	public enum Token
 	{
 		/// <summary>
 		/// The sender generates a new ephemeral key pair and stores
@@ -21,15 +21,31 @@ namespace Noise
 		S,
 
 		/// <summary>
-		/// A DH is performed between the initiator's key pair (whether
-		/// static or ephemeral is determined by the first letter) and
-		/// the responder's key pair (whether static or ephemeral is
-		/// determined by the second letter). The result is hashed along
+		/// A DH is performed between the initiator's ephemeral private key and
+		/// the responder's ephemeral public key. The result is hashed along
 		/// with the old ck to derive a new ck and k, and n is set to zero.
 		/// </summary>
 		EE,
+
+		/// <summary>
+		/// A DH is performed between the initiator's static private key and
+		/// the responder's ephemeral public key. The result is hashed along
+		/// with the old ck to derive a new ck and k, and n is set to zero.
+		/// </summary>
 		SE,
+
+		/// <summary>
+		/// A DH is performed between the initiator's ephemeral private key and
+		/// the responder's static public key. The result is hashed along
+		/// with the old ck to derive a new ck and k, and n is set to zero.
+		/// </summary>
 		ES,
+
+		/// <summary>
+		/// A DH is performed between the initiator's static private key and
+		/// the responder's static public key. The result is hashed along
+		/// with the old ck to derive a new ck and k, and n is set to zero.
+		/// </summary>
 		SS,
 
 		/// <summary>
