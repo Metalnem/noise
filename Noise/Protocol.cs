@@ -56,7 +56,7 @@ namespace Noise
 		/// <param name="hash">The hash function (SHA256, SHA512, BLAKE2s, or BLAKE2b).</param>
 		/// <param name="modifiers">The combination of pattern modifiers (e.q. empty, psk0, or psk1+psk2).</param>
 		/// <exception cref="ArgumentNullException">
-		/// Thrown if the either <paramref name="handshakePattern"/>,
+		/// Thrown if either <paramref name="handshakePattern"/>,
 		/// <paramref name="cipher"/>, or <paramref name="hash"/> is null.
 		/// </exception>
 		/// <exception cref="ArgumentException">
