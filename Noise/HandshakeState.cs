@@ -45,7 +45,7 @@ namespace Noise
 		/// or the handshake has already been completed.
 		/// </exception>
 		/// <exception cref="ArgumentException">
-		/// Thrown if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// Thrown if the output was greater than <see cref="Protocol.MaxMessageLength"/>
 		/// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
 		/// </exception>
 		(int BytesWritten, byte[] HandshakeHash, Transport Transport) WriteMessage(
