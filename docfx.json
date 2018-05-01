@@ -1,0 +1,41 @@
+{
+	"metadata": [
+		{
+			"src": [
+				{
+					"files": [
+						"Noise/**.csproj"
+					]
+				}
+			],
+			"dest": "api"
+		}
+	],
+	"build": {
+		"content": [
+			{
+				"files": [
+					"api/**.yml"
+				]
+			},
+			{
+				"files": [
+					"index.md",
+					"toc.yml"
+				]
+			}
+		],
+		"resource": [
+			{
+				"files": [
+					"Noise.png"
+				]
+			}
+		],
+		"dest": "_site",
+		"template": [
+			"statictoc"
+		],
+		"markdownEngineName": "markdig"
+	}
+}

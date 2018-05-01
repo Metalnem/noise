@@ -7,3 +7,7 @@
 
 # BenchmarkDotNet
 **/BenchmarkDotNet.Artifacts/*
+
+# DocFX
+_site/
+api/
