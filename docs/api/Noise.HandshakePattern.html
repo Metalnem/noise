@@ -1,0 +1,847 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class HandshakePattern
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class HandshakePattern
+   ">
+    <meta name="generator" content="docfx 2.35.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="active">
+                    <a href="../api/Noise.html" title="API Reference" class="active">API Reference</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Noise.html" title="Noise" class="">Noise</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Noise.CipherFunction.html" title="CipherFunction" class="">CipherFunction</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.DhFunction.html" title="DhFunction" class="">DhFunction</a>
+                          </li>
+                          <li class="active">
+                            <a href="Noise.HandshakePattern.html" title="HandshakePattern" class="active">HandshakePattern</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.HandshakeState.html" title="HandshakeState" class="">HandshakeState</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.HashFunction.html" title="HashFunction" class="">HashFunction</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.KeyPair.html" title="KeyPair" class="">KeyPair</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.MessagePattern.html" title="MessagePattern" class="">MessagePattern</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.PatternModifiers.html" title="PatternModifiers" class="">PatternModifiers</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.PreMessagePattern.html" title="PreMessagePattern" class="">PreMessagePattern</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.Protocol.html" title="Protocol" class="">Protocol</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.ProtocolConfig.html" title="ProtocolConfig" class="">ProtocolConfig</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.Token.html" title="Token" class="">Token</a>
+                          </li>
+                          <li class="">
+                            <a href="Noise.Transport.html" title="Transport" class="">Transport</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Noise.HandshakePattern">
+  
+  
+  <h1 id="Noise_HandshakePattern" data-uid="Noise.HandshakePattern" class="text-break">Class HandshakePattern
+  </h1>
+  <div class="markdown level0 summary"><p>A <a href="https://noiseprotocol.org/noise.html#handshake-patterns">handshake pattern</a>
+consists of a pre-message pattern for the initiator, a pre-message pattern for the responder,
+and a sequence of message patterns for the actual handshake messages.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">HandshakePattern</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Noise.html">Noise</a></h6>
+  <h6><strong>Assembly</strong>: Noise.dll</h6>
+  <h5 id="Noise_HandshakePattern_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class HandshakePattern</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_IK.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.IK%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L209">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_IK" data-uid="Noise.HandshakePattern.IK">IK</h4>
+  <div class="markdown level1 summary"><p>IK():</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es, s, ss</p>
+<p>- ← e, ee, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern IK</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_IN.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.IN%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L194">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_IN" data-uid="Noise.HandshakePattern.IN">IN</h4>
+  <div class="markdown level1 summary"><p>IN():</p>
+<p>- → e, s</p>
+<p>- ← e, ee, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern IN</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_IX.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.IX%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L222">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_IX" data-uid="Noise.HandshakePattern.IX">IX</h4>
+  <div class="markdown level1 summary"><p>IX():</p>
+<p>- → e, s</p>
+<p>- ← e, ee, se, s, es</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern IX</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_K.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.K%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L35">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_K" data-uid="Noise.HandshakePattern.K">K</h4>
+  <div class="markdown level1 summary"><p>K():</p>
+<p>- → s</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es, ss</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern K</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_KK.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.KK%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L166">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_KK" data-uid="Noise.HandshakePattern.KK">KK</h4>
+  <div class="markdown level1 summary"><p>KK():</p>
+<p>- → s</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es, ss</p>
+<p>- ← e, ee, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern KK</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_KN.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.KN%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L150">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_KN" data-uid="Noise.HandshakePattern.KN">KN</h4>
+  <div class="markdown level1 summary"><p>KN():</p>
+<p>- → s</p>
+<p>- ...</p>
+<p>- → e</p>
+<p>- ← e, ee, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern KN</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_KX.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.KX%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L181">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_KX" data-uid="Noise.HandshakePattern.KX">KX</h4>
+  <div class="markdown level1 summary"><p>KX():</p>
+<p>- → s</p>
+<p>- ...</p>
+<p>- → e</p>
+<p>- ← e, ee, se, s, es</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern KX</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_N.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.N%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L21">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_N" data-uid="Noise.HandshakePattern.N">N</h4>
+  <div class="markdown level1 summary"><p>N():</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern N</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_NK.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.NK%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L75">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_NK" data-uid="Noise.HandshakePattern.NK">NK</h4>
+  <div class="markdown level1 summary"><p>NK():</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es</p>
+<p>- ← e, ee</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern NK</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_NN.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.NN%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L60">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_NN" data-uid="Noise.HandshakePattern.NN">NN</h4>
+  <div class="markdown level1 summary"><p>NN():</p>
+<p>- → e</p>
+<p>- ← e, ee</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern NN</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_NX.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.NX%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L88">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_NX" data-uid="Noise.HandshakePattern.NX">NX</h4>
+  <div class="markdown level1 summary"><p>NX():</p>
+<p>- → e</p>
+<p>- ← e, ee, s, es</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern NX</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_X.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L48">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_X" data-uid="Noise.HandshakePattern.X">X</h4>
+  <div class="markdown level1 summary"><p>X():</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es, s, ss</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern X</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_XK.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.XK%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L119">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_XK" data-uid="Noise.HandshakePattern.XK">XK</h4>
+  <div class="markdown level1 summary"><p>XK():</p>
+<p>- ← s</p>
+<p>- ...</p>
+<p>- → e, es</p>
+<p>- ← e, ee</p>
+<p>- → s, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern XK</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_XN.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.XN%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L102">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_XN" data-uid="Noise.HandshakePattern.XN">XN</h4>
+  <div class="markdown level1 summary"><p>XN():</p>
+<p>- → e</p>
+<p>- ← e, ee</p>
+<p>- → s, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern XN</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_XX.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.XX%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L134">View Source</a>
+  </span>
+  <h4 id="Noise_HandshakePattern_XX" data-uid="Noise.HandshakePattern.XX">XX</h4>
+  <div class="markdown level1 summary"><p>XX():</p>
+<p>- → e</p>
+<p>- ← e, ee, s, es</p>
+<p>- → s, se</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly HandshakePattern XX</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.HandshakePattern.html">HandshakePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_Initiator.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.Initiator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L252">View Source</a>
+  </span>
+  <a id="Noise_HandshakePattern_Initiator_" data-uid="Noise.HandshakePattern.Initiator*"></a>
+  <h4 id="Noise_HandshakePattern_Initiator" data-uid="Noise.HandshakePattern.Initiator">Initiator</h4>
+  <div class="markdown level1 summary"><p>Gets the pre-message pattern for the initiator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PreMessagePattern Initiator { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.PreMessagePattern.html">PreMessagePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_Name.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L247">View Source</a>
+  </span>
+  <a id="Noise_HandshakePattern_Name_" data-uid="Noise.HandshakePattern.Name*"></a>
+  <h4 id="Noise_HandshakePattern_Name" data-uid="Noise.HandshakePattern.Name">Name</h4>
+  <div class="markdown level1 summary"><p>Gets the name of the handshake pattern.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_Patterns.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.Patterns%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L262">View Source</a>
+  </span>
+  <a id="Noise_HandshakePattern_Patterns_" data-uid="Noise.HandshakePattern.Patterns*"></a>
+  <h4 id="Noise_HandshakePattern_Patterns" data-uid="Noise.HandshakePattern.Patterns">Patterns</h4>
+  <div class="markdown level1 summary"><p>Gets the sequence of message patterns for the handshake messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;MessagePattern&gt; Patterns { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Noise.MessagePattern.html">MessagePattern</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern_Responder.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern.Responder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L257">View Source</a>
+  </span>
+  <a id="Noise_HandshakePattern_Responder_" data-uid="Noise.HandshakePattern.Responder*"></a>
+  <h4 id="Noise_HandshakePattern_Responder" data-uid="Noise.HandshakePattern.Responder">Responder</h4>
+  <div class="markdown level1 summary"><p>Gets the pre-message pattern for the responder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PreMessagePattern Responder { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.PreMessagePattern.html">PreMessagePattern</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakePattern.md&amp;value=---%0Auid%3A%20Noise.HandshakePattern%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakePattern.cs/#L13" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

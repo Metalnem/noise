@@ -32,7 +32,7 @@
 				]
 			}
 		],
-		"dest": "_site",
+		"dest": "docs",
 		"template": [
 			"statictoc"
 		],

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Noise.NET </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Noise.NET ">
+    <meta name="generator" content="docfx 2.35.2.0">
+    
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="">
+                    <a href="api/Noise.html" title="API Reference" class="">API Reference</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+
+<p><img src="Noise.png" alt=""></p>
+<p><a href="https://www.nuget.org/packages/Noise.NET"><img src="https://img.shields.io/nuget/v/Noise.NET.svg" alt="Latest Version"></a>
+<a href="https://travis-ci.org/Metalnem/noise"><img src="https://travis-ci.org/Metalnem/noise.svg?branch=master" alt="Build Status"></a>
+<a href="https://ci.appveyor.com/project/Metalnem/noise"><img src="https://ci.appveyor.com/api/projects/status/aw4y7rackgepjy8u?svg=true" alt="Build status"></a>
+<a href="https://metalnem.github.io/noise/api/Noise.html"><img src="https://img.shields.io/badge/docs-API-orange.svg?style=flat" alt="Docs"></a>
+<a href="https://raw.githubusercontent.com/metalnem/noise/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="license"></a></p>
+<p>.NET Standard 1.3 implementation of the <a href="https://noiseprotocol.org/">Noise Protocol Framework</a>
+(revision 33 of the <a href="https://noiseprotocol.org/noise.html">spec</a>). It features:</p>
+<ul>
+<li>AESGCM and ChaChaPoly ciphers</li>
+<li>Curve25519 Diffie-Hellman function</li>
+<li>SHA256, SHA512, BLAKE2s, and BLAKE2b hash functions</li>
+<li>Support for multiple pre-shared symmetric keys</li>
+<li>All known <a href="https://noiseprotocol.org/noise.html#one-way-patterns">one-way</a> and <a href="https://noiseprotocol.org/noise.html#interactive-patterns">interactive</a> patterns from the specification</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<ol>
+<li>Include the Noise namespace.</li>
+</ol>
+<pre><code class="lang-csharp">using Noise;
+</code></pre>
+<ol start="2">
+<li>Choose the handshake pattern and cryptographic functions.</li>
+</ol>
+<pre><code class="lang-csharp">var protocol = new Protocol(
+  HandshakePattern.IK,
+  CipherFunction.ChaChaPoly,
+  HashFunction.Blake2s,
+  PatternModifiers.Psk2
+);
+</code></pre>
+<ol start="3">
+<li>Start the handshake by instantiating the protocol with the necessary parameters.</li>
+</ol>
+<pre><code class="lang-csharp">// s is communicated out-of-band
+// psk is a 32-byte pre-shared symmetric key
+
+var initiator = protocol.Create(
+  initiator: true,
+  rs: rs,
+  psks: new byte[][] { psk }
+);
+
+var responder = protocol.Create(
+  initiator: false,
+  s: s,
+  psks: new byte[][] { psk }
+);
+</code></pre>
+<ol start="4">
+<li>Send and receive messages.</li>
+</ol>
+<pre><code class="lang-csharp">(written, hash, transport) = state.WriteMessage(message, outputBuffer);
+(read, hash, transport) = state.ReadMessage(received, inputBuffer);
+
+written = transport.WriteMessage(message, outputBuffer);
+read = transport.ReadMessage(received, inputBuffer);
+</code></pre>
+<p>See <a href="https://github.com/Metalnem/noise/tree/master/Noise.Examples">Noise.Examples</a>
+for the complete example.</p>
+<h2 id="installation">Installation</h2>
+<pre><code>&gt; dotnet add package Noise.NET --version 0.9.5-rc
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Metalnem/noise/blob/master/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

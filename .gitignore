@@ -9,5 +9,4 @@
 **/BenchmarkDotNet.Artifacts/*
 
 # DocFX
-_site/
-api/
+/api

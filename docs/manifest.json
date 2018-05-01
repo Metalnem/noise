@@ -1,0 +1,240 @@
+{
+  "homepages": [],
+  "source_base_path": "/Users/Metalnem/Projects/noise",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "source_relative_path": "Noise.png",
+      "output": {
+        "resource": {
+          "relative_path": "Noise.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.CipherFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.CipherFunction.html",
+          "hash": "kmApXX9cQLGoyV1wEGKyjw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.DhFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.DhFunction.html",
+          "hash": "NCXV3d1gBpjZFDeXVjRUBg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.HandshakePattern.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.HandshakePattern.html",
+          "hash": "QlszDsApuyP9k+UYkimBCw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.HandshakeState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.HandshakeState.html",
+          "hash": "wGYtrAt6VJY55h/O7P+6Dg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.HashFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.HashFunction.html",
+          "hash": "JpLM34YCq8VMS8hd2roi6w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.KeyPair.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.KeyPair.html",
+          "hash": "avQjMWi5mo5gC5eVdT61SA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.MessagePattern.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.MessagePattern.html",
+          "hash": "yS6hzO5pHXildks+B/HQmQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.PatternModifiers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.PatternModifiers.html",
+          "hash": "1WChyoO4LXDMls6Rey2JsQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.PreMessagePattern.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.PreMessagePattern.html",
+          "hash": "OOTjF6fxUZ/eAWR6nA3bhA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.Protocol.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.Protocol.html",
+          "hash": "2EAlAIz/M0gnLJXOMY/hOA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.ProtocolConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.ProtocolConfig.html",
+          "hash": "+PwF7Ze27xUxKQRNemBDwA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.Token.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.Token.html",
+          "hash": "theKNuZEuq+wTf2kiLMg/A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.Transport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.Transport.html",
+          "hash": "kO+puOFd2NGaoBUeyUNcaA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Noise.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Noise.html",
+          "hash": "RiuTzyoQxsW8dWzUvs2X+A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "KSUSgvimDDIjp/IO4f6ieA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build"
+      },
+      "processors": {
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing"
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
