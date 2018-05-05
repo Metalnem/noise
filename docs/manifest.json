@@ -59,7 +59,7 @@
           "hash": "wGYtrAt6VJY55h/O7P+6Dg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -83,7 +83,7 @@
           "hash": "avQjMWi5mo5gC5eVdT61SA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -128,10 +128,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Noise.Protocol.html",
-          "hash": "2EAlAIz/M0gnLJXOMY/hOA=="
+          "hash": "D5unpWHTPGkb8vcfFdB91A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -143,7 +143,7 @@
           "hash": "+PwF7Ze27xUxKQRNemBDwA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -167,7 +167,7 @@
           "hash": "kO+puOFd2NGaoBUeyUNcaA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -179,7 +179,7 @@
           "hash": "RiuTzyoQxsW8dWzUvs2X+A=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -188,7 +188,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "KSUSgvimDDIjp/IO4f6ieA=="
+          "hash": "rQDrW5WA5NoQ5S3oB6DJKA=="
         }
       },
       "is_incremental": false,
@@ -202,6 +202,11 @@
         "incrementalPhase": "build"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -213,11 +218,6 @@
         },
         "ConceptualDocumentProcessor": {
           "can_incremental": true,
-          "incrementalPhase": "build"
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         }
       }

@@ -584,19 +584,19 @@ but <a class="xref" href="Noise.ProtocolConfig.html#Noise_ProtocolConfig_LocalSt
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_Protocol_Create_System_Boolean_System_Byte___System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____.md&amp;value=---%0Auid%3A%20Noise.Protocol.Create(System.Boolean%2CSystem.Byte%5B%5D%2CSystem.Byte%5B%5D%2CSystem.Byte%5B%5D%2CSystem.Collections.Generic.IEnumerable%7BSystem.Byte%5B%5D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_Protocol_Create_System_Boolean_System_ReadOnlySpan_System_Byte__System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____.md&amp;value=---%0Auid%3A%20Noise.Protocol.Create(System.Boolean%2CSystem.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Byte%5B%5D%2CSystem.Byte%5B%5D%2CSystem.Collections.Generic.IEnumerable%7BSystem.Byte%5B%5D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/Metalnem/noise/blob/master/Noise/Protocol.cs/#L133">View Source</a>
   </span>
   <a id="Noise_Protocol_Create_" data-uid="Noise.Protocol.Create*"></a>
-  <h4 id="Noise_Protocol_Create_System_Boolean_System_Byte___System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____" data-uid="Noise.Protocol.Create(System.Boolean,System.Byte[],System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})">Create(Boolean, Byte[], Byte[], Byte[], IEnumerable&lt;Byte[]&gt;)</h4>
+  <h4 id="Noise_Protocol_Create_System_Boolean_System_ReadOnlySpan_System_Byte__System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____" data-uid="Noise.Protocol.Create(System.Boolean,System.ReadOnlySpan{System.Byte},System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})">Create(Boolean, ReadOnlySpan&lt;Byte&gt;, Byte[], Byte[], IEnumerable&lt;Byte[]&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates an initial <a class="xref" href="Noise.HandshakeState.html">HandshakeState</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HandshakeState Create(bool initiator, byte[] prologue = null, byte[] s = null, byte[] rs = null, IEnumerable&lt;byte[]&gt; psks = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public HandshakeState Create(bool initiator, ReadOnlySpan&lt;byte&gt; prologue = default(ReadOnlySpan&lt;byte&gt;), byte[] s = null, byte[] rs = null, IEnumerable&lt;byte[]&gt; psks = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -615,7 +615,7 @@ but <a class="xref" href="Noise.ProtocolConfig.html#Noise_ProtocolConfig_LocalSt
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.Byte</span>[]</td>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
         <td><span class="parametername">prologue</span></td>
         <td><p>A byte sequence which may be zero-length, or which may contain
 context information that both parties want to confirm is identical.</p>

@@ -505,15 +505,15 @@ references:
   commentId: M:Noise.Protocol.Create(Noise.ProtocolConfig)
   fullName: Noise.Protocol.Create(Noise.ProtocolConfig)
   nameWithType: Protocol.Create(ProtocolConfig)
-- uid: Noise.Protocol.Create(System.Boolean,System.Byte[],System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})
-  name: Create(Boolean, Byte[], Byte[], Byte[], IEnumerable<Byte[]>)
-  href: api/Noise.Protocol.html#Noise_Protocol_Create_System_Boolean_System_Byte___System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____
-  commentId: M:Noise.Protocol.Create(System.Boolean,System.Byte[],System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})
-  name.vb: Create(Boolean, Byte(), Byte(), Byte(), IEnumerable(Of Byte()))
-  fullName: Noise.Protocol.Create(System.Boolean, System.Byte[], System.Byte[], System.Byte[], System.Collections.Generic.IEnumerable<System.Byte[]>)
-  fullName.vb: Noise.Protocol.Create(System.Boolean, System.Byte(), System.Byte(), System.Byte(), System.Collections.Generic.IEnumerable(Of System.Byte()))
-  nameWithType: Protocol.Create(Boolean, Byte[], Byte[], Byte[], IEnumerable<Byte[]>)
-  nameWithType.vb: Protocol.Create(Boolean, Byte(), Byte(), Byte(), IEnumerable(Of Byte()))
+- uid: Noise.Protocol.Create(System.Boolean,System.ReadOnlySpan{System.Byte},System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})
+  name: Create(Boolean, ReadOnlySpan<Byte>, Byte[], Byte[], IEnumerable<Byte[]>)
+  href: api/Noise.Protocol.html#Noise_Protocol_Create_System_Boolean_System_ReadOnlySpan_System_Byte__System_Byte___System_Byte___System_Collections_Generic_IEnumerable_System_Byte____
+  commentId: M:Noise.Protocol.Create(System.Boolean,System.ReadOnlySpan{System.Byte},System.Byte[],System.Byte[],System.Collections.Generic.IEnumerable{System.Byte[]})
+  name.vb: Create(Boolean, ReadOnlySpan(Of Byte), Byte(), Byte(), IEnumerable(Of Byte()))
+  fullName: Noise.Protocol.Create(System.Boolean, System.ReadOnlySpan<System.Byte>, System.Byte[], System.Byte[], System.Collections.Generic.IEnumerable<System.Byte[]>)
+  fullName.vb: Noise.Protocol.Create(System.Boolean, System.ReadOnlySpan(Of System.Byte), System.Byte(), System.Byte(), System.Collections.Generic.IEnumerable(Of System.Byte()))
+  nameWithType: Protocol.Create(Boolean, ReadOnlySpan<Byte>, Byte[], Byte[], IEnumerable<Byte[]>)
+  nameWithType.vb: Protocol.Create(Boolean, ReadOnlySpan(Of Byte), Byte(), Byte(), IEnumerable(Of Byte()))
 - uid: Noise.Protocol.Create*
   name: Create
   href: api/Noise.Protocol.html#Noise_Protocol_Create_
