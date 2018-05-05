@@ -132,7 +132,7 @@ namespace Noise
 		/// </exception>
 		public HandshakeState Create(
 			bool initiator,
-			byte[] prologue = default,
+			ReadOnlySpan<byte> prologue = default,
 			byte[] s = default,
 			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
