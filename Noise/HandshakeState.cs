@@ -182,7 +182,7 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.protocol = protocol;
-			this.prologue = prologue.ToArray();
+			this.prologue = prologue.IsEmpty ? null : prologue.ToArray();
 			this.initiator = initiator;
 			this.turnToWrite = initiator;
 			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
