@@ -23,7 +23,8 @@ namespace Noise
 		ReadOnlySpan<byte> RemoteStaticPublicKey { get; }
 
 		/// <summary>
-		/// Converts an Alice-initiated pattern to a Bob-initiated XX pattern.
+		/// Converts an Alice-initiated pattern to a Bob-initiated
+		/// XX pattern. Original PSK modifiers will not be preserved.
 		/// </summary>
 		/// <param name="cipher">
 		/// The cipher function (AESGCM or ChaChaPoly).
@@ -35,9 +36,6 @@ namespace Noise
 		/// </param>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
-		/// </exception>
-		/// <exception cref="NotSupportedException">
-		/// Thrown if the handshake pattern contains one or more PSK modifiers.
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
 		/// Throw if the handshake pattern is Bob-initiated or one-way, if this
@@ -129,8 +127,8 @@ namespace Noise
 		private KeyPair s;
 		private byte[] re;
 		private byte[] rs;
+		private bool isPsk;
 		private readonly bool isOneWay;
-		private readonly bool isPsk;
 		private readonly Queue<MessagePattern> messagePatterns = new Queue<MessagePattern>();
 		private readonly Queue<byte[]> psks = new Queue<byte[]>();
 		private bool disposed;
@@ -195,8 +193,8 @@ namespace Noise
 
 			var pskModifiers = PatternModifiers.Psk0 | PatternModifiers.Psk1 | PatternModifiers.Psk2 | PatternModifiers.Psk3;
 
-			isOneWay = messagePatterns.Count == 1;
 			isPsk = (protocol.Modifiers & pskModifiers) != 0;
+			isOneWay = messagePatterns.Count == 1;
 		}
 
 		private void ProcessPreMessages(HandshakePattern handshakePattern)
@@ -292,11 +290,6 @@ namespace Noise
 		{
 			ThrowIfDisposed();
 
-			if (isPsk)
-			{
-				throw new NotSupportedException("Fallback is not yet supported on PSK patterns.");
-			}
-
 			if (protocol == null)
 			{
 				throw new InvalidOperationException("Fallback cannot be applied to a Bob-initiated pattern.");
@@ -319,6 +312,7 @@ namespace Noise
 
 			turnToWrite = !initiator;
 			rs = null;
+			isPsk = false;
 
 			while (psks.Count > 0)
 			{
