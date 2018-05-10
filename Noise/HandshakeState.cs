@@ -23,9 +23,16 @@ namespace Noise
 		ReadOnlySpan<byte> RemoteStaticPublicKey { get; }
 
 		/// <summary>
-		/// Converts an Alice-initiated pattern to a Bob-initiated XX pattern with
-		/// the same parameters (i.e. DH function, cipher function, and hash function).
+		/// Converts an Alice-initiated pattern to a Bob-initiated XX pattern.
 		/// </summary>
+		/// <param name="cipher">
+		/// The cipher function (AESGCM or ChaChaPoly).
+		/// If it's null, the original cipher function will be used.
+		/// </param>
+		/// <param name="hash">
+		/// The hash function (SHA256, SHA512, BLAKE2s, or BLAKE2b).
+		/// If it's null, the original hash function will be used.
+		/// </param>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
@@ -33,10 +40,11 @@ namespace Noise
 		/// Thrown if the handshake pattern contains one or more PSK modifiers.
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
-		/// Throw if the handshake pattern is Bob-initiated or one-way, or if this
-		/// method was not called immediately after the first handshake message.
+		/// Throw if the handshake pattern is Bob-initiated or one-way, if this
+		/// method was not called immediately after the first handshake message,
+		/// or if the local static private key is empty.
 		/// </exception>
-		void Fallback();
+		void Fallback(CipherFunction cipher = null, HashFunction hash = null);
 
 		/// <summary>
 		/// Performs the next step of the handshake,
@@ -112,10 +120,10 @@ namespace Noise
 		where HashType : Hash, new()
 	{
 		private Dh dh = new DhType();
-		private readonly SymmetricState<CipherType, DhType, HashType> state;
-		private readonly Protocol protocol;
+		private SymmetricState<CipherType, DhType, HashType> state;
+		private Protocol protocol;
+		private byte[] prologue;
 		private readonly bool initiator;
-		private readonly bool fallback;
 		private bool turnToWrite;
 		private KeyPair e;
 		private KeyPair s;
@@ -176,6 +184,7 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.protocol = protocol;
+			this.prologue = prologue.ToArray();
 			this.initiator = initiator;
 			this.turnToWrite = initiator;
 			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
@@ -194,19 +203,17 @@ namespace Noise
 		{
 			foreach (var token in handshakePattern.Initiator.Tokens)
 			{
-				switch (token)
+				if (token == Token.S)
 				{
-					case Token.S: state.MixHash(initiator ? this.s.PublicKey : rs); break;
-					case Token.E: state.MixHash(initiator ? this.e.PublicKey : re); break;
+					state.MixHash(initiator ? s.PublicKey : rs);
 				}
 			}
 
 			foreach (var token in handshakePattern.Responder.Tokens)
 			{
-				switch (token)
+				if (token == Token.S)
 				{
-					case Token.S: state.MixHash(initiator ? rs : this.s.PublicKey); break;
-					case Token.E: state.MixHash(initiator ? re : this.e.PublicKey); break;
+					state.MixHash(initiator ? rs : s.PublicKey);
 				}
 			}
 		}
@@ -281,7 +288,7 @@ namespace Noise
 			}
 		}
 
-		public void Fallback()
+		public void Fallback(CipherFunction cipher, HashFunction hash)
 		{
 			ThrowIfDisposed();
 
@@ -290,7 +297,7 @@ namespace Noise
 				throw new NotSupportedException("Fallback is not yet supported on PSK patterns.");
 			}
 
-			if (fallback)
+			if (protocol == null)
 			{
 				throw new InvalidOperationException("Fallback cannot be applied to a Bob-initiated pattern.");
 			}
@@ -305,7 +312,46 @@ namespace Noise
 				throw new InvalidOperationException("Fallback can only be applied after the first handshake message.");
 			}
 
-			throw new NotImplementedException();
+			if (s == null)
+			{
+				throw new InvalidOperationException("Local static private key is required for the XXfallback pattern.");
+			}
+
+			turnToWrite = !initiator;
+			rs = null;
+
+			while (psks.Count > 0)
+			{
+				var psk = psks.Dequeue();
+				Utilities.ZeroMemory(psk);
+			}
+
+			protocol = new Protocol(HandshakePattern.XX, cipher ?? protocol.Cipher, hash ?? protocol.Hash, PatternModifiers.Fallback);
+
+			state.Dispose();
+			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
+			state.MixHash(prologue);
+
+			protocol = null;
+			prologue = null;
+
+			if (initiator)
+			{
+				Debug.Assert(e != null && re == null);
+				state.MixHash(e.PublicKey);
+			}
+			else
+			{
+				Debug.Assert(e == null && re != null);
+				state.MixHash(re);
+			}
+
+			messagePatterns.Clear();
+
+			foreach (var pattern in HandshakePattern.XX.Patterns.Skip(1))
+			{
+				messagePatterns.Enqueue(pattern);
+			}
 		}
 
 		public (int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
