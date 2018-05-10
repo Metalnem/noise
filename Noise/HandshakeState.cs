@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Noise
 {
@@ -25,6 +26,16 @@ namespace Noise
 		/// Converts an Alice-initiated pattern to a Bob-initiated XX pattern with
 		/// the same parameters (i.e. DH function, cipher function, and hash function).
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="NotSupportedException">
+		/// Thrown if the handshake pattern contains one or more PSK modifiers.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Throw if the handshake pattern is one-way, or if this method
+		/// was not called immediately after the first handshake message.
+		/// </exception>
 		void Fallback();
 
 		/// <summary>
@@ -102,6 +113,7 @@ namespace Noise
 	{
 		private Dh dh = new DhType();
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
+		private readonly Protocol protocol;
 		private readonly bool initiator;
 		private bool turnToWrite;
 		private KeyPair e;
@@ -162,6 +174,7 @@ namespace Noise
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
 			state.MixHash(prologue);
 
+			this.protocol = protocol;
 			this.initiator = initiator;
 			this.turnToWrite = initiator;
 			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
@@ -267,6 +280,23 @@ namespace Noise
 
 		public void Fallback()
 		{
+			ThrowIfDisposed();
+
+			if (isPsk)
+			{
+				throw new NotSupportedException("Fallback is not yet supported on PSK patterns.");
+			}
+
+			if (isOneWay)
+			{
+				throw new InvalidOperationException("Fallback is not allowed on one-way patterns.");
+			}
+
+			if (messagePatterns.Count + 1 != protocol.HandshakePattern.Patterns.Count())
+			{
+				throw new InvalidOperationException("Fallback can only be applied after the first handshake message.");
+			}
+
 			throw new NotImplementedException();
 		}
 
