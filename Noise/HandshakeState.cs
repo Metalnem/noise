@@ -191,19 +191,21 @@ namespace Noise
 
 		private void ProcessPreMessages(HandshakePattern handshakePattern)
 		{
-			foreach (var preMessage in handshakePattern.Initiator.Tokens)
+			foreach (var token in handshakePattern.Initiator.Tokens)
 			{
-				if (preMessage == Token.S)
+				switch (token)
 				{
-					state.MixHash(initiator ? this.s.PublicKey : rs);
+					case Token.S: state.MixHash(initiator ? this.s.PublicKey : rs); break;
+					case Token.E: state.MixHash(initiator ? this.e.PublicKey : re); break;
 				}
 			}
 
-			foreach (var preMessage in handshakePattern.Responder.Tokens)
+			foreach (var token in handshakePattern.Responder.Tokens)
 			{
-				if (preMessage == Token.S)
+				switch (token)
 				{
-					state.MixHash(initiator ? rs : this.s.PublicKey);
+					case Token.S: state.MixHash(initiator ? rs : this.s.PublicKey); break;
+					case Token.E: state.MixHash(initiator ? re : this.e.PublicKey); break;
 				}
 			}
 		}
