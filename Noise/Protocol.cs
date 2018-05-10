@@ -129,6 +129,8 @@ namespace Noise
 		/// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
 		/// <para>- One or more pre-shared keys are not 32 bytes in length.</para>
 		/// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
+		/// <para>- Fallback modifier is present (fallback can only be applied by calling
+		/// the <see cref="HandshakeState.Fallback"/> method on existing handshake state).</para>
 		/// </exception>
 		public HandshakeState Create(
 			bool initiator,
@@ -308,6 +310,7 @@ namespace Noise
 				case var _ when s.SequenceEqual("psk1".AsSpan()): return PatternModifiers.Psk1;
 				case var _ when s.SequenceEqual("psk2".AsSpan()): return PatternModifiers.Psk2;
 				case var _ when s.SequenceEqual("psk3".AsSpan()): return PatternModifiers.Psk3;
+				case var _ when s.SequenceEqual("fallback".AsSpan()): return PatternModifiers.Fallback;
 				default: throw new ArgumentException("Unknown pattern modifier.", nameof(s));
 			}
 		}

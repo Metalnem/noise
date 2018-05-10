@@ -22,6 +22,12 @@ namespace Noise
 		ReadOnlySpan<byte> RemoteStaticPublicKey { get; }
 
 		/// <summary>
+		/// Converts an Alice-initiated pattern to a Bob-initiated XX pattern with
+		/// the same parameters (i.e. DH function, cipher function, and hash function).
+		/// </summary>
+		void Fallback();
+
+		/// <summary>
 		/// Performs the next step of the handshake,
 		/// encrypts the <paramref name="payload"/>,
 		/// and writes the result into <paramref name="messageBuffer"/>.
@@ -148,6 +154,11 @@ namespace Noise
 				throw new ArgumentException("Remote static public key provided, but not required.", nameof(rs));
 			}
 
+			if ((protocol.Modifiers & PatternModifiers.Fallback) != 0)
+			{
+				throw new ArgumentException($"Fallback modifier can only be applied by calling the {nameof(Fallback)} method.");
+			}
+
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
 			state.MixHash(prologue);
 
@@ -159,8 +170,10 @@ namespace Noise
 			ProcessPreMessages(protocol.HandshakePattern);
 			ProcessPreSharedKeys(protocol, psks);
 
+			var pskModifiers = PatternModifiers.Psk0 | PatternModifiers.Psk1 | PatternModifiers.Psk2 | PatternModifiers.Psk3;
+
 			isOneWay = messagePatterns.Count == 1;
-			isPsk = protocol.Modifiers != PatternModifiers.None;
+			isPsk = (protocol.Modifiers & pskModifiers) != 0;
 		}
 
 		private void ProcessPreMessages(HandshakePattern handshakePattern)
@@ -250,6 +263,11 @@ namespace Noise
 				ThrowIfDisposed();
 				return rs;
 			}
+		}
+
+		public void Fallback()
+		{
+			throw new NotImplementedException();
 		}
 
 		public (int, byte[], Transport) WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
