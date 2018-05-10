@@ -33,8 +33,8 @@ namespace Noise
 		/// Thrown if the handshake pattern contains one or more PSK modifiers.
 		/// </exception>
 		/// <exception cref="InvalidOperationException">
-		/// Throw if the handshake pattern is one-way, or if this method
-		/// was not called immediately after the first handshake message.
+		/// Throw if the handshake pattern is Bob-initiated or one-way, or if this
+		/// method was not called immediately after the first handshake message.
 		/// </exception>
 		void Fallback();
 
@@ -115,6 +115,7 @@ namespace Noise
 		private readonly SymmetricState<CipherType, DhType, HashType> state;
 		private readonly Protocol protocol;
 		private readonly bool initiator;
+		private readonly bool fallback;
 		private bool turnToWrite;
 		private KeyPair e;
 		private KeyPair s;
@@ -287,6 +288,11 @@ namespace Noise
 			if (isPsk)
 			{
 				throw new NotSupportedException("Fallback is not yet supported on PSK patterns.");
+			}
+
+			if (fallback)
+			{
+				throw new InvalidOperationException("Fallback cannot be applied to a Bob-initiated pattern.");
 			}
 
 			if (isOneWay)
