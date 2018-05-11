@@ -14,6 +14,7 @@
 - SHA256, SHA512, BLAKE2s, and BLAKE2b hash functions
 - Support for multiple pre-shared symmetric keys
 - All known [one-way] and [interactive] patterns from the specification
+- XXfallback handshake pattern
 
 [one-way]: https://noiseprotocol.org/noise.html#one-way-patterns
 [interactive]: https://noiseprotocol.org/noise.html#interactive-patterns
