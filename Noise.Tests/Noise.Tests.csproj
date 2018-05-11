@@ -13,6 +13,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
     <None Update="Vectors/blake2-kat.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Vectors/cacophony.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Vectors/noise-c-fallback.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Vectors/snow-multipsk.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

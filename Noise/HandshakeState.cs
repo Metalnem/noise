@@ -121,7 +121,8 @@ namespace Noise
 		private SymmetricState<CipherType, DhType, HashType> state;
 		private Protocol protocol;
 		private byte[] prologue;
-		private readonly bool initiator;
+		private readonly Role role;
+		private Role initiator;
 		private bool turnToWrite;
 		private KeyPair e;
 		private KeyPair s;
@@ -183,7 +184,8 @@ namespace Noise
 
 			this.protocol = protocol;
 			this.prologue = prologue.IsEmpty ? null : prologue.ToArray();
-			this.initiator = initiator;
+			this.role = initiator ? Role.Alice : Role.Bob;
+			this.initiator = Role.Alice;
 			this.turnToWrite = initiator;
 			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
 			this.rs = rs.IsEmpty ? null : rs.ToArray();
@@ -203,7 +205,7 @@ namespace Noise
 			{
 				if (token == Token.S)
 				{
-					state.MixHash(initiator ? s.PublicKey : rs);
+					state.MixHash(role == Role.Alice ? s.PublicKey : rs);
 				}
 			}
 
@@ -211,7 +213,7 @@ namespace Noise
 			{
 				if (token == Token.S)
 				{
-					state.MixHash(initiator ? rs : s.PublicKey);
+					state.MixHash(role == Role.Alice ? rs : s.PublicKey);
 				}
 			}
 		}
@@ -290,7 +292,7 @@ namespace Noise
 		{
 			ThrowIfDisposed();
 
-			if (protocol == null)
+			if (initiator == Role.Bob)
 			{
 				throw new InvalidOperationException("Fallback cannot be applied to a Bob-initiated pattern.");
 			}
@@ -310,7 +312,9 @@ namespace Noise
 				throw new InvalidOperationException("Local static private key is required for the XXfallback pattern.");
 			}
 
-			turnToWrite = !initiator;
+			initiator = Role.Bob;
+			turnToWrite = role == Role.Bob;
+
 			rs = null;
 			isPsk = false;
 
@@ -329,7 +333,7 @@ namespace Noise
 			protocol = null;
 			prologue = null;
 
-			if (initiator)
+			if (role == Role.Alice)
 			{
 				Debug.Assert(e != null && re == null);
 				state.MixHash(e.PublicKey);
@@ -527,7 +531,7 @@ namespace Noise
 
 		private void ProcessES()
 		{
-			if (initiator)
+			if (role == Role.Alice)
 			{
 				DhAndMixKey(e, rs);
 			}
@@ -539,7 +543,7 @@ namespace Noise
 
 		private void ProcessSE()
 		{
-			if (initiator)
+			if (role == Role.Alice)
 			{
 				DhAndMixKey(s, re);
 			}
@@ -569,7 +573,7 @@ namespace Noise
 			Debug.Assert(psks.Count == 0);
 
 			var handshakeHash = state.GetHandshakeHash();
-			var transport = new Transport<CipherType>(initiator, c1, c2);
+			var transport = new Transport<CipherType>(role == initiator, c1, c2);
 
 			Clear();
 
@@ -610,6 +614,12 @@ namespace Noise
 				Clear();
 				disposed = true;
 			}
+		}
+
+		private enum Role
+		{
+			Alice,
+			Bob
 		}
 	}
 }
