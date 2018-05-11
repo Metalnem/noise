@@ -217,6 +217,19 @@ references:
   commentId: T:Noise.HandshakeState
   fullName: Noise.HandshakeState
   nameWithType: HandshakeState
+- uid: Noise.HandshakeState.Fallback(Noise.CipherFunction,Noise.HashFunction)
+  name: Fallback(CipherFunction, HashFunction)
+  href: api/Noise.HandshakeState.html#Noise_HandshakeState_Fallback_Noise_CipherFunction_Noise_HashFunction_
+  commentId: M:Noise.HandshakeState.Fallback(Noise.CipherFunction,Noise.HashFunction)
+  fullName: Noise.HandshakeState.Fallback(Noise.CipherFunction, Noise.HashFunction)
+  nameWithType: HandshakeState.Fallback(CipherFunction, HashFunction)
+- uid: Noise.HandshakeState.Fallback*
+  name: Fallback
+  href: api/Noise.HandshakeState.html#Noise_HandshakeState_Fallback_
+  commentId: Overload:Noise.HandshakeState.Fallback
+  isSpec: "True"
+  fullName: Noise.HandshakeState.Fallback
+  nameWithType: HandshakeState.Fallback
 - uid: Noise.HandshakeState.ReadMessage(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})
   name: ReadMessage(ReadOnlySpan<Byte>, Span<Byte>)
   href: api/Noise.HandshakeState.html#Noise_HandshakeState_ReadMessage_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__
@@ -388,6 +401,12 @@ references:
   commentId: T:Noise.PatternModifiers
   fullName: Noise.PatternModifiers
   nameWithType: PatternModifiers
+- uid: Noise.PatternModifiers.Fallback
+  name: Fallback
+  href: api/Noise.PatternModifiers.html#Noise_PatternModifiers_Fallback
+  commentId: F:Noise.PatternModifiers.Fallback
+  fullName: Noise.PatternModifiers.Fallback
+  nameWithType: PatternModifiers.Fallback
 - uid: Noise.PatternModifiers.None
   name: None
   href: api/Noise.PatternModifiers.html#Noise_PatternModifiers_None

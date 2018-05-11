@@ -161,7 +161,7 @@ the remaining portion of the handshake pattern.</p>
     <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakeState_RemoteStaticPublicKey.md&amp;value=---%0Auid%3A%20Noise.HandshakeState.RemoteStaticPublicKey%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L22">View Source</a>
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L23">View Source</a>
   </span>
   <a id="Noise_HandshakeState_RemoteStaticPublicKey_" data-uid="Noise.HandshakeState.RemoteStaticPublicKey*"></a>
   <h4 id="Noise_HandshakeState_RemoteStaticPublicKey" data-uid="Noise.HandshakeState.RemoteStaticPublicKey">RemoteStaticPublicKey</h4>
@@ -207,10 +207,76 @@ the remaining portion of the handshake pattern.</p>
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakeState_Fallback_Noise_CipherFunction_Noise_HashFunction_.md&amp;value=---%0Auid%3A%20Noise.HandshakeState.Fallback(Noise.CipherFunction%2CNoise.HashFunction)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L45">View Source</a>
+  </span>
+  <a id="Noise_HandshakeState_Fallback_" data-uid="Noise.HandshakeState.Fallback*"></a>
+  <h4 id="Noise_HandshakeState_Fallback_Noise_CipherFunction_Noise_HashFunction_" data-uid="Noise.HandshakeState.Fallback(Noise.CipherFunction,Noise.HashFunction)">Fallback(CipherFunction, HashFunction)</h4>
+  <div class="markdown level1 summary"><p>Converts an Alice-initiated pattern to a Bob-initiated
+XX pattern. Original PSK modifiers will not be preserved.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Fallback(CipherFunction cipher = null, HashFunction hash = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Noise.CipherFunction.html">CipherFunction</a></td>
+        <td><span class="parametername">cipher</span></td>
+        <td><p>The cipher function (AESGCM or ChaChaPoly).
+If it's null, the original cipher function will be used.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Noise.HashFunction.html">HashFunction</a></td>
+        <td><span class="parametername">hash</span></td>
+        <td><p>The hash function (SHA256, SHA512, BLAKE2s, or BLAKE2b).
+If it's null, the original hash function will be used.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ObjectDisposedException</span></td>
+        <td><p>Thrown if the current instance has already been disposed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.InvalidOperationException</span></td>
+        <td><p>Throw if the handshake pattern is Bob-initiated or one-way, if this
+method was not called immediately after the first handshake message,
+or if the local static private key is empty.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakeState_ReadMessage_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__.md&amp;value=---%0Auid%3A%20Noise.HandshakeState.ReadMessage(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Span%7BSystem.Byte%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L86">View Source</a>
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L109">View Source</a>
   </span>
   <a id="Noise_HandshakeState_ReadMessage_" data-uid="Noise.HandshakeState.ReadMessage*"></a>
   <h4 id="Noise_HandshakeState_ReadMessage_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Noise.HandshakeState.ReadMessage(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">ReadMessage(ReadOnlySpan&lt;Byte&gt;, Span&lt;Byte&gt;)</h4>
@@ -307,7 +373,7 @@ bytes in length, or if the output buffer did not have enough space to hold the p
     <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakeState_WriteMessage_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__.md&amp;value=---%0Auid%3A%20Noise.HandshakeState.WriteMessage(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Span%7BSystem.Byte%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L51">View Source</a>
+    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L74">View Source</a>
   </span>
   <a id="Noise_HandshakeState_WriteMessage_" data-uid="Noise.HandshakeState.WriteMessage*"></a>
   <h4 id="Noise_HandshakeState_WriteMessage_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Noise.HandshakeState.WriteMessage(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">WriteMessage(ReadOnlySpan&lt;Byte&gt;, Span&lt;Byte&gt;)</h4>
@@ -405,7 +471,7 @@ bytes in length, or if the output buffer did not have enough space to hold the c
                     <a href="https://github.com/Metalnem/noise/new/master/apiSpec/new?filename=Noise_HandshakeState.md&amp;value=---%0Auid%3A%20Noise.HandshakeState%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L14" class="contribution-link">View Source</a>
+                    <a href="https://github.com/Metalnem/noise/blob/master/Noise/HandshakeState.cs/#L15" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
