@@ -28,7 +28,7 @@ namespace Noise.Tests
 
 		public KeyPair GenerateKeyPair(ReadOnlySpan<byte> privateKey)
 		{
-			return GenerateKeyPair();
+			return dh.GenerateKeyPair(privateKey);
 		}
 
 		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)

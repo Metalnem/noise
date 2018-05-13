@@ -148,12 +148,8 @@ namespace Noise.Tests
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
 
-				var curveDh = new object[] { new Curve25519() };
-				var initFixedDh = new object[] { new FixedKeyDh(initEphemeral) };
-				var respFixedDh = new object[] { new FixedKeyDh(respEphemeral) };
-
-				setDh.Invoke(init, initFixedDh);
-				setDh.Invoke(resp, respFixedDh);
+				setDh.Invoke(init, new object[] { new FixedKeyDh(initEphemeral) });
+				setDh.Invoke(resp, new object[] { new FixedKeyDh(respEphemeral) });
 
 				Transport initTransport = null;
 				Transport respTransport = null;
@@ -185,17 +181,11 @@ namespace Noise.Tests
 						}
 						catch (CryptographicException)
 						{
-							setDh.Invoke(init, curveDh);
-							setDh.Invoke(resp, curveDh);
-
 							var initConfig = new ProtocolConfig { Prologue = initPrologue, LocalStatic = initStatic };
 							init.Fallback(fallbackProtocol, initConfig);
 
 							var respConfig = new ProtocolConfig { Prologue = respPrologue, LocalStatic = respStatic };
 							resp.Fallback(fallbackProtocol, respConfig);
-
-							setDh.Invoke(init, initFixedDh);
-							setDh.Invoke(resp, respFixedDh);
 
 							respMessage = payload;
 							fallback = true;
