@@ -56,7 +56,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Noise.HandshakeState.html",
-          "hash": "3k3ST6YBH7af+z3aU/WAlQ=="
+          "hash": "wUnJPR0qrmQcBx90Rzlg7A=="
         }
       },
       "is_incremental": false,
@@ -107,7 +107,7 @@
           "hash": "mJzYaUqJMvMqPxYVCVdSLQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -128,7 +128,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Noise.Protocol.html",
-          "hash": "fBqwGYm8uj2jWyDop57P0g=="
+          "hash": "YSCcflaUGh0j93212oGf7w=="
         }
       },
       "is_incremental": false,
@@ -188,7 +188,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "co/gfFUvbwc3mBLAegJhyQ=="
+          "hash": "cbs0Q336z93wg8Xy72jbcQ=="
         }
       },
       "is_incremental": false,
@@ -202,21 +202,21 @@
         "incrementalPhase": "build"
       },
       "processors": {
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
-        "ConceptualDocumentProcessor": {
-          "can_incremental": true,
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
         "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build"
         }

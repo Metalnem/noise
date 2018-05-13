@@ -217,12 +217,12 @@ references:
   commentId: T:Noise.HandshakeState
   fullName: Noise.HandshakeState
   nameWithType: HandshakeState
-- uid: Noise.HandshakeState.Fallback(Noise.CipherFunction,Noise.HashFunction)
-  name: Fallback(CipherFunction, HashFunction)
-  href: api/Noise.HandshakeState.html#Noise_HandshakeState_Fallback_Noise_CipherFunction_Noise_HashFunction_
-  commentId: M:Noise.HandshakeState.Fallback(Noise.CipherFunction,Noise.HashFunction)
-  fullName: Noise.HandshakeState.Fallback(Noise.CipherFunction, Noise.HashFunction)
-  nameWithType: HandshakeState.Fallback(CipherFunction, HashFunction)
+- uid: Noise.HandshakeState.Fallback(Noise.Protocol,Noise.ProtocolConfig)
+  name: Fallback(Protocol, ProtocolConfig)
+  href: api/Noise.HandshakeState.html#Noise_HandshakeState_Fallback_Noise_Protocol_Noise_ProtocolConfig_
+  commentId: M:Noise.HandshakeState.Fallback(Noise.Protocol,Noise.ProtocolConfig)
+  fullName: Noise.HandshakeState.Fallback(Noise.Protocol, Noise.ProtocolConfig)
+  nameWithType: HandshakeState.Fallback(Protocol, ProtocolConfig)
 - uid: Noise.HandshakeState.Fallback*
   name: Fallback
   href: api/Noise.HandshakeState.html#Noise_HandshakeState_Fallback_
