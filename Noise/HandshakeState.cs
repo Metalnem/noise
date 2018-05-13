@@ -23,26 +23,27 @@ namespace Noise
 		ReadOnlySpan<byte> RemoteStaticPublicKey { get; }
 
 		/// <summary>
-		/// Converts an Alice-initiated pattern to a Bob-initiated
-		/// XX pattern. Original PSK modifiers will not be preserved.
+		/// Converts an Alice-initiated pattern to a Bob-initiated pattern.
+		/// The only fallback pattern currently supported is XXfallback.
+		/// PSK modifiers are currently not supported with fallback protocols.
 		/// </summary>
-		/// <param name="cipher">
-		/// The cipher function (AESGCM or ChaChaPoly).
-		/// If it's null, the original cipher function will be used.
-		/// </param>
-		/// <param name="hash">
-		/// The hash function (SHA256, SHA512, BLAKE2s, or BLAKE2b).
-		/// If it's null, the original hash function will be used.
-		/// </param>
+		/// <param name="protocol">A concrete Noise protocol (e.g. Noise_XXfallback_25519_AESGCM_BLAKE2b).</param>
+		/// <param name="config">A set of parameters used to instantiate a <see cref="HandshakeState"/>.</param>
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		/// Throw if the handshake pattern is Bob-initiated or one-way, if this
-		/// method was not called immediately after the first handshake message,
-		/// or if the local static private key is empty.
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if either <paramref name="protocol"/> or <paramref name="config"/> is null.
 		/// </exception>
-		void Fallback(CipherFunction cipher = null, HashFunction hash = null);
+		/// <exception cref="ArgumentException">
+		/// Thrown if <paramref name="protocol"/> is not XXfallback,
+		/// or if the provided local static private key is empty.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Throw if the initial handshake pattern is Bob-initiated, or if this
+		/// method was not called immediately after the first handshake message.
+		/// </exception>
+		void Fallback(Protocol protocol, ProtocolConfig config);
 
 		/// <summary>
 		/// Performs the next step of the handshake,
@@ -120,7 +121,6 @@ namespace Noise
 		private Dh dh = new DhType();
 		private SymmetricState<CipherType, DhType, HashType> state;
 		private Protocol protocol;
-		private byte[] prologue;
 		private readonly Role role;
 		private Role initiator;
 		private bool turnToWrite;
@@ -129,7 +129,7 @@ namespace Noise
 		private byte[] re;
 		private byte[] rs;
 		private bool isPsk;
-		private readonly bool isOneWay;
+		private bool isOneWay;
 		private readonly Queue<MessagePattern> messagePatterns = new Queue<MessagePattern>();
 		private readonly Queue<byte[]> psks = new Queue<byte[]>();
 		private bool disposed;
@@ -183,7 +183,6 @@ namespace Noise
 			state.MixHash(prologue);
 
 			this.protocol = protocol;
-			this.prologue = prologue.IsEmpty ? null : prologue.ToArray();
 			this.role = initiator ? Role.Alice : Role.Bob;
 			this.initiator = Role.Alice;
 			this.turnToWrite = initiator;
@@ -288,35 +287,41 @@ namespace Noise
 			}
 		}
 
-		public void Fallback(CipherFunction cipher, HashFunction hash)
+		public void Fallback(Protocol protocol, ProtocolConfig config)
 		{
 			ThrowIfDisposed();
+			Exceptions.ThrowIfNull(protocol, nameof(protocol));
+			Exceptions.ThrowIfNull(config, nameof(config));
+
+			if (protocol.HandshakePattern != HandshakePattern.XX || protocol.Modifiers != PatternModifiers.Fallback)
+			{
+				throw new ArgumentException("The only fallback pattern currently supported is XXfallback.");
+			}
+
+			if (config.LocalStatic == null)
+			{
+				throw new ArgumentException("Local static private key is required for the XXfallback pattern.");
+			}
 
 			if (initiator == Role.Bob)
 			{
 				throw new InvalidOperationException("Fallback cannot be applied to a Bob-initiated pattern.");
 			}
 
-			if (isOneWay)
-			{
-				throw new InvalidOperationException("Fallback is not allowed on one-way patterns.");
-			}
-
-			if (messagePatterns.Count + 1 != protocol.HandshakePattern.Patterns.Count())
+			if (messagePatterns.Count + 1 != this.protocol.HandshakePattern.Patterns.Count())
 			{
 				throw new InvalidOperationException("Fallback can only be applied after the first handshake message.");
 			}
 
-			if (s == null)
-			{
-				throw new InvalidOperationException("Local static private key is required for the XXfallback pattern.");
-			}
-
+			this.protocol = null;
 			initiator = Role.Bob;
 			turnToWrite = role == Role.Bob;
 
+			s = dh.GenerateKeyPair(config.LocalStatic);
 			rs = null;
+
 			isPsk = false;
+			isOneWay = false;
 
 			while (psks.Count > 0)
 			{
@@ -324,14 +329,9 @@ namespace Noise
 				Utilities.ZeroMemory(psk);
 			}
 
-			protocol = new Protocol(HandshakePattern.XX, cipher ?? protocol.Cipher, hash ?? protocol.Hash, PatternModifiers.Fallback);
-
 			state.Dispose();
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
-			state.MixHash(prologue);
-
-			protocol = null;
-			prologue = null;
+			state.MixHash(config.Prologue);
 
 			if (role == Role.Alice)
 			{
@@ -346,7 +346,7 @@ namespace Noise
 
 			messagePatterns.Clear();
 
-			foreach (var pattern in HandshakePattern.XX.Patterns.Skip(1))
+			foreach (var pattern in protocol.HandshakePattern.Patterns.Skip(1))
 			{
 				messagePatterns.Enqueue(pattern);
 			}
