@@ -16,8 +16,8 @@
 - All known [one-way] and [interactive] patterns from the specification
 - XXfallback handshake pattern
 
-[one-way]: https://noiseprotocol.org/noise.html#one-way-patterns
-[interactive]: https://noiseprotocol.org/noise.html#interactive-patterns
+[one-way]: https://noiseprotocol.org/noise.html#one-way-handshake-patterns
+[interactive]: https://noiseprotocol.org/noise.html#interactive-handshake-patterns-fundamental
 
 ## Usage
 
