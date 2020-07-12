@@ -30,7 +30,7 @@ namespace Noise
 		private static extern int crypto_aead_aes256gcm_is_available();
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_aead_aes256gcm_encrypt(
+		public static extern unsafe int crypto_aead_aes256gcm_encrypt(
 			ref byte c,
 			out long clen_p,
 			ref byte m,
@@ -39,11 +39,11 @@ namespace Noise
 			long adlen,
 			IntPtr nsec,
 			ref byte npub,
-			ref byte k
+			byte* k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_aead_aes256gcm_decrypt(
+		public static extern unsafe int crypto_aead_aes256gcm_decrypt(
 			ref byte m,
 			out long mlen_p,
 			IntPtr nsec,
@@ -52,11 +52,11 @@ namespace Noise
 			ref byte ad,
 			long adlen,
 			ref byte npub,
-			ref byte k
+			byte* k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_aead_chacha20poly1305_ietf_encrypt(
+		public static extern unsafe int crypto_aead_chacha20poly1305_ietf_encrypt(
 			ref byte c,
 			out long clen_p,
 			ref byte m,
@@ -65,11 +65,11 @@ namespace Noise
 			long adlen,
 			IntPtr nsec,
 			ref byte npub,
-			ref byte k
+			byte* k
 		);
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_aead_chacha20poly1305_ietf_decrypt(
+		public static extern unsafe int crypto_aead_chacha20poly1305_ietf_decrypt(
 			ref byte m,
 			out long mlen_p,
 			IntPtr nsec,
@@ -78,7 +78,7 @@ namespace Noise
 			ref byte ad,
 			long adlen,
 			ref byte npub,
-			ref byte k
+			byte* k
 		);
 
         [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]

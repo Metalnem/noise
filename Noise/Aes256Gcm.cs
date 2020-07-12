@@ -23,9 +23,9 @@ namespace Noise
 			}
 		}
 
-		public int Encrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public unsafe int Encrypt(byte* k, int kLen, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			Debug.Assert(k.Length == Aead.KeySize);
+			Debug.Assert(kLen == Aead.KeySize);
 			Debug.Assert(ciphertext.Length >= plaintext.Length + Aead.TagSize);
 
 			Span<byte> nonce = stackalloc byte[Aead.NonceSize];
@@ -40,7 +40,7 @@ namespace Noise
 				ad.Length,
 				IntPtr.Zero,
 				ref MemoryMarshal.GetReference(nonce),
-				ref MemoryMarshal.GetReference(k)
+				k
 			);
 
 			if (result != 0)
@@ -52,9 +52,9 @@ namespace Noise
 			return (int)length;
 		}
 
-		public int Decrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		public unsafe int Decrypt(byte* k, int kLen, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			Debug.Assert(k.Length == Aead.KeySize);
+			Debug.Assert(kLen == Aead.KeySize);
 			Debug.Assert(ciphertext.Length >= Aead.TagSize);
 			Debug.Assert(plaintext.Length >= ciphertext.Length - Aead.TagSize);
 
@@ -70,7 +70,7 @@ namespace Noise
 				ref MemoryMarshal.GetReference(ad),
 				ad.Length,
 				ref MemoryMarshal.GetReference(nonce),
-				ref MemoryMarshal.GetReference(k)
+				k
 			);
 
 			if (result != 0)

@@ -77,8 +77,7 @@ namespace Noise
                     return plaintext.Length;
                 }
 				
-				var kx = new Span<byte>(k, Aead.KeySize);
-                return cipher.Encrypt(kx, n++, ad, plaintext, ciphertext);
+				return cipher.Encrypt(k, Aead.KeySize, n++, ad, plaintext, ciphertext);
             }
         }
 
@@ -103,8 +102,7 @@ namespace Noise
                     return ciphertext.Length;
                 }
 
-                var kx = new Span<byte>(k, Aead.KeySize);
-                int bytesRead = cipher.Decrypt(kx, n, ad, ciphertext, plaintext);
+                int bytesRead = cipher.Decrypt(k, Aead.KeySize, n, ad, ciphertext, plaintext);
                 ++n;
 
                 return bytesRead;
@@ -121,8 +119,7 @@ namespace Noise
             unsafe
             {
                 Span<byte> key = stackalloc byte[Aead.KeySize + Aead.TagSize];
-                var kx = new Span<byte>(k, Aead.KeySize);
-                cipher.Encrypt(kx, MaxNonce, zeroLen, zeros, key);
+                cipher.Encrypt(k, Aead.KeySize, MaxNonce, zeroLen, zeros, key);
 
                 EnsureInitialized();
                 var s = key.Slice(Aead.KeySize);

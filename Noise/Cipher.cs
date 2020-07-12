@@ -16,7 +16,7 @@ namespace Noise
 		/// associated data ad and results in a ciphertext that is the
 		/// same size as the plaintext plus 16 bytes for authentication data.
 		/// </summary>
-		int Encrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext);
+        unsafe int Encrypt(byte* k, int kLen, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext);
 
 		/// <summary>
 		/// Decrypts ciphertext using a cipher key k of 32 bytes,
@@ -25,6 +25,6 @@ namespace Noise
 		/// number of bytes read, unless authentication fails, in which
 		/// case an error is signaled to the caller.
 		/// </summary>
-		int Decrypt(ReadOnlySpan<byte> k, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext);
+        unsafe int Decrypt(byte* k, int kLen, ulong n, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext);
 	}
 }

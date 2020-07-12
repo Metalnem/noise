@@ -265,7 +265,7 @@ namespace Noise
 
 			var psk = enumerator.Current;
 
-			if (psk.len != Aead.KeySize)
+			if (psk?.len != Aead.KeySize)
 			{
 				throw new ArgumentException($"Pre-shared keys must be {Aead.KeySize} bytes in length.");
 			}
