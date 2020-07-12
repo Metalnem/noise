@@ -13,38 +13,64 @@ namespace Noise
 		public int DhLen => Libsodium.crypto_scalarmult_curve25519_SCALARBYTES;
 
 		public KeyPair GenerateKeyPair()
-		{
-			var privateKey = Utilities.GetRandomBytes(DhLen);
-			var publicKey = new byte[DhLen];
+        {
+            unsafe
+            {
+                var privateKey = (byte*) Libsodium.sodium_malloc((ulong) DhLen);
+                try
+                {
+                    Libsodium.randombytes_buf(privateKey, (uint) DhLen);
 
-			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKey);
+                    var publicKey = new byte[DhLen];
 
-			return new KeyPair(privateKey, publicKey);
-		}
+                    Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKey);
 
-		public KeyPair GenerateKeyPair(ReadOnlySpan<byte> privateKey)
-		{
-			Debug.Assert(privateKey.Length == DhLen);
+                    return new KeyPair(privateKey, DhLen, publicKey);
+                }
+                finally
+                {
+                    Libsodium.sodium_free(privateKey);
+                }
+            }
+        }
 
-			var privateKeyCopy = privateKey.ToArray();
-			var publicKey = new byte[DhLen];
+        public unsafe KeyPair GenerateKeyPair(byte* privateKey)
+        {
+            var privateKeyCopy = (byte*) Libsodium.sodium_malloc((ulong) DhLen);
 
-			Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKeyCopy);
+            try
+            {
+                for (var i = 0; i < DhLen; i++)
+                    privateKeyCopy[i] = privateKey[i];
 
-			return new KeyPair(privateKeyCopy, publicKey);
-		}
+                var publicKey = new byte[DhLen];
 
+                Libsodium.crypto_scalarmult_curve25519_base(publicKey, privateKeyCopy);
+
+                return new KeyPair(privateKeyCopy, DhLen, publicKey);
+            }
+            finally
+            {
+                Libsodium.sodium_free(privateKeyCopy);
+            }
+        }
+
+        
 		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
 		{
-			Debug.Assert(keyPair.PrivateKey != null && keyPair.PrivateKey.Length == DhLen);
-			Debug.Assert(publicKey.Length == DhLen);
-			Debug.Assert(sharedKey.Length == DhLen);
+            Debug.Assert(publicKey.Length == DhLen);
+            Debug.Assert(sharedKey.Length == DhLen);
 
-			Libsodium.crypto_scalarmult_curve25519(
-				ref MemoryMarshal.GetReference(sharedKey),
-				ref MemoryMarshal.GetReference(keyPair.PrivateKey.AsSpan()),
-				ref MemoryMarshal.GetReference(publicKey)
-			);
-		}
+            unsafe
+            {
+                Debug.Assert(keyPair.PrivateKey != null);
+
+                Libsodium.crypto_scalarmult_curve25519(
+                    ref MemoryMarshal.GetReference(sharedKey),
+                    keyPair.PrivateKey,
+                    ref MemoryMarshal.GetReference(publicKey)
+                );
+            }
+        }
 	}
 }

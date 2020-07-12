@@ -186,7 +186,15 @@ namespace Noise
 			this.role = initiator ? Role.Alice : Role.Bob;
 			this.initiator = Role.Alice;
 			this.turnToWrite = initiator;
-			this.s = s.IsEmpty ? null : dh.GenerateKeyPair(s);
+
+            unsafe
+            {
+                fixed (byte* xs = s)
+                {
+                    this.s = s.IsEmpty ? null : dh.GenerateKeyPair(xs);
+                }
+            }
+			
 			this.rs = rs.IsEmpty ? null : rs.ToArray();
 
 			ProcessPreMessages(protocol.HandshakePattern);
@@ -317,7 +325,14 @@ namespace Noise
 			initiator = Role.Bob;
 			turnToWrite = role == Role.Bob;
 
-			s = dh.GenerateKeyPair(config.LocalStatic);
+            unsafe
+            {
+                fixed (byte* xs = config.LocalStatic)
+                {
+                    s = dh.GenerateKeyPair(xs);    
+                }
+            }
+            
 			rs = null;
 
 			isPsk = false;

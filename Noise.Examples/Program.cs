@@ -34,22 +34,27 @@ namespace Noise.Examples
 			using (var clientStatic = KeyPair.Generate())
 			using (var serverStatic = KeyPair.Generate())
 			{
-				var psk = new byte[32];
+                unsafe
+                {
+                    var psk = new byte[32];
 
-				// Generate a random 32-byte pre-shared secret key.
-				using (var random = RandomNumberGenerator.Create())
-				{
-					random.GetBytes(psk);
-				}
+                    // Generate a random 32-byte pre-shared secret key.
+                    using (var random = RandomNumberGenerator.Create())
+                    {
+                        random.GetBytes(psk);
+                    }
 
-				// Initialize and run the client.
-				var client = Task.Run(() => Client(clientStatic.PrivateKey, serverStatic.PublicKey, Singleton(psk)));
+                    // Initialize and run the client.
+                    var xck = new Span<byte>(clientStatic.PrivateKey, KeyPair.DhLen).ToArray();
+                    var client = Task.Run((Func<Task?>) (() => Client(xck, serverStatic.PublicKey, Singleton(psk))));
 
-				// Initialize and run the server.
-				var server = Task.Run(() => Server(serverStatic.PrivateKey, Singleton(psk)));
+                    // Initialize and run the server.
+					var xsk = new Span<byte>(serverStatic.PrivateKey, KeyPair.DhLen).ToArray();
+                    var server = Task.Run((Func<Task?>) (() => Server(xsk, Singleton(psk))));
 
-				client.GetAwaiter().GetResult();
-			}
+                    client.GetAwaiter().GetResult();
+                }
+            }
 		}
 
 		private static async Task Client(byte[] s, byte[] rs, IEnumerable<byte[]> psks)
