@@ -81,18 +81,18 @@ namespace Noise
 			ref byte k
 		);
 
-		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_scalarmult_curve25519_base(
-			byte[] q,
-			byte[] n
-		);
-
-		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int crypto_scalarmult_curve25519(
-			ref byte q,
-			ref byte n,
-			ref byte p
-		);
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_scalarmult_curve25519_base(
+            byte[] q,
+            byte* n
+        );
+		
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_scalarmult_curve25519(
+            ref byte q,
+            byte* n,
+            ref byte p
+        );
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha256_init(
@@ -160,6 +160,12 @@ namespace Noise
         [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void sodium_free(
             void* ptr
+        );
+
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void randombytes_buf(
+            byte* buf, 
+            uint size
         );
 	}
 }

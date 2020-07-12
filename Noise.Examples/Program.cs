@@ -133,7 +133,7 @@ namespace Noise.Examples
 			return array.AsSpan(0, length).ToArray();
 		}
 
-		// Chanel simulates the network between the client and the server.
+		// Channel simulates the network between the client and the server.
 		private class Channel
 		{
 			private readonly BufferBlock<byte[]> buffer = new BufferBlock<byte[]>();

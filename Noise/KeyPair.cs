@@ -8,27 +8,34 @@ namespace Noise
 	public sealed class KeyPair : IDisposable
 	{
 		private static readonly Curve25519 dh = new Curve25519();
-		private readonly byte[] privateKey;
+		private readonly unsafe byte* privateKey;
 		private readonly byte[] publicKey;
 		private bool disposed;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KeyPair"/> class.
-		/// </summary>
-		/// <param name="privateKey">The private key.</param>
-		/// <param name="publicKey">The public key.</param>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if the <paramref name="privateKey"/> or the <paramref name="publicKey"/> is null.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> are invalid.
-		/// </exception>
-		internal KeyPair(byte[] privateKey, byte[] publicKey)
+        /// <summary>
+        /// A constant specifying the size in bytes of public keys and DH outputs.
+        /// For security reasons, DhLen must be 32 or greater.
+        /// </summary>
+        public static int DhLen => dh.DhLen;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyPair"/> class.
+        /// </summary>
+        /// <param name="privateKey">The private key.</param>
+        /// <param name="privateKeyLength">The length of the private key.</param>
+        /// <param name="publicKey">The public key.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if the <paramref name="privateKey"/> or the <paramref name="publicKey"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> are invalid.
+        /// </exception>
+        internal unsafe KeyPair(byte* privateKey, int privateKeyLength, byte[] publicKey)
 		{
 			Exceptions.ThrowIfNull(privateKey, nameof(privateKey));
 			Exceptions.ThrowIfNull(publicKey, nameof(publicKey));
 
-			if (privateKey.Length != 32)
+			if (privateKeyLength != 32)
 			{
 				throw new ArgumentException("Private key must have length of 32 bytes.", nameof(privateKey));
 			}
@@ -38,7 +45,11 @@ namespace Noise
 				throw new ArgumentException("Public key must have length of 32 bytes.", nameof(publicKey));
 			}
 
-			this.privateKey = privateKey;
+            var privateKeyCopy = (byte*) Libsodium.sodium_malloc((ulong) privateKeyLength);
+            for (var i = 0; i < privateKeyLength; i++)
+                privateKeyCopy[i] = privateKey[i];
+
+			this.privateKey = privateKeyCopy;
 			this.publicKey = publicKey;
 		}
 
@@ -57,7 +68,7 @@ namespace Noise
 		/// <exception cref="ObjectDisposedException">
 		/// Thrown if the current instance has already been disposed.
 		/// </exception>
-		public byte[] PrivateKey
+		public unsafe byte* PrivateKey
 		{
 			get
 			{
@@ -88,8 +99,11 @@ namespace Noise
 		{
 			if (!disposed)
 			{
-				Utilities.ZeroMemory(privateKey);
-				disposed = true;
+                unsafe
+                {
+                    Libsodium.sodium_free(privateKey);
+                }
+                disposed = true;
 			}
 		}
 	}

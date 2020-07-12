@@ -21,7 +21,7 @@ namespace Noise
 		/// <summary>
 		/// Generates a Diffie-Hellman key pair from the specified private key.
 		/// </summary>
-		KeyPair GenerateKeyPair(ReadOnlySpan<byte> privateKey);
+        unsafe KeyPair GenerateKeyPair(byte* privateKey);
 
 		/// <summary>
 		/// Performs a Diffie-Hellman calculation between the private

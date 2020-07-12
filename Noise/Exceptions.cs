@@ -12,6 +12,14 @@ namespace Noise
 			}
 		}
 
+        public static unsafe void ThrowIfNull(byte* value, string name)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(name);
+            }
+        }
+
 		public static void ThrowIfDisposed(bool disposed, string name)
 		{
 			if (disposed)
