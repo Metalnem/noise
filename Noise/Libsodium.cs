@@ -151,5 +151,15 @@ namespace Noise
 			ref byte @out,
 			UIntPtr outlen
 		);
+
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void* sodium_malloc(
+            ulong size
+        );
+		
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void sodium_free(
+            void* ptr
+        );
 	}
 }

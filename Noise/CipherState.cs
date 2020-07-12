@@ -15,7 +15,7 @@ namespace Noise
 		private static readonly byte[] zeros = new byte[32];
 
 		private readonly CipherType cipher = new CipherType();
-		private byte[] k;
+		private unsafe byte* k;
 		private ulong n;
 		private bool disposed;
 
@@ -26,19 +26,28 @@ namespace Noise
 		{
 			Debug.Assert(key.Length == Aead.KeySize);
 
-			k = k ?? new byte[Aead.KeySize];
-			key.CopyTo(k);
+			EnsureInitialized();
+            unsafe
+            {
+                for (var i = 0; i < key.Length; i++)
+                {
+                    k[i] = key[i];
+                }
+            }
 
-			n = 0;
+            n = 0;
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Returns true if k is non-empty, false otherwise.
 		/// </summary>
 		public bool HasKey()
-		{
-			return k != null;
-		}
+        {
+            unsafe
+            {
+                return k != default;
+            }
+        }
 
 		/// <summary>
 		/// Sets n = nonce. This function is used for handling out-of-order transport messages.
@@ -55,19 +64,23 @@ namespace Noise
 		/// </summary>
 		public int EncryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			if (n == MaxNonce)
-			{
-				throw new OverflowException("Nonce has reached its maximum value.");
-			}
+            if (n == MaxNonce)
+            {
+                throw new OverflowException("Nonce has reached its maximum value.");
+            }
 
-			if (k == null)
-			{
-				plaintext.CopyTo(ciphertext);
-				return plaintext.Length;
-			}
-
-			return cipher.Encrypt(k, n++, ad, plaintext, ciphertext);
-		}
+            unsafe
+            {
+                if (k == default)
+                {
+                    plaintext.CopyTo(ciphertext);
+                    return plaintext.Length;
+                }
+				
+				var kx = new Span<byte>(k, Aead.KeySize);
+                return cipher.Encrypt(kx, n++, ad, plaintext, ciphertext);
+            }
+        }
 
 		/// <summary>
 		/// If k is non-empty returns DECRYPT(k, n++, ad, ciphertext).
@@ -77,43 +90,64 @@ namespace Noise
 		/// </summary>
 		public int DecryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
-			if (n == MaxNonce)
-			{
-				throw new OverflowException("Nonce has reached its maximum value.");
-			}
+            if (n == MaxNonce)
+            {
+                throw new OverflowException("Nonce has reached its maximum value.");
+            }
 
-			if (k == null)
-			{
-				ciphertext.CopyTo(plaintext);
-				return ciphertext.Length;
-			}
+			unsafe
+            {
+                if (k == default)
+                {
+                    ciphertext.CopyTo(plaintext);
+                    return ciphertext.Length;
+                }
 
-			int bytesRead = cipher.Decrypt(k, n, ad, ciphertext, plaintext);
-			++n;
+                var kx = new Span<byte>(k, Aead.KeySize);
+                int bytesRead = cipher.Decrypt(kx, n, ad, ciphertext, plaintext);
+                ++n;
 
-			return bytesRead;
-		}
+                return bytesRead;
+            }
+        }
 
 		/// <summary>
 		/// Sets k = REKEY(k).
 		/// </summary>
 		public void Rekey()
 		{
-			Debug.Assert(HasKey());
+            Debug.Assert(HasKey());
 
-			Span<byte> key = stackalloc byte[Aead.KeySize + Aead.TagSize];
-			cipher.Encrypt(k, MaxNonce, zeroLen, zeros, key);
+            unsafe
+            {
+                Span<byte> key = stackalloc byte[Aead.KeySize + Aead.TagSize];
+                var kx = new Span<byte>(k, Aead.KeySize);
+                cipher.Encrypt(kx, MaxNonce, zeroLen, zeros, key);
 
-			k = k ?? new byte[Aead.KeySize];
-			key.Slice(Aead.KeySize).CopyTo(k);
-		}
+                EnsureInitialized();
+                var s = key.Slice(Aead.KeySize);
+                for (var i = 0; i < s.Length; i++)
+                    k[i] = s[i];
+            }
+        }
+
+        private unsafe void EnsureInitialized()
+        {
+            if (k == default)
+            {
+                k = (byte*) Libsodium.sodium_malloc(Aead.KeySize);
+            }
+        }
 
 		public void Dispose()
 		{
 			if (!disposed)
 			{
-				Utilities.ZeroMemory(k);
-				disposed = true;
+                unsafe
+                {
+                    Libsodium.sodium_free(k);
+                }
+                disposed = true;
 			}
 		}
 	}
