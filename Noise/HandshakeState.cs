@@ -134,17 +134,20 @@ namespace Noise
 		private readonly Queue<byte[]> psks = new Queue<byte[]>();
 		private bool disposed;
 
-		public HandshakeState(
+		public unsafe HandshakeState(
 			Protocol protocol,
 			bool initiator,
 			ReadOnlySpan<byte> prologue,
-			ReadOnlySpan<byte> s,
+			byte* s,
+			int sLen,
 			ReadOnlySpan<byte> rs,
 			IEnumerable<byte[]> psks)
 		{
 			Debug.Assert(psks != null);
 
-			if (!s.IsEmpty && s.Length != dh.DhLen)
+            var sx = new ReadOnlySpan<byte>(s, sLen);
+
+			if (!sx.IsEmpty && sx.Length != dh.DhLen)
 			{
 				throw new ArgumentException("Invalid local static private key.", nameof(s));
 			}
@@ -154,12 +157,12 @@ namespace Noise
 				throw new ArgumentException("Invalid remote static public key.", nameof(rs));
 			}
 
-			if (s.IsEmpty && protocol.HandshakePattern.LocalStaticRequired(initiator))
+			if (sx.IsEmpty && protocol.HandshakePattern.LocalStaticRequired(initiator))
 			{
 				throw new ArgumentException("Local static private key required, but not provided.", nameof(s));
 			}
 
-			if (!s.IsEmpty && !protocol.HandshakePattern.LocalStaticRequired(initiator))
+			if (!sx.IsEmpty && !protocol.HandshakePattern.LocalStaticRequired(initiator))
 			{
 				throw new ArgumentException("Local static private key provided, but not required.", nameof(s));
 			}
@@ -187,15 +190,8 @@ namespace Noise
 			this.initiator = Role.Alice;
 			this.turnToWrite = initiator;
 
-            unsafe
-            {
-                fixed (byte* xs = s)
-                {
-                    this.s = s.IsEmpty ? null : dh.GenerateKeyPair(xs);
-                }
-            }
-			
-			this.rs = rs.IsEmpty ? null : rs.ToArray();
+            this.s = sx.IsEmpty ? null : dh.GenerateKeyPair(s);
+            this.rs = rs.IsEmpty ? null : rs.ToArray();
 
 			ProcessPreMessages(protocol.HandshakePattern);
 			ProcessPreSharedKeys(protocol, psks);

@@ -45,10 +45,19 @@ namespace Noise.Tests
 
 				var protocol = Protocol.Parse(protocolName.AsSpan());
 
-				var init = protocol.Create(true, initPrologue, initStatic, initRemoteStatic, initPsks);
-				var resp = protocol.Create(false, respPrologue, respStatic, respRemoteStatic, respPsks);
+                HandshakeState init;
+                HandshakeState resp;
+                unsafe
+                {
+                    fixed (byte* iss = initStatic)
+                    fixed (byte* rss = respStatic)
+                    {
+                        init = protocol.Create(true, initPrologue, iss, initStatic.Length, initRemoteStatic, initPsks);
+                        resp = protocol.Create(false, respPrologue, rss, respStatic.Length, respRemoteStatic, respPsks);    
+                    }
+                }
 
-				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
 
 				setDh.Invoke(init, new object[] { new FixedKeyDh(initEphemeral) });
@@ -142,9 +151,18 @@ namespace Noise.Tests
 				var fallbackProtocol = Protocol.Parse(protocolName.AsSpan());
 				var initialProtocol = new Protocol(HandshakePattern.IK, fallbackProtocol.Cipher, fallbackProtocol.Hash);
 
-				var init = initialProtocol.Create(true, initPrologue, initStatic, initRemoteStatic);
-				var resp = initialProtocol.Create(false, respPrologue, respStatic, respRemoteStatic);
-
+                HandshakeState init;
+                HandshakeState resp;
+                unsafe
+                {
+                    fixed (byte* iss = initStatic)
+                    fixed (byte* rss = respStatic)
+                    {
+                        init = initialProtocol.Create(true, initPrologue, iss, initStatic.Length, initRemoteStatic);
+                        resp = initialProtocol.Create(false, respPrologue, rss, respStatic.Length, respRemoteStatic);    
+                    }
+                }
+				
 				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 				var setDh = init.GetType().GetMethod("SetDh", flags);
 
@@ -236,7 +254,7 @@ namespace Noise.Tests
 		{
 			return Hex.Decode(GetString(token, property));
 		}
-
+		
 		private static List<byte[]> GetPsks(JToken token, string property)
 		{
 			return token[property]?.Select(psk => Hex.Decode((string)psk)).ToList();

@@ -108,34 +108,36 @@ namespace Noise
 
 		internal byte[] Name { get; }
 
-		/// <summary>
-		/// Creates an initial <see cref="HandshakeState"/>.
-		/// </summary>
-		/// <param name="initiator">A boolean indicating the initiator or responder role.</param>
-		/// <param name="prologue">
-		/// A byte sequence which may be zero-length, or which may contain
-		/// context information that both parties want to confirm is identical.
-		/// </param>
-		/// <param name="s">The local static private key (optional).</param>
-		/// <param name="rs">The remote party's static public key (optional).</param>
-		/// <param name="psks">The collection of zero or more 32-byte pre-shared secret keys.</param>
-		/// <returns>The initial handshake state.</returns>
-		/// <exception cref="ArgumentException">
-		/// Thrown if any of the following conditions is satisfied:
-		/// <para>- <paramref name="s"/> is not a valid DH private key.</para>
-		/// <para>- <paramref name="rs"/> is not a valid DH public key.</para>
-		/// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
-		/// to be initialized with local and/or remote static key,
-		/// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
-		/// <para>- One or more pre-shared keys are not 32 bytes in length.</para>
-		/// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
-		/// <para>- Fallback modifier is present (fallback can only be applied by calling
-		/// the <see cref="HandshakeState.Fallback"/> method on existing handshake state).</para>
-		/// </exception>
-		public HandshakeState Create(
+        /// <summary>
+        /// Creates an initial <see cref="HandshakeState"/>.
+        /// </summary>
+        /// <param name="initiator">A boolean indicating the initiator or responder role.</param>
+        /// <param name="prologue">
+        /// A byte sequence which may be zero-length, or which may contain
+        /// context information that both parties want to confirm is identical.
+        /// </param>
+        /// <param name="s">The local static private key (optional).</param>
+        /// <param name="sLen">The local static private key length (optional).</param>
+        /// <param name="rs">The remote party's static public key (optional).</param>
+        /// <param name="psks">The collection of zero or more 32-byte pre-shared secret keys.</param>
+        /// <returns>The initial handshake state.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown if any of the following conditions is satisfied:
+        /// <para>- <paramref name="s"/> is not a valid DH private key.</para>
+        /// <para>- <paramref name="rs"/> is not a valid DH public key.</para>
+        /// <para>- <see cref="HandshakePattern"/> requires the <see cref="HandshakeState"/>
+        /// to be initialized with local and/or remote static key,
+        /// but <paramref name="s"/> and/or <paramref name="rs"/> is null.</para>
+        /// <para>- One or more pre-shared keys are not 32 bytes in length.</para>
+        /// <para>- Number of pre-shared keys does not match the number of PSK modifiers.</para>
+        /// <para>- Fallback modifier is present (fallback can only be applied by calling
+        /// the <see cref="HandshakeState.Fallback"/> method on existing handshake state).</para>
+        /// </exception>
+        public unsafe HandshakeState Create(
 			bool initiator,
 			ReadOnlySpan<byte> prologue = default,
-			byte[] s = default,
+			byte* s = default,
+			int sLen = default,
 			byte[] rs = default,
 			IEnumerable<byte[]> psks = default)
 		{
@@ -146,35 +148,35 @@ namespace Noise
 
 			if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Sha256)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha256>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Sha512)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<Aes256Gcm, Curve25519, Sha512>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Blake2s)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Blake2s>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2s>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Blake2b)
 			{
-				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<Aes256Gcm, Curve25519, Blake2b>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Sha256)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha256>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Sha512)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Sha512>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Blake2s)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2s>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2s>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else if (Cipher == CipherFunction.ChaChaPoly && Hash == HashFunction.Blake2b)
 			{
-				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(this, initiator, prologue, s, rs, psks);
+				return new HandshakeState<ChaCha20Poly1305, Curve25519, Blake2b>(this, initiator, prologue, s, sLen, rs, psks);
 			}
 			else
 			{
@@ -208,8 +210,14 @@ namespace Noise
 		{
 			Exceptions.ThrowIfNull(config, nameof(config));
 
-			return Create(config.Initiator, config.Prologue, config.LocalStatic, config.RemoteStatic, config.PreSharedKeys);
-		}
+            unsafe
+            {
+                fixed (byte* xls = config.LocalStatic)
+                {
+                    return Create(config.Initiator, config.Prologue, xls, config.LocalStatic.Length, config.RemoteStatic, config.PreSharedKeys);
+                }    
+            }
+        }
 
 		/// <summary>
 		/// Converts the Noise protocol name to its <see cref="Protocol"/> equivalent.
