@@ -96,16 +96,19 @@ namespace Noise
 		/// If HashLen is 64, then truncates tempK to 32 bytes.
 		/// Calls InitializeKey(tempK).
 		/// </summary>
-		public void MixKeyAndHash(ReadOnlySpan<byte> inputKeyMaterial)
+		public void MixKeyAndHash(PskRef inputKeyMaterial)
 		{
             unsafe
             {
-                int length = inputKeyMaterial.Length;
+                int length = inputKeyMaterial.len;
                 Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
                 Span<byte> output = stackalloc byte[3 * hash.HashLen];
-                var ckx = new Span<byte>(ck, hash.HashLen);
-                hkdf.ExtractAndExpand3(ckx, inputKeyMaterial, output);
+                
+				var ckx = new Span<byte>(ck, hash.HashLen);
+
+                var ikx = new Span<byte>(inputKeyMaterial.ptr, length);
+                hkdf.ExtractAndExpand3(ckx, ikx, output);
 
                 var slice = output.Slice(0, hash.HashLen);
                 for (var i = 0; i < hash.HashLen; i++)

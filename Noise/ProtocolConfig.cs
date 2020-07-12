@@ -24,7 +24,7 @@ namespace Noise
 			byte[] prologue = default,
 			byte[] s = default,
 			byte[] rs = default,
-			IEnumerable<byte[]> psks = default)
+			IEnumerable<PskRef> psks = default)
 		{
 			Initiator = initiator;
 			Prologue = prologue;
@@ -58,6 +58,6 @@ namespace Noise
 		/// <summary>
 		/// Gets or sets the collection of zero or more 32-byte pre-shared secret keys.
 		/// </summary>
-		public IEnumerable<byte[]> PreSharedKeys { get; set; }
+		public IEnumerable<PskRef> PreSharedKeys { get; set; }
 	}
 }

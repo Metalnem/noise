@@ -113,7 +113,7 @@ namespace Noise
 		);
 	}
 
-	internal sealed class HandshakeState<CipherType, DhType, HashType> : HandshakeState
+    internal sealed class HandshakeState<CipherType, DhType, HashType> : HandshakeState
 		where CipherType : Cipher, new()
 		where DhType : Dh, new()
 		where HashType : Hash, new()
@@ -131,7 +131,7 @@ namespace Noise
 		private bool isPsk;
 		private bool isOneWay;
 		private readonly Queue<MessagePattern> messagePatterns = new Queue<MessagePattern>();
-		private readonly Queue<byte[]> psks = new Queue<byte[]>();
+		private readonly Queue<PskRef> psks = new Queue<PskRef>();
 		private bool disposed;
 
 		public unsafe HandshakeState(
@@ -141,7 +141,7 @@ namespace Noise
 			byte* s,
 			int sLen,
 			ReadOnlySpan<byte> rs,
-			IEnumerable<byte[]> psks)
+			IEnumerable<PskRef> psks)
 		{
 			Debug.Assert(psks != null);
 
@@ -221,7 +221,7 @@ namespace Noise
 			}
 		}
 
-		private void ProcessPreSharedKeys(Protocol protocol, IEnumerable<byte[]> psks)
+		private void ProcessPreSharedKeys(Protocol protocol, IEnumerable<PskRef> psks)
 		{
 			var patterns = protocol.HandshakePattern.Patterns;
 			var modifiers = protocol.Modifiers;
@@ -256,7 +256,7 @@ namespace Noise
 			}
 		}
 
-		private void ProcessPreSharedKey(IEnumerator<byte[]> enumerator)
+		private void ProcessPreSharedKey(IEnumerator<PskRef> enumerator)
 		{
 			if (!enumerator.MoveNext())
 			{
@@ -265,12 +265,12 @@ namespace Noise
 
 			var psk = enumerator.Current;
 
-			if (psk.Length != Aead.KeySize)
+			if (psk.len != Aead.KeySize)
 			{
 				throw new ArgumentException($"Pre-shared keys must be {Aead.KeySize} bytes in length.");
 			}
 
-			psks.Enqueue(psk.AsSpan().ToArray());
+			psks.Enqueue(psk);
 		}
 
 		/// <summary>
@@ -334,11 +334,11 @@ namespace Noise
 			isPsk = false;
 			isOneWay = false;
 
-			while (psks.Count > 0)
-			{
-				var psk = psks.Dequeue();
-				Utilities.ZeroMemory(psk);
-			}
+            while (psks.Count > 0)
+            {
+                var psk = psks.Dequeue();
+				psk.Dispose();
+            }
 
 			state.Dispose();
 			state = new SymmetricState<CipherType, DhType, HashType>(protocol.Name);
@@ -568,8 +568,8 @@ namespace Noise
 		{
 			var psk = psks.Dequeue();
 			state.MixKeyAndHash(psk);
-			Utilities.ZeroMemory(psk);
-		}
+            psk.Dispose();
+        }
 
 		private (byte[], Transport) Split()
 		{
@@ -607,11 +607,12 @@ namespace Noise
 			e?.Dispose();
 			s?.Dispose();
 
-			foreach (var psk in psks)
-			{
-				Utilities.ZeroMemory(psk);
-			}
-		}
+            while (psks.Count > 0)
+            {
+                var psk = psks.Dequeue();
+                psk.Dispose();
+            }
+        }
 
 		private void ThrowIfDisposed()
 		{

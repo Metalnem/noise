@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -36,21 +35,16 @@ namespace Noise.Examples
 			{
                 unsafe
                 {
-                    var psk = new byte[32];
-
-                    // Generate a random 32-byte pre-shared secret key.
-                    using (var random = RandomNumberGenerator.Create())
-                    {
-                        random.GetBytes(psk);
-                    }
+                    var psk1 =  PskRef.Create();
+                    var psk2 =  PskRef.Create(psk1.ptr);
 
                     // Initialize and run the client.
-                    var clientState = protocol.Create(true, s: clientStatic.PrivateKey, sLen: KeyPair.DhLen, rs: serverStatic.PublicKey, psks: Singleton(psk));
+                    var clientState = protocol.Create(true, s: clientStatic.PrivateKey, sLen: KeyPair.DhLen, rs: serverStatic.PublicKey, psks: Singleton(psk1));
                     var client = Task.Run((Func<Task?>) (() => Client(clientState)));
 
                     // Initialize and run the server.
 					
-                    var serverState = protocol.Create(false, s: serverStatic.PrivateKey, sLen: KeyPair.DhLen, psks: Singleton(psk));
+                    var serverState = protocol.Create(false, s: serverStatic.PrivateKey, sLen: KeyPair.DhLen, psks: Singleton(psk2));
                     _ = Task.Run((Func<Task?>) (() => Server(serverState)));
 
                     client.GetAwaiter().GetResult();

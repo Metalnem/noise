@@ -45,7 +45,7 @@ namespace Noise.Tests
 
 				var protocol = Protocol.Parse(protocolName.AsSpan());
 
-                HandshakeState init;
+				HandshakeState init;
                 HandshakeState resp;
                 unsafe
                 {
@@ -255,10 +255,19 @@ namespace Noise.Tests
 			return Hex.Decode(GetString(token, property));
 		}
 		
-		private static List<byte[]> GetPsks(JToken token, string property)
+		private static List<PskRef> GetPsks(JToken token, string property)
 		{
-			return token[property]?.Select(psk => Hex.Decode((string)psk)).ToList();
-		}
+			var tokens = token[property]?.Select(psk => Hex.Decode((string)psk)).ToList();
+			if(tokens == default)
+				return new List<PskRef>(0);
+
+            var list = new List<PskRef>(tokens.Count);
+            foreach (var buffer in tokens)
+            {
+				list.Add(PskRef.Create(buffer));
+            }
+            return list;
+        }
 
 		private static void Swap<T>(ref T x, ref T y)
 		{

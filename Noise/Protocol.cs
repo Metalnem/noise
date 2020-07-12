@@ -139,11 +139,11 @@ namespace Noise
 			byte* s = default,
 			int sLen = default,
 			byte[] rs = default,
-			IEnumerable<byte[]> psks = default)
+			IEnumerable<PskRef> psks = default)
 		{
 			if (psks == null)
 			{
-				psks = Enumerable.Empty<byte[]>();
+				psks = Enumerable.Empty<PskRef>();
 			}
 
 			if (Cipher == CipherFunction.AesGcm && Hash == HashFunction.Sha256)
