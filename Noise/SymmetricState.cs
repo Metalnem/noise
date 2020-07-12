@@ -17,52 +17,68 @@ namespace Noise
 		private readonly Hash hash = new HashType();
 		private readonly Hkdf<HashType> hkdf = new Hkdf<HashType>();
 		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
-		private readonly byte[] ck;
+		private readonly unsafe byte* ck;
 		private readonly byte[] h;
 		private bool disposed;
 
-		/// <summary>
-		/// Initializes a new SymmetricState with an
-		/// arbitrary-length protocolName byte sequence.
-		/// </summary>
-		public SymmetricState(ReadOnlySpan<byte> protocolName)
-		{
-			int length = hash.HashLen;
+        /// <summary>
+        /// Initializes a new SymmetricState with an
+        /// arbitrary-length protocolName byte sequence.
+        /// </summary>
+        public SymmetricState(ReadOnlySpan<byte> protocolName)
+        {
 
-			ck = new byte[length];
-			h = new byte[length];
+            int length = hash.HashLen;
 
-			if (protocolName.Length <= length)
-			{
-				protocolName.CopyTo(h);
-			}
-			else
-			{
-				hash.AppendData(protocolName);
-				hash.GetHashAndReset(h);
-			}
+            unsafe
+            {
+                ck = (byte*) Libsodium.sodium_malloc((ulong) length);
+            }
 
-			Array.Copy(h, ck, length);
-		}
+            h = new byte[length];
 
-		/// <summary>
+            if (protocolName.Length <= length)
+            {
+                protocolName.CopyTo(h);
+            }
+            else
+            {
+                hash.AppendData(protocolName);
+                hash.GetHashAndReset(h);
+            }
+
+            unsafe
+            {
+                for (var i = 0; i < length; i++)
+                    ck[i] = h[i];    
+            }
+        }
+
+        /// <summary>
 		/// Sets ck, tempK = HKDF(ck, inputKeyMaterial, 2).
 		/// If HashLen is 64, then truncates tempK to 32 bytes.
 		/// Calls InitializeKey(tempK).
 		/// </summary>
 		public void MixKey(ReadOnlySpan<byte> inputKeyMaterial)
 		{
-			int length = inputKeyMaterial.Length;
-			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
+            unsafe
+            {
+                int length = inputKeyMaterial.Length;
+                Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
-			Span<byte> output = stackalloc byte[2 * hash.HashLen];
-			hkdf.ExtractAndExpand2(ck, inputKeyMaterial, output);
+                Span<byte> output = stackalloc byte[2 * hash.HashLen];
 
-			output.Slice(0, hash.HashLen).CopyTo(ck);
+                var ckx = new Span<byte>(ck, hash.HashLen);
+                hkdf.ExtractAndExpand2(ckx, inputKeyMaterial, output);
 
-			var tempK = output.Slice(hash.HashLen, Aead.KeySize);
-			state.InitializeKey(tempK);
-		}
+                var slice = output.Slice(0, hash.HashLen);
+                for (var i = 0; i < hash.HashLen; i++)
+                    ck[i] = slice[i];
+
+                var tempK = output.Slice(hash.HashLen, Aead.KeySize);
+                state.InitializeKey(tempK);
+            }
+        }
 
 		/// <summary>
 		/// Sets h = HASH(h || data).
@@ -82,20 +98,26 @@ namespace Noise
 		/// </summary>
 		public void MixKeyAndHash(ReadOnlySpan<byte> inputKeyMaterial)
 		{
-			int length = inputKeyMaterial.Length;
-			Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
+            unsafe
+            {
+                int length = inputKeyMaterial.Length;
+                Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
-			Span<byte> output = stackalloc byte[3 * hash.HashLen];
-			hkdf.ExtractAndExpand3(ck, inputKeyMaterial, output);
+                Span<byte> output = stackalloc byte[3 * hash.HashLen];
+                var ckx = new Span<byte>(ck, hash.HashLen);
+                hkdf.ExtractAndExpand3(ckx, inputKeyMaterial, output);
 
-			output.Slice(0, hash.HashLen).CopyTo(ck);
+                var slice = output.Slice(0, hash.HashLen);
+                for (var i = 0; i < hash.HashLen; i++)
+                    ck[i] = slice[i];
 
-			var tempH = output.Slice(hash.HashLen, hash.HashLen);
-			var tempK = output.Slice(2 * hash.HashLen, Aead.KeySize);
+                var tempH = output.Slice(hash.HashLen, hash.HashLen);
+                var tempK = output.Slice(2 * hash.HashLen, Aead.KeySize);
 
-			MixHash(tempH);
-			state.InitializeKey(tempK);
-		}
+                MixHash(tempH);
+                state.InitializeKey(tempK);
+            }
+        }
 
 		/// <summary>
 		/// Returns h. This function should only be called at the end of
@@ -135,20 +157,24 @@ namespace Noise
 		/// </summary>
 		public (CipherState<CipherType> c1, CipherState<CipherType> c2) Split()
 		{
-			Span<byte> output = stackalloc byte[2 * hash.HashLen];
-			hkdf.ExtractAndExpand2(ck, null, output);
+            unsafe
+            {
+                Span<byte> output = stackalloc byte[2 * hash.HashLen];
+                var ckx = new Span<byte>(ck, hash.HashLen);
+                hkdf.ExtractAndExpand2(ckx, null, output);
 
-			var tempK1 = output.Slice(0, Aead.KeySize);
-			var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);
+                var tempK1 = output.Slice(0, Aead.KeySize);
+                var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);
 
-			var c1 = new CipherState<CipherType>();
-			var c2 = new CipherState<CipherType>();
+                var c1 = new CipherState<CipherType>();
+                var c2 = new CipherState<CipherType>();
 
-			c1.InitializeKey(tempK1);
-			c2.InitializeKey(tempK2);
+                c1.InitializeKey(tempK1);
+                c2.InitializeKey(tempK2);
 
-			return (c1, c2);
-		}
+                return (c1, c2);
+            }
+        }
 
 		/// <summary>
 		/// Returns true if k is non-empty, false otherwise.
@@ -165,8 +191,11 @@ namespace Noise
 				hash.Dispose();
 				hkdf.Dispose();
 				state.Dispose();
-				Utilities.ZeroMemory(ck);
-				disposed = true;
+                unsafe
+                {
+					Libsodium.sodium_free(ck);
+                }
+                disposed = true;
 			}
 		}
 	}
