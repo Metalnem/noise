@@ -78,32 +78,38 @@ namespace Noise
 			ReadOnlySpan<byte> data1 = default,
 			ReadOnlySpan<byte> data2 = default)
 		{
-			Debug.Assert(key.Length == inner.HashLen);
-			Debug.Assert(hmac.Length == inner.HashLen);
+            unsafe
+            {
+                Debug.Assert(key.Length == inner.HashLen);
+                Debug.Assert(hmac.Length == inner.HashLen);
 
-			var blockLen = inner.BlockLen;
+                var blockLen = inner.BlockLen;
 
-			Span<byte> ipad = stackalloc byte[blockLen];
-			Span<byte> opad = stackalloc byte[blockLen];
+                var ipad = stackalloc byte[blockLen];
+                var opad = stackalloc byte[blockLen];
 
-			key.CopyTo(ipad);
-			key.CopyTo(opad);
+                for (var i = 0; i < key.Length; i++)
+                {
+                    ipad[i] = key[i];
+                    opad[i] = key[i];
+                }
 
-			for (int i = 0; i < blockLen; ++i)
-			{
-				ipad[i] ^= 0x36;
-				opad[i] ^= 0x5C;
-			}
+                for (var i = 0; i < blockLen; ++i)
+                {
+                    ipad[i] ^= 0x36;
+                    opad[i] ^= 0x5C;
+                }
 
-			inner.AppendData(ipad);
-			inner.AppendData(data1);
-			inner.AppendData(data2);
-			inner.GetHashAndReset(hmac);
+                inner.AppendData(ipad, blockLen);
+                inner.AppendData(data1);
+                inner.AppendData(data2);
+                inner.GetHashAndReset(hmac);
 
-			outer.AppendData(opad);
-			outer.AppendData(hmac);
-			outer.GetHashAndReset(hmac);
-		}
+                outer.AppendData(opad, blockLen);
+                outer.AppendData(hmac);
+                outer.GetHashAndReset(hmac);
+            }
+        }
 
 		public void Dispose()
 		{
