@@ -99,9 +99,7 @@ namespace Noise
                 Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
                 Span<byte> output = stackalloc byte[3 * hash.HashLen];
-                
-				var ikx = new Span<byte>(inputKeyMaterial.ptr, length);
-                hkdf.ExtractAndExpand3(ck, hash.HashLen, ikx, output);
+                hkdf.ExtractAndExpand3(ck, hash.HashLen, inputKeyMaterial.ptr, length, output);
 
                 var slice = output.Slice(0, hash.HashLen);
                 for (var i = 0; i < hash.HashLen; i++)

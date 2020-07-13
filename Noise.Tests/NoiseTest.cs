@@ -240,8 +240,8 @@ namespace Noise.Tests
 				init.Dispose();
 				resp.Dispose();
 
-				initTransport.Dispose();
-				respTransport.Dispose();
+				initTransport?.Dispose();
+				respTransport?.Dispose();
 			}
 		}
 
