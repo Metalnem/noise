@@ -33,9 +33,9 @@ namespace Noise.Tests
             return new KeyPair(privateKey, DhLen, publicKey);
         }
 
-		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
+		public unsafe void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, byte* sharedKey, int sharedKeyLen)
 		{
-			dh.Dh(keyPair, publicKey, sharedKey);
+			dh.Dh(keyPair, publicKey, sharedKey, sharedKeyLen);
 		}
 	}
 }

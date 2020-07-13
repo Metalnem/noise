@@ -56,21 +56,18 @@ namespace Noise
         }
 
         
-		public void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey)
+		public unsafe void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, byte* sharedKey, int sharedKeyLen)
 		{
             Debug.Assert(publicKey.Length == DhLen);
-            Debug.Assert(sharedKey.Length == DhLen);
+            Debug.Assert(sharedKeyLen == DhLen);
 
-            unsafe
-            {
-                Debug.Assert(keyPair.PrivateKey != null);
+            Debug.Assert(keyPair.PrivateKey != null);
 
-                Libsodium.crypto_scalarmult_curve25519(
-                    ref MemoryMarshal.GetReference(sharedKey),
-                    keyPair.PrivateKey,
-                    ref MemoryMarshal.GetReference(publicKey)
-                );
-            }
+            Libsodium.crypto_scalarmult_curve25519(
+                sharedKey,
+                keyPair.PrivateKey,
+                ref MemoryMarshal.GetReference(publicKey)
+            );
         }
 	}
 }

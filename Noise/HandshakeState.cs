@@ -596,10 +596,13 @@ namespace Noise
 			Debug.Assert(keyPair != null);
 			Debug.Assert(!publicKey.IsEmpty);
 
-			Span<byte> sharedKey = stackalloc byte[dh.DhLen];
-			dh.Dh(keyPair, publicKey, sharedKey);
-			state.MixKey(sharedKey);
-		}
+            unsafe
+            {
+                byte* sharedKey = stackalloc byte[dh.DhLen];
+                dh.Dh(keyPair, publicKey, sharedKey, dh.DhLen);
+                state.MixKey(new ReadOnlySpan<byte>(sharedKey, dh.DhLen));
+            }
+        }
 
 		private void Clear()
 		{

@@ -28,6 +28,6 @@ namespace Noise
 		/// key in keyPair and the publicKey and writes an output
 		/// sequence of bytes of length DhLen into sharedKey parameter.
 		/// </summary>
-		void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, Span<byte> sharedKey);
+        unsafe void Dh(KeyPair keyPair, ReadOnlySpan<byte> publicKey, byte* sharedKey, int sharedKeyLen);
 	}
 }
