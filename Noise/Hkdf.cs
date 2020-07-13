@@ -51,52 +51,7 @@ namespace Noise
                 HmacHash(tempKey, hashLen, o2, hashLen, output1, two);    
             }
         }
-
-		/// <summary>
-		/// Takes a chainingKey byte sequence of length HashLen,
-		/// and an inputKeyMaterial byte sequence with length
-		/// either zero bytes, 32 bytes, or DhLen bytes. Writes a
-		/// byte sequences of length 3 * HashLen into output parameter.
-		/// </summary>
-		public void ExtractAndExpand3(
-			ReadOnlySpan<byte> chainingKey,
-			ReadOnlySpan<byte> inputKeyMaterial,
-			Span<byte> output)
-		{
-			var hashLen = inner.HashLen;
-
-			Debug.Assert(chainingKey.Length == hashLen);
-			Debug.Assert(output.Length == 3 * hashLen);
-
-            unsafe
-            {
-                var tempKey = stackalloc byte[hashLen];
-
-                fixed (byte* ck = chainingKey)
-                {
-                    HmacHash(ck, chainingKey.Length, tempKey, hashLen, inputKeyMaterial);
-
-                    var output1 = output.Slice(0, hashLen);
-                    fixed (byte* o1 = &output1.GetPinnableReference())
-                    {
-                        HmacHash(tempKey, hashLen, o1, hashLen, one);
-                    }
-
-                    var output2 = output.Slice(hashLen, hashLen);
-                    fixed (byte* o2 = &output2.GetPinnableReference())
-                    {
-                        HmacHash(tempKey, hashLen, o2, hashLen, output1, two);
-                    }
-                   
-                    var output3 = output.Slice(2 * hashLen, hashLen);
-                    fixed (byte* o3 = &output3.GetPinnableReference())
-                    {
-                        HmacHash(tempKey, hashLen, o3, hashLen, output2, three); 
-                    }
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Takes a chainingKey byte sequence of length HashLen,
         /// and an inputKeyMaterial byte sequence with length
