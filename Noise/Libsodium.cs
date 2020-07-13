@@ -106,11 +106,24 @@ namespace Noise
 			ulong inlen
 		);
 
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_hash_sha256_update(
+            IntPtr state,
+            byte* @in,
+            ulong inlen
+        );
+
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha256_final(
 			IntPtr state,
 			ref byte @out
 		);
+
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_hash_sha256_final(
+            IntPtr state,
+            byte* @out
+        );
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha512_init(
@@ -124,11 +137,24 @@ namespace Noise
 			ulong inlen
 		);
 
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_hash_sha512_update(
+            IntPtr state,
+            byte* @in,
+            ulong inlen
+        );
+
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_hash_sha512_final(
 			IntPtr state,
 			ref byte @out
 		);
+
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_hash_sha512_final(
+            IntPtr state,
+            byte* @out
+        );
 
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_generichash_blake2b_init(
@@ -145,12 +171,26 @@ namespace Noise
 			ulong inlen
 		);
 
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_generichash_blake2b_update(
+            IntPtr state,
+            byte* @in,
+            ulong inlen
+        );
+
 		[DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
 		public static extern int crypto_generichash_blake2b_final(
 			IntPtr state,
 			ref byte @out,
 			UIntPtr outlen
 		);
+
+        [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int crypto_generichash_blake2b_final(
+            IntPtr state,
+            byte* @out,
+            UIntPtr outlen
+        );
 
         [DllImport(Name, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void* sodium_malloc(

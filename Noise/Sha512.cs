@@ -35,7 +35,19 @@ namespace Noise
 			}
 		}
 
-		public void GetHashAndReset(Span<byte> hash)
+        public unsafe void AppendData(byte* data, int dataLen)
+        {
+            if (dataLen > 0)
+            {
+                Libsodium.crypto_hash_sha512_update(
+                    state,
+                    data,
+                    (ulong)dataLen
+                );
+            }
+        }
+
+        public void GetHashAndReset(Span<byte> hash)
 		{
 			Debug.Assert(hash.Length == HashLen);
 
@@ -47,7 +59,19 @@ namespace Noise
 			Reset();
 		}
 
-		private void Reset()
+        public unsafe void GetHashAndReset(byte* hash, int hashLen)
+        {
+            Debug.Assert(hashLen == HashLen);
+
+            Libsodium.crypto_hash_sha512_final(
+                state,
+                hash
+            );
+
+            Reset();
+        }
+
+        private void Reset()
 		{
 			Libsodium.crypto_hash_sha512_init(state);
 		}

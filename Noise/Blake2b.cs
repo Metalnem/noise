@@ -44,7 +44,19 @@ namespace Noise
 			}
 		}
 
-		public void GetHashAndReset(Span<byte> hash)
+        public unsafe void AppendData(byte* data, int dataLen)
+        {
+            if (dataLen > 0)
+            {
+                Libsodium.crypto_generichash_blake2b_update(
+                    aligned,
+                    data,
+                    (ulong)dataLen
+                );
+            }
+        }
+
+        public void GetHashAndReset(Span<byte> hash)
 		{
 			Debug.Assert(hash.Length == HashLen);
 
@@ -57,7 +69,20 @@ namespace Noise
 			Reset();
 		}
 
-		private void Reset()
+        public unsafe void GetHashAndReset(byte* hash, int hashLen)
+        {
+            Debug.Assert(hashLen == HashLen);
+
+            Libsodium.crypto_generichash_blake2b_final(
+                aligned,
+                hash,
+                (UIntPtr)hashLen
+            );
+
+            Reset();
+        }
+
+        private void Reset()
 		{
 			Libsodium.crypto_generichash_blake2b_init(aligned, null, UIntPtr.Zero, (UIntPtr)HashLen);
 		}

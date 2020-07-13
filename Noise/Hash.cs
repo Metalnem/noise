@@ -24,9 +24,20 @@ namespace Noise
 		void AppendData(ReadOnlySpan<byte> data);
 
 		/// <summary>
+		/// Appends the specified data to the data already processed in the hash.
+		/// </summary>
+        unsafe void AppendData(byte* data, int dataLen);
+
+        /// <summary>
 		/// Retrieves the hash for the accumulated data into the hash parameter,
 		/// and resets the object to its initial state.
 		/// </summary>
 		void GetHashAndReset(Span<byte> hash);
+
+        /// <summary>
+        /// Retrieves the hash for the accumulated data into the hash parameter,
+        /// and resets the object to its initial state.
+        /// </summary>
+        unsafe void GetHashAndReset(byte* hash, int hashLen);
 	}
 }

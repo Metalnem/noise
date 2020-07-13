@@ -52,58 +52,84 @@ namespace Noise
 
 		public void AppendData(ReadOnlySpan<byte> data)
 		{
-			if (data.IsEmpty)
-			{
-				return;
-			}
-
-			var buffer = this.buffer.AsSpan();
-			var left = BlockSize - position;
-
-			if (position > 0 && data.Length > left)
-			{
-				data.Slice(0, left).CopyTo(buffer.Slice(position));
-
-				t0 += BlockSize;
-				t1 += t0 == 0 ? 1u : 0;
-
-				Compress(buffer);
-				data = data.Slice(left);
-
-				position = 0;
-			}
-
-			while (data.Length > BlockSize)
-			{
-				t0 += BlockSize;
-				t1 += t0 == 0 ? 1u : 0;
-
-				Compress(data.Slice(0, BlockSize));
-				data = data.Slice(BlockSize);
-			}
-
-			if (data.Length > 0)
-			{
-				data.CopyTo(buffer.Slice(position));
-				position += data.Length;
-			}
+            unsafe
+            {
+                fixed (byte* d = data)
+                {
+                    AppendData(d, data.Length);
+                }
+            }
 		}
 
-		public void GetHashAndReset(Span<byte> hash)
+        public unsafe void AppendData(byte* data, int dataLen)
+        {
+			var span = new ReadOnlySpan<byte>(data, dataLen);
+            if (span.IsEmpty)
+            {
+                return;
+            }
+
+            var buffer = this.buffer.AsSpan();
+            var left = BlockSize - position;
+
+            if (position > 0 && span.Length > left)
+            {
+                span.Slice(0, left).CopyTo(buffer.Slice(position));
+
+                t0 += BlockSize;
+                t1 += t0 == 0 ? 1u : 0;
+
+                Compress(buffer);
+                span = span.Slice(left);
+
+                position = 0;
+            }
+
+            while (span.Length > BlockSize)
+            {
+                t0 += BlockSize;
+                t1 += t0 == 0 ? 1u : 0;
+
+                Compress(span.Slice(0, BlockSize));
+                span = span.Slice(BlockSize);
+            }
+
+            if (span.Length > 0)
+            {
+                span.CopyTo(buffer.Slice(position));
+                position += span.Length;
+            }
+        }
+
+        public void GetHashAndReset(Span<byte> hash)
 		{
-			Debug.Assert(hash.Length == HashLen);
+            unsafe
+            {
+                fixed (byte* d = hash)
+                {
+                    GetHashAndReset(d, hash.Length);
+                }
+            }
+        }
 
-			t0 += (uint)position;
-			f = UInt32.MaxValue;
+        public unsafe void GetHashAndReset(byte* hash, int hashLen)
+        {
+			Debug.Assert(hashLen == HashLen);
 
-			buffer.AsSpan(position).Fill(0);
-			Compress(buffer);
+            t0 += (uint)position;
+            f = UInt32.MaxValue;
 
-			MemoryMarshal.AsBytes(h.AsSpan()).CopyTo(hash);
-			Reset();
-		}
+            buffer.AsSpan(position).Fill(0);
+            Compress(buffer);
 
-		private void Reset()
+            var hb = MemoryMarshal.AsBytes(h.AsSpan());
+			for(var i = 0; i < hb.Length; i++)
+				hash[i] = hb[i];
+
+            Reset();
+        }
+
+        private void Reset()
 		{
 			h[0] = IV0 ^ Config;
 			h[1] = IV1;
