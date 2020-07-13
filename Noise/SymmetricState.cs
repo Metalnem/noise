@@ -156,7 +156,7 @@ namespace Noise
             unsafe
             {
                 Span<byte> output = stackalloc byte[2 * hash.HashLen];
-                hkdf.ExtractAndExpand2(ck, hash.HashLen, null, output);
+                hkdf.ExtractAndExpand2(ck, hash.HashLen, default, 0, output);
 
                 var tempK1 = output.Slice(0, Aead.KeySize);
                 var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);

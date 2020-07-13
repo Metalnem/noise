@@ -17,40 +17,6 @@ namespace Noise
 		private readonly HashType outer = new HashType();
 		private bool disposed;
 
-		/// <summary>
-        /// Takes a chainingKey byte sequence of length HashLen,
-        /// and an inputKeyMaterial byte sequence with length
-        /// either zero bytes, 32 bytes, or DhLen bytes. Writes a
-        /// byte sequences of length 2 * HashLen into output parameter.
-        /// </summary>
-        public unsafe void ExtractAndExpand2(
-            byte* chainingKey,
-            int chainingKeyLen,
-            ReadOnlySpan<byte> inputKeyMaterial,
-            Span<byte> output)
-        {
-            var hashLen = inner.HashLen;
-
-            Debug.Assert(chainingKeyLen == hashLen);
-            Debug.Assert(output.Length == 2 * hashLen);
-
-            var tempKey = stackalloc byte[hashLen];
-
-            HmacHash(chainingKey, chainingKeyLen, tempKey, hashLen, inputKeyMaterial);
-
-            var output1 = output.Slice(0, hashLen);
-            fixed (byte* o1 = &output1.GetPinnableReference())
-            {
-                HmacHash(tempKey, hashLen, o1, hashLen, one);
-            }
-                    
-            var output2 = output.Slice(hashLen, hashLen);
-            fixed(byte* o2 = &output2.GetPinnableReference())
-            {
-                HmacHash(tempKey, hashLen, o2, hashLen, output1, two);    
-            }
-        }
-
         /// <summary>
         /// Takes a chainingKey byte sequence of length HashLen,
         /// and an inputKeyMaterial byte sequence with length
