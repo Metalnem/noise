@@ -50,6 +50,41 @@ namespace Noise
                 HmacHash(tempKey, hashLen, o2, hashLen, output1, two);    
             }
         }
+
+        /// <summary>
+        /// Takes a chainingKey byte sequence of length HashLen,
+        /// and an inputKeyMaterial byte sequence with length
+        /// either zero bytes, 32 bytes, or DhLen bytes. Writes a
+        /// byte sequences of length 2 * HashLen into output parameter.
+        /// </summary>
+        public unsafe void ExtractAndExpand2(
+            byte* chainingKey,
+            int chainingKeyLen,
+            byte* inputKeyMaterial,
+            int inputKeyMaterialLength,
+            Span<byte> output)
+        {
+            var hashLen = inner.HashLen;
+
+            Debug.Assert(chainingKeyLen == hashLen);
+            Debug.Assert(output.Length == 2 * hashLen);
+
+            var tempKey = stackalloc byte[hashLen];
+
+            HmacHash(chainingKey, chainingKeyLen, tempKey, hashLen, inputKeyMaterial, inputKeyMaterialLength);
+
+            var output1 = output.Slice(0, hashLen);
+            fixed (byte* o1 = &output1.GetPinnableReference())
+            {
+                HmacHash(tempKey, hashLen, o1, hashLen, one);
+            }
+                    
+            var output2 = output.Slice(hashLen, hashLen);
+            fixed(byte* o2 = &output2.GetPinnableReference())
+            {
+                HmacHash(tempKey, hashLen, o2, hashLen, output1, two);    
+            }
+        }
         
         /// <summary>
         /// Takes a chainingKey byte sequence of length HashLen,
@@ -121,6 +156,46 @@ namespace Noise
             inner.AppendData(ipad, blockLen);
             inner.AppendData(data1);
             inner.AppendData(data2);
+            inner.GetHashAndReset(hmac, hmacLen);
+
+            outer.AppendData(opad, blockLen);
+            outer.AppendData(hmac, hmacLen);
+            outer.GetHashAndReset(hmac, hmacLen);
+        }
+
+        private unsafe void HmacHash(
+            byte* key,
+            int keyLen,
+            byte* hmac,
+            int hmacLen,
+            byte* data1 = default,
+            int data1Len = default,
+            byte* data2 = default,
+            int data2Len = default)
+        {
+            Debug.Assert(keyLen == inner.HashLen);
+            Debug.Assert(hmacLen == inner.HashLen);
+
+            var blockLen = inner.BlockLen;
+
+            var ipad = stackalloc byte[blockLen];
+            var opad = stackalloc byte[blockLen];
+
+            for (var i = 0; i < keyLen; i++)
+            {
+                ipad[i] = key[i];
+                opad[i] = key[i];
+            }
+
+            for (var i = 0; i < blockLen; ++i)
+            {
+                ipad[i] ^= 0x36;
+                opad[i] ^= 0x5C;
+            }
+
+            inner.AppendData(ipad, blockLen);
+            inner.AppendData(data1, data1Len);
+            inner.AppendData(data2, data2Len);
             inner.GetHashAndReset(hmac, hmacLen);
 
             outer.AppendData(opad, blockLen);

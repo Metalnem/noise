@@ -434,8 +434,14 @@ namespace Noise
 
 			if (isPsk)
 			{
-				state.MixKey(e.PublicKey);
-			}
+                unsafe
+                {
+                    fixed (byte* ikm = e.PublicKey)
+                    {
+                        state.MixKey(ikm, e.PublicKey.Length);    
+                    }
+                }
+            }
 
 			return buffer.Slice(e.PublicKey.Length);
 		}
@@ -521,8 +527,14 @@ namespace Noise
 
 			if (isPsk)
 			{
-				state.MixKey(re);
-			}
+                unsafe
+                {
+                    fixed (byte* ikm = re)
+                    {
+                        state.MixKey(ikm, dh.DhLen);
+                    }
+                }
+            }
 
 			return buffer.Slice(re.Length);
 		}
@@ -598,9 +610,9 @@ namespace Noise
 
             unsafe
             {
-                byte* sharedKey = stackalloc byte[dh.DhLen];
+                var sharedKey = stackalloc byte[dh.DhLen];
                 dh.Dh(keyPair, publicKey, sharedKey, dh.DhLen);
-                state.MixKey(new ReadOnlySpan<byte>(sharedKey, dh.DhLen));
+                state.MixKey(sharedKey, dh.DhLen);
             }
         }
 
