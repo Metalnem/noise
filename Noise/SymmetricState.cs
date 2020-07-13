@@ -68,8 +68,7 @@ namespace Noise
 
                 Span<byte> output = stackalloc byte[2 * hash.HashLen];
 
-                var ckx = new Span<byte>(ck, hash.HashLen);
-                hkdf.ExtractAndExpand2(ckx, inputKeyMaterial, output);
+                hkdf.ExtractAndExpand2(ck, hash.HashLen, inputKeyMaterial, output);
 
                 var slice = output.Slice(0, hash.HashLen);
                 for (var i = 0; i < hash.HashLen; i++)
@@ -100,15 +99,13 @@ namespace Noise
 		{
             unsafe
             {
-                int length = inputKeyMaterial.len;
+                var length = inputKeyMaterial.len;
                 Debug.Assert(length == 0 || length == Aead.KeySize || length == dh.DhLen);
 
                 Span<byte> output = stackalloc byte[3 * hash.HashLen];
                 
-				var ckx = new Span<byte>(ck, hash.HashLen);
-
-                var ikx = new Span<byte>(inputKeyMaterial.ptr, length);
-                hkdf.ExtractAndExpand3(ckx, ikx, output);
+				var ikx = new Span<byte>(inputKeyMaterial.ptr, length);
+                hkdf.ExtractAndExpand3(ck, hash.HashLen, ikx, output);
 
                 var slice = output.Slice(0, hash.HashLen);
                 for (var i = 0; i < hash.HashLen; i++)
@@ -163,8 +160,7 @@ namespace Noise
             unsafe
             {
                 Span<byte> output = stackalloc byte[2 * hash.HashLen];
-                var ckx = new Span<byte>(ck, hash.HashLen);
-                hkdf.ExtractAndExpand2(ckx, null, output);
+                hkdf.ExtractAndExpand2(ck, hash.HashLen, null, output);
 
                 var tempK1 = output.Slice(0, Aead.KeySize);
                 var tempK2 = output.Slice(hash.HashLen, Aead.KeySize);
