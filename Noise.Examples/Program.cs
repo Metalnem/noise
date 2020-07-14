@@ -38,14 +38,13 @@ namespace Noise.Examples
                     var psk1 =  PskRef.Create();
                     var psk2 =  PskRef.Create(psk1.ptr);
 
+                    // Initialize and run the server.
+                    var serverState = protocol.Create(false, s: serverStatic.PrivateKey, sLen: KeyPair.DhLen, psks: Singleton(psk2));
+                    _ = Task.Run(() => Server(serverState));
+
                     // Initialize and run the client.
                     var clientState = protocol.Create(true, s: clientStatic.PrivateKey, sLen: KeyPair.DhLen, rs: serverStatic.PublicKey, psks: Singleton(psk1));
-                    var client = Task.Run((Func<Task?>) (() => Client(clientState)));
-
-                    // Initialize and run the server.
-					
-                    var serverState = protocol.Create(false, s: serverStatic.PrivateKey, sLen: KeyPair.DhLen, psks: Singleton(psk2));
-                    _ = Task.Run((Func<Task?>) (() => Server(serverState)));
+                    var client = Task.Run(() => Client(clientState));
 
                     client.GetAwaiter().GetResult();
                 }

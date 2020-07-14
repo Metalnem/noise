@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Noise
 {
@@ -17,7 +18,7 @@ namespace Noise
 		private readonly CipherType cipher = new CipherType();
 		private unsafe byte* k;
 		private ulong n;
-		private bool disposed;
+		private int disposed;
 
 		/// <summary>
 		/// Sets k = key. Sets n = 0.
@@ -27,6 +28,7 @@ namespace Noise
 			Debug.Assert(key.Length == Aead.KeySize);
 
 			EnsureInitialized();
+
             unsafe
             {
                 for (var i = 0; i < key.Length; i++)
@@ -138,14 +140,13 @@ namespace Noise
 
 		public void Dispose()
 		{
-			if (!disposed)
-			{
-                unsafe
-                {
-                    Libsodium.sodium_free(k);
-                }
-                disposed = true;
-			}
+            if (Interlocked.CompareExchange(ref disposed, 1, 0) != 0)
+                return;
+
+            unsafe
+            {
+                Libsodium.sodium_free(k);
+            }
 		}
 	}
 }

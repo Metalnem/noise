@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Noise
 {
@@ -19,7 +20,7 @@ namespace Noise
 		private readonly CipherState<CipherType> state = new CipherState<CipherType>();
 		private readonly unsafe byte* ck;
 		private readonly byte[] h;
-		private bool disposed;
+		private int disposed;
 
         /// <summary>
         /// Initializes a new SymmetricState with an
@@ -179,17 +180,16 @@ namespace Noise
 
 		public void Dispose()
 		{
-			if (!disposed)
-			{
-				hash.Dispose();
-				hkdf.Dispose();
-				state.Dispose();
-                unsafe
-                {
-					Libsodium.sodium_free(ck);
-                }
-                disposed = true;
-			}
-		}
+            if (Interlocked.CompareExchange(ref disposed, 1, 0) != 0)
+                return;
+
+            hash.Dispose();
+            hkdf.Dispose();
+            state.Dispose();
+            unsafe
+            {
+                Libsodium.sodium_free(ck);
+            }
+        }
 	}
 }

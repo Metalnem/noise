@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace Noise
 {
@@ -10,7 +11,7 @@ namespace Noise
 		private static readonly Curve25519 dh = new Curve25519();
 		private readonly unsafe byte* privateKey;
 		private readonly byte[] publicKey;
-		private bool disposed;
+		private volatile int disposed;
 
         /// <summary>
         /// A constant specifying the size in bytes of public keys and DH outputs.
@@ -22,7 +23,7 @@ namespace Noise
         /// Initializes a new instance of the <see cref="KeyPair"/> class.
         /// </summary>
         /// <param name="privateKey">The private key.</param>
-        /// <param name="privateKeyLength">The length of the private key.</param>
+        /// <param name="privateKeyLen">The length of the private key.</param>
         /// <param name="publicKey">The public key.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if the <paramref name="privateKey"/> or the <paramref name="publicKey"/> is null.
@@ -30,12 +31,12 @@ namespace Noise
         /// <exception cref="ArgumentException">
         /// Thrown if the lengths of the <paramref name="privateKey"/> or the <paramref name="publicKey"/> are invalid.
         /// </exception>
-        internal unsafe KeyPair(byte* privateKey, int privateKeyLength, byte[] publicKey)
+        public unsafe KeyPair(byte* privateKey, int privateKeyLen, byte[] publicKey)
 		{
 			Exceptions.ThrowIfNull(privateKey, nameof(privateKey));
 			Exceptions.ThrowIfNull(publicKey, nameof(publicKey));
 
-			if (privateKeyLength != 32)
+			if (privateKeyLen != 32)
 			{
 				throw new ArgumentException("Private key must have length of 32 bytes.", nameof(privateKey));
 			}
@@ -45,8 +46,8 @@ namespace Noise
 				throw new ArgumentException("Public key must have length of 32 bytes.", nameof(publicKey));
 			}
 
-            var privateKeyCopy = (byte*) Libsodium.sodium_malloc((ulong) privateKeyLength);
-            for (var i = 0; i < privateKeyLength; i++)
+            var privateKeyCopy = (byte*) Libsodium.sodium_malloc((ulong) privateKeyLen);
+            for (var i = 0; i < privateKeyLen; i++)
                 privateKeyCopy[i] = privateKey[i];
 
 			this.privateKey = privateKeyCopy;
@@ -72,7 +73,7 @@ namespace Noise
 		{
 			get
 			{
-				Exceptions.ThrowIfDisposed(disposed, nameof(KeyPair));
+                Exceptions.ThrowIfDisposed(disposed == 1, nameof(KeyPair));
 				return privateKey;
 			}
 		}
@@ -87,7 +88,7 @@ namespace Noise
 		{
 			get
 			{
-				Exceptions.ThrowIfDisposed(disposed, nameof(KeyPair));
+				Exceptions.ThrowIfDisposed(disposed == 1, nameof(KeyPair));
 				return publicKey;
 			}
 		}
@@ -96,15 +97,14 @@ namespace Noise
 		/// Erases the key pair from the memory.
 		/// </summary>
 		public void Dispose()
-		{
-			if (!disposed)
-			{
-                unsafe
-                {
-                    Libsodium.sodium_free(privateKey);
-                }
-                disposed = true;
-			}
-		}
+        {
+            if (Interlocked.CompareExchange(ref disposed, 1, 0) != 0)
+                return;
+
+            unsafe
+            {
+                Libsodium.sodium_free(privateKey);
+            }
+        }
 	}
 }

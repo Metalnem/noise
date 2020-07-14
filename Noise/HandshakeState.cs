@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace Noise
 {
@@ -132,7 +133,7 @@ namespace Noise
 		private bool isOneWay;
 		private readonly Queue<MessagePattern> messagePatterns = new Queue<MessagePattern>();
 		private readonly Queue<PskRef> psks = new Queue<PskRef>();
-		private bool disposed;
+		private volatile int disposed;
 
 		public unsafe HandshakeState(
 			Protocol protocol,
@@ -265,7 +266,7 @@ namespace Noise
 
 			var psk = enumerator.Current;
 
-			if (psk?.len != Aead.KeySize)
+			if (psk.len != Aead.KeySize)
 			{
 				throw new ArgumentException($"Pre-shared keys must be {Aead.KeySize} bytes in length.");
 			}
@@ -631,16 +632,15 @@ namespace Noise
 
 		private void ThrowIfDisposed()
 		{
-			Exceptions.ThrowIfDisposed(disposed, nameof(HandshakeState<CipherType, DhType, HashType>));
+			Exceptions.ThrowIfDisposed(disposed == 1, nameof(HandshakeState<CipherType, DhType, HashType>));
 		}
 
 		public void Dispose()
 		{
-			if (!disposed)
-			{
-				Clear();
-				disposed = true;
-			}
+            if (Interlocked.CompareExchange(ref disposed, 1, 0) != 0)
+                return;
+
+            Clear();
 		}
 
 		private enum Role
