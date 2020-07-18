@@ -36,7 +36,7 @@ namespace Noise.Tests
 			}
 		}
 
-		[Fact(/*Skip = "Takes too long to complete."*/)]
+		[Fact(Skip = "Takes too long to complete.")]
 		public void TestLargeInput()
 		{
 			var factor = 1031;
@@ -61,7 +61,7 @@ namespace Noise.Tests
 			}
 		}
 
-		[Fact(/*Skip = "Takes too long to complete."*/)]
+		[Fact(Skip = "Takes too long to complete.")]
 		public void TestSplits()
 		{
 			var data = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray().AsSpan();
