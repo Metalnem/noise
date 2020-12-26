@@ -36,6 +36,25 @@ namespace Noise
 		/// </exception>
 		int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer);
 
+        /// <summary>
+        /// Encrypts the <paramref name="payload"/> and writes the result into <paramref name="messageBuffer"/>.
+        /// </summary>
+        /// <param name="payload">The payload to encrypt.</param>
+        /// <param name="messageBuffer">The buffer for the encrypted message.</param>
+        /// <param name="counter">The nonce used for the encrypted message</param>
+        /// <returns>The ciphertext size in bytes.</returns>
+        /// <exception cref="ObjectDisposedException">
+        /// Thrown if the current instance has already been disposed.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the responder has attempted to write a message to a one-way stream.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if the encrypted payload was greater than <see cref="Protocol.MaxMessageLength"/>
+        /// bytes in length, or if the output buffer did not have enough space to hold the ciphertext.
+        /// </exception>
+        int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer, out ulong counter);
+
 		/// <summary>
 		/// Decrypts the <paramref name="message"/> and writes the result into <paramref name="payloadBuffer"/>.
 		/// </summary>
@@ -56,6 +75,28 @@ namespace Noise
 		/// Thrown if the decryption of the message has failed.
 		/// </exception>
 		int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
+
+		/// <summary>
+		/// Decrypts the <paramref name="message"/> and writes the result into <paramref name="payloadBuffer"/>.
+		/// </summary>
+		/// <param name="counter">The nonce to decrypt the message</param>
+		/// <param name="message">The message to decrypt.</param>
+		/// <param name="payloadBuffer">The buffer for the decrypted payload.</param>
+		/// <returns>The plaintext size in bytes.</returns>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown if the current instance has already been disposed.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if the initiator has attempted to read a message from a one-way stream.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the message was greater than <see cref="Protocol.MaxMessageLength"/>
+		/// bytes in length, or if the output buffer did not have enough space to hold the plaintext.
+		/// </exception>
+		/// <exception cref="System.Security.Cryptography.CryptographicException">
+		/// Thrown if the decryption of the message has failed.
+		/// </exception>
+		int ReadMessage(ulong counter, ReadOnlySpan<byte> message, Span<byte> payloadBuffer);
 
 		/// <summary>
 		/// Updates the symmetric key used to encrypt transport messages from
@@ -106,7 +147,7 @@ namespace Noise
 			}
 		}
 
-		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
+		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer, out ulong counter)
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
 
@@ -128,8 +169,14 @@ namespace Noise
 			var cipher = initiator ? c1 : c2;
 			Debug.Assert(cipher.HasKey());
 
-			return cipher.EncryptWithAd(null, payload, messageBuffer);
+			return cipher.EncryptWithAd(null, payload, messageBuffer, out counter);
 		}
+
+		public int WriteMessage(ReadOnlySpan<byte> payload, Span<byte> messageBuffer)
+		{
+			return WriteMessage(payload, messageBuffer, out _);
+		}
+
 
 		public int ReadMessage(ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
 		{
@@ -161,6 +208,36 @@ namespace Noise
 			return cipher.DecryptWithAd(null, message, payloadBuffer);
 		}
 
+		public int ReadMessage(ulong counter, ReadOnlySpan<byte> message, Span<byte> payloadBuffer)
+		{
+			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
+
+			if (initiator && IsOneWay)
+			{
+				throw new InvalidOperationException("Initiator cannot read messages from a one-way stream.");
+			}
+
+			if (message.Length > Protocol.MaxMessageLength)
+			{
+				throw new ArgumentException($"Noise message must be less than or equal to {Protocol.MaxMessageLength} bytes in length.");
+			}
+
+			if (message.Length < Aead.TagSize)
+			{
+				throw new ArgumentException($"Noise message must be greater than or equal to {Aead.TagSize} bytes in length.");
+			}
+
+			if (message.Length - Aead.TagSize > payloadBuffer.Length)
+			{
+				throw new ArgumentException("Payload buffer does not have enough space to hold the plaintext.");
+			}
+
+			var cipher = initiator ? c2 : c1;
+			Debug.Assert(cipher.HasKey());
+
+			return cipher.DecryptWithNonceAndAd(counter, null, message, payloadBuffer);
+		}
+
 		public void RekeyInitiatorToResponder()
 		{
 			Exceptions.ThrowIfDisposed(disposed, nameof(Transport<CipherType>));
@@ -189,5 +266,7 @@ namespace Noise
 				disposed = true;
 			}
 		}
-	}
+
+        
+    }
 }

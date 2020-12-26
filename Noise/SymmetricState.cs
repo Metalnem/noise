@@ -112,7 +112,19 @@ namespace Noise
 		/// </summary>
 		public int EncryptAndHash(ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
 		{
-			int bytesWritten = state.EncryptWithAd(h, plaintext, ciphertext);
+			int bytesWritten = state.EncryptWithAd(h, plaintext, ciphertext, out _);
+			MixHash(ciphertext.Slice(0, bytesWritten));
+
+			return bytesWritten;
+		}
+
+		/// <summary>
+		/// Sets ciphertext = EncryptWithAd(h, plaintext),
+		/// calls MixHash(ciphertext), and returns ciphertext and nonce used.
+		/// </summary>
+		public int EncryptAndHash(ReadOnlySpan<byte> plaintext, Span<byte> ciphertext, out ulong nonce)
+		{
+			int bytesWritten = state.EncryptWithAd(h, plaintext, ciphertext, out nonce);
 			MixHash(ciphertext.Slice(0, bytesWritten));
 
 			return bytesWritten;
@@ -125,6 +137,18 @@ namespace Noise
 		public int DecryptAndHash(ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
 		{
 			var bytesRead = state.DecryptWithAd(h, ciphertext, plaintext);
+			MixHash(ciphertext);
+
+			return bytesRead;
+		}
+
+		/// <summary>
+		/// Sets plaintext = DecryptWithNonceAndAd(n, h, ciphertext),
+		/// calls MixHash(ciphertext), and returns plaintext.
+		/// </summary>
+		public int DecryptAndHash(ulong nonce, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		{
+			var bytesRead = state.DecryptWithNonceAndAd(nonce, h, ciphertext, plaintext);
 			MixHash(ciphertext);
 
 			return bytesRead;
