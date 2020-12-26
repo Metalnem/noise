@@ -266,13 +266,13 @@ namespace Noise.Tests
 			Transport responder_transport;
 
 			//handshake
-			(bytesWritten, _, _) = initiator.WriteMessage(default, buffer1);
+			(bytesWritten, _, _) = initiator.WriteMessage(Span<byte>.Empty, buffer1);
 			Assert.True(bytesWritten > 0);
 
 			(bytesRead, _, _) = responder.ReadMessage(buffer1.Slice(0, bytesWritten), Span<byte>.Empty);
 			Assert.True(bytesRead == 0);
 
-			(bytesWritten, _, responder_transport) = responder.WriteMessage(default, buffer1);
+			(bytesWritten, _, responder_transport) = responder.WriteMessage(Span<byte>.Empty, buffer1);
 			Assert.True(bytesWritten > 0);
 			Assert.NotNull(responder_transport);
 
@@ -284,14 +284,14 @@ namespace Noise.Tests
 			//wireguard: The responder must wait to use the new session until it has recieved one encrypted session packet from the initiator, in order to provide key confirmation. 
 			ulong counter;
 
-			bytesWritten = initiator_transport.WriteMessage(default, buffer1, out counter);
+			bytesWritten = initiator_transport.WriteMessage(Span<byte>.Empty, buffer1, out counter);
 			Assert.Equal(0, (int)counter);
 			Assert.True(bytesWritten == 16);
 
 			bytesRead = responder_transport.ReadMessage(counter, buffer1.Slice(0, bytesWritten), buffer2);
 			Assert.Equal(0, bytesRead);
 
-			bytesWritten = responder_transport.WriteMessage(default, buffer1, out counter);
+			bytesWritten = responder_transport.WriteMessage(Span<byte>.Empty, buffer1, out counter);
 			Assert.Equal(0, (int)counter);
 			Assert.True(bytesWritten == 16);
 
