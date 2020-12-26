@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -27,6 +28,11 @@ namespace Noise.Tests
 				var protocolName = GetString(vector, "protocol_name");
 
 				if (protocolName.Contains("448"))
+				{
+					continue;
+				}
+
+				if (protocolName.Contains("AESGCM") && !Libsodium.IsAes256GcmAvailable)
 				{
 					continue;
 				}
@@ -129,6 +135,11 @@ namespace Noise.Tests
 					continue;
 				}
 
+				if (protocolName.Contains("AESGCM") && !Libsodium.IsAes256GcmAvailable)
+				{
+					continue;
+				}
+
 				var initPrologue = GetBytes(vector, "init_prologue");
 				var initStatic = GetBytes(vector, "init_static");
 				var initEphemeral = GetBytes(vector, "init_ephemeral");
@@ -226,6 +237,100 @@ namespace Noise.Tests
 				respTransport.Dispose();
 			}
 		}
+
+		[Fact]
+		public void TestOutOfOrder()
+		{
+			Span<byte> buffer1 = new byte[4098];
+			Span<byte> buffer2 = new byte[4098];
+
+			byte[] psk;
+			using(var rnd = RandomNumberGenerator.Create())
+				psk = new byte[32];
+
+			var initiator_static = KeyPair.Generate();
+			var responder_static = KeyPair.Generate();
+
+			var protocol = Protocol.Parse("Noise_IKpsk2_25519_ChaChaPoly_BLAKE2b".AsSpan());
+
+			var identifier = Encoding.UTF8.GetBytes("out-of-order test");
+
+			var initiator = protocol.Create(true, identifier,
+				initiator_static.PrivateKey,  responder_static.PublicKey, new[] { psk });
+
+			var responder = protocol.Create(false, identifier,
+				responder_static.PrivateKey, null, new[] { psk });
+
+			int bytesWritten, bytesRead;
+			Transport initiator_transport;
+			Transport responder_transport;
+
+			//handshake
+			(bytesWritten, _, _) = initiator.WriteMessage(Span<byte>.Empty, buffer1);
+			Assert.True(bytesWritten > 0);
+
+			(bytesRead, _, _) = responder.ReadMessage(buffer1.Slice(0, bytesWritten), Span<byte>.Empty);
+			Assert.True(bytesRead == 0);
+
+			(bytesWritten, _, responder_transport) = responder.WriteMessage(Span<byte>.Empty, buffer1);
+			Assert.True(bytesWritten > 0);
+			Assert.NotNull(responder_transport);
+
+			(bytesRead, _, initiator_transport) = initiator.ReadMessage(buffer1.Slice(0, bytesWritten), Span<byte>.Empty);
+			Assert.True(bytesRead == 0);
+			Assert.NotNull(initiator_transport);
+
+			//test: exchange single empty message from initiator to responder and back
+			//wireguard: The responder must wait to use the new session until it has recieved one encrypted session packet from the initiator, in order to provide key confirmation. 
+			ulong counter;
+
+			bytesWritten = initiator_transport.WriteMessage(Span<byte>.Empty, buffer1, out counter);
+			Assert.Equal(0, (int)counter);
+			Assert.True(bytesWritten == 16);
+
+			bytesRead = responder_transport.ReadMessage(counter, buffer1.Slice(0, bytesWritten), buffer2);
+			Assert.Equal(0, bytesRead);
+
+			bytesWritten = responder_transport.WriteMessage(Span<byte>.Empty, buffer1, out counter);
+			Assert.Equal(0, (int)counter);
+			Assert.True(bytesWritten == 16);
+
+			bytesRead = initiator_transport.ReadMessage(counter, buffer1.Slice(0, bytesWritten), buffer2);
+			Assert.Equal(0, bytesRead);
+
+
+			//out-of-order messages
+			var messages = new List<byte[]>();
+
+			for (int i = 0; i < 5; i++)
+			{
+				bytesWritten = initiator_transport.WriteMessage(Encoding.UTF8.GetBytes($"Hallo {i}"), buffer1, out counter);
+				Assert.Equal(i+1, (int)counter);
+
+				messages.Add(buffer1.Slice(0, bytesWritten).ToArray());
+			}
+
+			bytesWritten = responder_transport.ReadMessage(1, messages[0], buffer2);
+			Assert.Equal(7, bytesWritten);
+			Assert.Equal("Hallo 0", Encoding.UTF8.GetString(buffer2.Slice(0, bytesWritten).ToArray()));
+
+			for (int i = messages.Count - 2; i > 0; i--)
+			{
+				bytesWritten = responder_transport.ReadMessage((ulong)i+1, messages[i], buffer2);
+				Assert.Equal(7, bytesWritten);
+				Assert.Equal($"Hallo {i}", Encoding.UTF8.GetString(buffer2.Slice(0, bytesWritten).ToArray()));
+			}
+
+			bytesWritten = responder_transport.ReadMessage(5, messages[4], buffer2);
+			Assert.Equal(7, bytesWritten);
+			Assert.Equal("Hallo 4", Encoding.UTF8.GetString(buffer2.Slice(0, bytesWritten).ToArray()));
+
+			initiator.Dispose();
+			responder.Dispose();
+
+			initiator_transport.Dispose();
+			responder_transport.Dispose();
+        }
 
 		private static string GetString(JToken token, string property)
 		{

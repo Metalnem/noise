@@ -11,7 +11,7 @@ namespace Noise
 	{
 		private const ulong MaxNonce = UInt64.MaxValue;
 
-		private static readonly byte[] zeroLen = new byte[0];
+		private static readonly byte[] zeroLen = Array.Empty<byte>();
 		private static readonly byte[] zeros = new byte[32];
 
 		private readonly CipherType cipher = new CipherType();
@@ -50,10 +50,10 @@ namespace Noise
 
 		/// <summary>
 		/// If k is non-empty returns ENCRYPT(k, n++, ad, plaintext).
-		/// Otherwise copies the plaintext to the ciphertext parameter
-		/// and returns the length of the plaintext.
+		/// Otherwise copies the plaintext to the ciphertext parameter,
+		/// returns the length of the plaintext and counter used in the nonce parameter.
 		/// </summary>
-		public int EncryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext)
+		public int EncryptWithAd(ReadOnlySpan<byte> ad, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext, out ulong nonce)
 		{
 			if (n == MaxNonce)
 			{
@@ -63,10 +63,12 @@ namespace Noise
 			if (k == null)
 			{
 				plaintext.CopyTo(ciphertext);
+				nonce = n;
 				return plaintext.Length;
 			}
 
-			return cipher.Encrypt(k, n++, ad, plaintext, ciphertext);
+			nonce = n++;
+			return cipher.Encrypt(k, nonce, ad, plaintext, ciphertext);
 		}
 
 		/// <summary>
@@ -90,6 +92,29 @@ namespace Noise
 
 			int bytesRead = cipher.Decrypt(k, n, ad, ciphertext, plaintext);
 			++n;
+
+			return bytesRead;
+		}
+
+		/// <summary>
+		/// If k is non-empty returns DECRYPT(k, n, ad, ciphertext).
+		/// Otherwise copies the ciphertext to the plaintext parameter and returns
+		/// the length of the ciphertext.
+		/// </summary>
+		public int DecryptWithNonceAndAd(ulong nonce, ReadOnlySpan<byte> ad, ReadOnlySpan<byte> ciphertext, Span<byte> plaintext)
+		{
+			if (nonce == MaxNonce)
+            {
+				throw new OverflowException("Nonce has reached its maximum value.");
+			}
+
+			if (k == null)
+			{
+				ciphertext.CopyTo(plaintext);
+				return ciphertext.Length;
+			}
+
+			int bytesRead = cipher.Decrypt(k, nonce, ad, ciphertext, plaintext);
 
 			return bytesRead;
 		}
